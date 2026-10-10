@@ -1,6 +1,11 @@
 # admin_page
 jnu2026-2 web test pilot test page #2
 
+test account
+id:asdf(passwd = asdfasdfasdf)
+id:qwer(passwd = qwerqwerqwer)
+
+
 HOW TO RUN SERVER? (Windows)
 
 1. Install Python 3.10 or newer with pip and venv. Enable "Add python.exe to PATH" during installation.
@@ -9,4 +14,4 @@ HOW TO RUN SERVER? (Windows)
 
 You can run `init_server.bat` again after updating the repository; it reuses the existing virtual environment. Setup stops and reports an error if any step fails. The default SQLite database is created and migrated automatically when the server starts.
 
-The dashboard also requires frontend assets in `dist/`. On a fresh clone, install Node.js/npm and run `npm install`, then `npm run build` to generate them.
+The built frontend assets in `dist/` are included in Git, so running the server from a fresh clone does not require Node.js/npm. When changing frontend source code, install Node.js/npm, run `npm install` and `npm run build`, and commit the updated `dist/` assets together with the source changes.

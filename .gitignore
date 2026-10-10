@@ -32,7 +32,7 @@ package-lock.json
 # ----------------------------
 
 build/
-dist/
+# Commit frontend assets so a clone can be served by the Python server directly.
 .venv/
 __pycache__/
 .pytest_cache/
