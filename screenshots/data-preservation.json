@@ -1,0 +1,17 @@
+{
+  "users": {
+    "originalRows": 8,
+    "currentRows": 11,
+    "allOriginalRowsUnchanged": true
+  },
+  "mock_mailboxes": {
+    "originalRows": 2,
+    "currentRows": 3,
+    "allOriginalRowsUnchanged": true
+  },
+  "workspace_states": {
+    "originalRows": 18,
+    "currentRows": 23,
+    "allOriginalRowsUnchanged": true
+  }
+}

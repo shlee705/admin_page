@@ -1,0 +1,95 @@
+{
+  "errors": [],
+  "failures": [],
+  "pages": {
+    "index": {
+      "buttons": [
+        "\n              \n              Export\n            ",
+        "\n              \n              New report\n            ",
+        "\n                  \n                "
+      ],
+      "results": [
+        {
+          "action": "Export",
+          "changed": false,
+          "dialogs": 0
+        },
+        {
+          "action": "New report",
+          "changed": false,
+          "dialogs": 0
+        }
+      ],
+      "text": "FRIDAY · OCTOBER 9 · 2026\nWelcome back, John\n\nTotal visits are +10% week over week, unique visitors steady, and bounce rate holding at 33%. Two new regions came online overnight.\n\nExport\nNew report\nTotal visits\n+10%\n1.24M\nup from\n1.12M\n·\nlast week\nPage views\n−7%\n4.08M\ndown from\n4.39M\n·\nlast week\nUnique visitors\n~12%\n842K\nholding around\n835K\n·\nlast week\nBounce rate\nsteady\n33%\nmatching\n33%\n·\nlast week\nGEOGRAPHY\nSite visits\nView report\nUnited States\n100K\n50%\nEurope\n1M\n80%\nAustralia\n450K\n40%\nIndia\n1B\n90%\n75%\nNew users\nfirst-time visitors\n50%\nNew purchases\nfrom new visits\n90%\nBounce rate\navg engagement\nPERFORMANCE\nMonthly stats\nApril 2026\nSales growth\n54%\nDec sales\n$185K\nProfit growth\n60%\nDec profit\n$72K\nPERSONAL\nTodo list\nAdd task\nCall John for dinner\nANYTIME\nBook boss flight\n2 DAYS\nHit the gym\n3 MIN\nGive purchase report\nLOW PRIORITY\nWatch Foundation S03E04\nTOMORROW\nGive purchase report\nDONE\nCOMMERCE\nSales report\nPERIOD\nApril 2026\n$6,000\nNAME\tSTATUS\tDATE\tPRICE\nItem #1\tUnavailable\tApr 18\t$12\nItem #2\tNew\tApr 19\t$34\nItem #3\tNew\tApr 20\t−$45\nItem #4\tUnavailable\tApr 21\t$65\nItem #5\tUsed\tApr 22\t$78\nItem #6\tUsed\tApr 23\t−$88\nItem #7\tOld\tApr 22\t$56\nCheck all sales\nTODAY\nWeather\nRīga, LV\n32°F\nPartly cloudy · light breeze\nThursday\n\nAPR 23, 2026\n\nWind\n10km/h\nSunrise\n05:32am\nPressure\n1013hPa\nTHU\n32°\nFRI\n30°\nSAT\n28°\nSUN\n32°\nMON\n24°\nTUE\n28°\nWED\n32°\nCONVERSATIONS\nQuick chat\nOpen chat\nLK\nMorning — just pushed the dependency bump to master.\nAll 10 stale Dependabot PRs are closed 🎉\n10:04 AM\nJD\nNice work. Any breaking changes?\n10:06 AM"
+    },
+    "calendar": {
+      "buttons": [
+        "\n              \n              Export\n            ",
+        "\n              \n              New event\n            ",
+        "\n                    \n                  ",
+        "\n                    \n                  ",
+        "\n                  \n                ",
+        "\n                    \n                  ",
+        "Today",
+        "\n                    \n                  ",
+        "Day",
+        "Week",
+        "Month",
+        "Agenda",
+        "\n                  \n                ",
+        "\n                  \n                  New event\n                "
+      ],
+      "results": [
+        {
+          "action": "New event",
+          "dialogs": 0,
+          "changed": false
+        },
+        {
+          "action": "Next month",
+          "before": "April 2026",
+          "after": "May 2026"
+        },
+        {
+          "action": "Today",
+          "title": "October 2026"
+        },
+        {
+          "action": "Date click",
+          "dialogs": 0
+        }
+      ],
+      "text": "FRIDAY · OCTOBER 9 · 2026\nApril 2026\n\n23 events this month · 4 upcoming today and tomorrow. The Lisbon trip kicks off Apr 9 — flights are confirmed.\n\nExport\nNew event\nQuick add event\nApril 2026\nS\nM\nT\nW\nT\nF\nS\n29\n30\n31\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n21\n22\n23\n24\n25\n26\n27\n28\n29\n30\n1\n2\nMy calendars\nPersonal\n8\nWork\n11\nTeam\n5\nTravel\n4\nFinance\n2\nBirthdays\n1\nHolidays\n0\nUpcoming\nSee all\n25\nAPR\nRun · 5K with Mira\n07:00\n· Personal\n25\nAPR\nDinner @ Carla's\n20:00\n· Personal\n27\nAPR\nSprint planning\n10:00\n· Work\n28\nAPR\nBoard review\n14:00\n· Work\n29\nAPR\nAnya 1:1\n11:30\n· Team\nApril 2026\nToday\nDay\nWeek\nMonth\nAgenda\nNew event\nSUN\nMON\nTUE\nWED\nTHU\nFRI\nSAT\n29\n30\n31\n1\n9a\nQ2 kickoff\n2\n11a\nDesign review\n3\n1p\nLunch w/ Marcus\n4\n5\n🎂 Sara birthday\n6\n7\n10a\nStandup\n2p\nBrand workshop\n8\n3p\nAll-hands\n9\n✈ Lisbon trip\n10\n11\n12\n✈ Lisbon trip\n13\n14\n4p\nInvestor sync\n15\n📑 Tax deadline\n16\n17\n12p\nInvoice approval\n18\n19\n20\n7a\nRun with Mira\n21\n22\n2p\nEarth day talk\n23\n✓ Dependency merge\n24\n10a\nCoffee w/ Rita\n3p\nPR reviews\n25\n7a\nRun · 5K\n8p\nDinner @ Carla's\n26\n27\n10a\nSprint planning\n28\n2p\nBoard review\n5p\nEng review\n29\n11:30a\nAnya 1:1\n30\n9a\nNewsletter goes out\n7p\nYoga\n1\n2"
+    },
+    "chat": {
+      "buttons": [
+        "\n              \n              Search\n            ",
+        "\n              \n              New chat\n            ",
+        "\n                  \n                ",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "\n                  \n                "
+      ],
+      "results": [
+        {
+          "action": "Select second room",
+          "changed": false
+        },
+        {
+          "action": "Enter send",
+          "visible": false
+        },
+        {
+          "action": "Send button",
+          "visible": false
+        }
+      ],
+      "text": "CONVERSATIONS\nChat — team\n\n5 conversations with unread messages · 3 active right now. Sara just typed.\n\nSearch\nNew chat\nDirect12 ACTIVE\nSK\nSara Kim\nnow\nSara is typing…\n3\nLR\nLeo Reyes\n10:18\nPushed the dependency upgrade — all green ✅\n2\nMD\nMira Doe\n09:42\nSounds good — let\\'s sync at 2pm.\nAT\nAnya Trent\nYest\nYou: I\\'ll review the brand workshop notes tonight\nPV\nPaolo Vega\nYest\nLisbon venue is confirmed for May 22\nRG\nRita Gomez\nTue\nCoffee Tuesday morning?\nJC\nJess Choi\nMon\nNewsletter draft v3 is ready for your eyes\nFB\nFinance Bot\nApr 21\nMarch card statement is available\nSK\nSara Kim\nActive now · typing\nYESTERDAY\nSK\nHey John — got a minute to look at the Q2 launch deck?\n15:42\nJD\nSure, send it over.\n15:45 ·\nRead\nSK\nSent in email — but here\\'s the summary: pricing section needs your call before Thursday.\n15:46\nTODAY\nSK\nMorning! Did you get a chance to review the deck?\n09:14\nJD\nJust finishing it now — the new pricing tiers look strong. One thought: can we A/B test the \"Team\" plan name?\n09:32 ·\nRead\nSK\nDefinitely — I\\'ll spin up the test variants this afternoon.\nAlso, Mira pushed back on the \"Studio\" name. Want to sync briefly?\n09:38\nJD\nYes — drop a 15-min slot on my cal.\n09:41 ·\nRead\nSK\n📅 Calendar invite · Pricing sync\nToday · 14:00 — 14:15 · Zoom\n10:18\nSK\nSara is typing"
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "backend": {
+    "passed": 40,
+    "command": "python -m pytest backend/tests"
+  },
+  "frontend": {
+    "passed": 122,
+    "files": 9,
+    "command": "npm run test:run"
+  },
+  "build": "passed with existing asset-size warnings",
+  "lintJS": "passed (0 errors, 0 warnings)",
+  "lintSCSS": "passed",
+  "chrome": [
+    "accounts.e2e.mjs desktop/mobile",
+    "auth.e2e.mjs desktop/mobile",
+    "email.e2e.mjs desktop/mobile",
+    "workspace.e2e.mjs desktop/mobile (drag/resize included)",
+    "shared.e2e.mjs",
+    "accounts.e2e.mjs actual 127.0.0.1:8000"
+  ],
+  "preservation": "all original rows in 12 tables preserved; see accounts-data-preservation.json"
+}

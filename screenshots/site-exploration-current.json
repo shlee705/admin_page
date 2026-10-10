@@ -1,0 +1,141 @@
+{
+  "errors": [],
+  "consoleErrors": [],
+  "httpErrors": [],
+  "failures": [],
+  "pages": {
+    "index": {
+      "buttons": [
+        "\n              \n              Export\n            ",
+        "\n              \n              New report\n            ",
+        "Add task"
+      ],
+      "results": [
+        {
+          "action": "Export",
+          "changed": false,
+          "dialogs": 0
+        },
+        {
+          "action": "New report",
+          "changed": false,
+          "dialogs": 1
+        }
+      ],
+      "text": "FRIDAY · OCTOBER 9 · 2026\nWelcome back, Site Explorer\n\nYour saved calendar, private mock conversations and tasks. Analytics, sales and weather below are labeled design samples.\n\nExport\nNew report\n\nWorkspace loaded.\n\nSaved events\nSAVED\n5\nFrom your Calendar\nEvents today\nSAVED\n2\nLocal calendar dates\nUnread mock messages\nSAVED\n1\nSample conversations only\nOpen tasks\nSAVED\n0\nYour private tasks\nUpcoming calendar events\nOpen Calendar\nSample · all-day reminder\n2026-10-10\nSample · a long event title for testing wrapping and detailed event presentation on small screens\n2026-10-10 14:00\nSample · multi-day workshop\n2026-10-11\nGEOGRAPHY\nSite visits\nView report\n\nDesign sample · Static fixture, not live account data.\n\nUnited States\n100K\n50%\nEurope\n1M\n80%\nAustralia\n450K\n40%\nIndia\n1B\n90%\n75%\nNew users\nfirst-time visitors\n50%\nNew purchases\nfrom new visits\n90%\nBounce rate\navg engagement\nPERFORMANCE\nMonthly stats\nApril 2026\n\nDesign sample · Static fixture, not live account data.\n\nSales growth\n54%\nDec sales\n$185K\nProfit growth\n60%\nDec profit\n$72K\nPERSONAL\nTodo list\nAdd task\nNew task\nAdd task\nNo tasks yet. Add your first task.\nCOMMERCE\nSales report\n\nDesign sample · Static fixture, not live account data.\n\nPERIOD\nApril 2026\n$6,000\nNAME\tSTATUS\tDATE\tPRICE\nItem #1\tUnavailable\tApr 18\t$12\nItem #2\tNew\tApr 19\t$34\nItem #3\tNew\tApr 20\t−$45\nItem #4\tUnavailable\tApr 21\t$65\nItem #5\tUsed\tApr 22\t$78\nItem #6\tUsed\tApr 23\t−$88\nItem #7\tOld\tApr 22\t$56\nCheck all sales\nTODAY\nWeather\nRīga, LV\n\nDesign sample · Static fixture, not live account data.\n\n32°F\nPartly cloudy · light breeze\nThursday\n\nAPR 23, 2026\n\nWind\n10km/h\nSunrise\n05:32am\nPressure\n1013hPa\nTHU\n32°\nFRI\n30°\nSAT\n28°\nSUN\n32°\nMON\n24°\nTUE\n28°\nWED\n32°\nCONVERSATIONS\nQuick chat\nOpen chat\nSample design room\nThis is a test fixture. Messages you send are saved only to your account, not delivered to another user.\nAccount mock · 0 unread\nSample planning room\nThis is a test fixture. Messages you send are saved only to your account, not delivered to another user.\nAccount mock · 1 unread\nPrivate notes\nNo messages\nAccount mock · 0 unread\nOpen Chat to send a private mock message →"
+    },
+    "calendar": {
+      "buttons": [
+        "\n              \n              Export\n            ",
+        "\n              \n              New event\n            ",
+        "Quick add event",
+        "‹",
+        "›",
+        "27",
+        "28",
+        "29",
+        "30",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29",
+        "30",
+        "31",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "Sample · all-day reminder2026-10-10",
+        "Sample · a long event title for testing wrapping and detailed event presentation on small screens2026-10-10 14:00",
+        "Sample · multi-day workshop2026-10-11",
+        "See all events",
+        "\n                    \n                  ",
+        "Today",
+        "\n                    \n                  ",
+        "Day",
+        "Week",
+        "Month",
+        "Agenda",
+        "\n                  \n                ",
+        "\n                  \n                  New event\n                ",
+        "Reset my calendar samples"
+      ],
+      "results": [
+        {
+          "action": "New event",
+          "dialogs": 1,
+          "changed": false
+        },
+        {
+          "action": "Next month",
+          "before": "October 2026",
+          "after": "November 2026"
+        },
+        {
+          "action": "Today",
+          "title": "October 2026"
+        },
+        {
+          "action": "Date click",
+          "dialogs": 1
+        }
+      ],
+      "text": "FRIDAY · OCTOBER 9 · 2026\nOctober 2026\n\n5 saved events · Account-specific mock calendar. Samples are editable test fixtures.\n\nExport\nNew event\nQuick add event\nOctober 2026\n‹\n›\nS\nM\nT\nW\nT\nF\nS\n27\n28\n29\n30\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n21\n22\n23\n24\n25\n26\n27\n28\n29\n30\n31\n1\n2\n3\n4\n5\n6\n7\nMy calendars\nFilter category\nAll categories\npersonal (1)\nwork (2)\nteam (1)\ntravel (1)\nfinance (0)\nbirthday (0)\nholiday (0)\nUpcoming\nSample · all-day reminder\n2026-10-10\nSample · a long event title for testing wrapping and detailed event presentation on small screens\n2026-10-10 14:00\nSample · multi-day workshop\n2026-10-11\nSee all events\nOctober 2026\nToday\nDay\nWeek\nMonth\nAgenda\nNew event\nReset my calendar samples\n\nCalendar ready.\n\nSUN\nMON\nTUE\nWED\nTHU\nFRI\nSAT\n27\n28\n29\n30\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10a\nSample · planning meeting\n10:30a\nSample · overlapping review\n10\nSample · all-day reminder\n2p\nSample · a long event title for testing wrapping and detailed event presentation on small screens\n11\nSample · multi-day workshop\n12\n13\n14\n15\n16\n17\n18\n19\n20\n21\n22\n23\n24\n25\n26\n27\n28\n29\n30\n31"
+    },
+    "chat": {
+      "buttons": [
+        "\n              \n              Search\n            ",
+        "\n              \n              New chat\n            ",
+        "SASample design room오후 11:12This is a test fixture. Messages you send are saved only to your account, not delivered to another user.",
+        "SASample planning room오후 11:12This is a test fixture. Messages you send are saved only to your account, not delivered to another user.1",
+        "PRPrivate notesNo messages yet",
+        "Create room",
+        "Reset my chat samples",
+        ""
+      ],
+      "results": [
+        {
+          "action": "Select second room",
+          "changed": true
+        },
+        {
+          "action": "Enter send",
+          "visible": true
+        },
+        {
+          "action": "Send button",
+          "visible": true
+        }
+      ],
+      "text": "CONVERSATIONS\nChat — team\n\nMock chat · Messages are saved to your account only. No messages are delivered to other users.\n\nSearch\nNew chat\nConversations MOCK\nSearch rooms\nSA\nSample design room\n오후 11:12\nThis is a test fixture. Messages you send are saved only to your account, not delivered to another user.\nSA\nSample planning room\n오후 11:12\nThis is a test fixture. Messages you send are saved only to your account, not delivered to another user.\n1\nPR\nPrivate notes\nNo messages yet\nNew private mock room\nCreate room\nReset my chat samples\nSample design room · Account-only mock conversation\nSA\nThis is a test fixture. Messages you send are saved only to your account, not delivered to another user.\nSample participant ·\n2026. 10. 9. 오후 11:12:22\n· Sample message\nMessage · Enter sends, Shift+Enter adds a line\n\nChat ready · mock mode."
+    }
+  }
+}

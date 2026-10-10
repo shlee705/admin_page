@@ -1,0 +1,113 @@
+{
+  "name": "adminator-admin-dashboard",
+  "version": "4.3.0",
+  "private": false,
+  "description": "Adminator 2026 \u2014 vanilla-JS admin dashboard with a token-driven design system, dark mode, Chart.js, FullCalendar, and jsvectormap. No jQuery, no Bootstrap.",
+  "main": "dist/index.html",
+  "keywords": [
+    "admin",
+    "dashboard",
+    "template",
+    "vanilla-js",
+    "dark-mode",
+    "design-system",
+    "css-variables",
+    "responsive",
+    "mobile-first",
+    "scss",
+    "webpack",
+    "modern",
+    "ui-kit",
+    "admin-panel",
+    "charts",
+    "fullcalendar",
+    "chartjs"
+  ],
+  "author": "Aigars Silkalns <hello@colorlib.com> (https://colorlib.com)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/puikinsh/Adminator-admin-dashboard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/puikinsh/Adminator-admin-dashboard/issues"
+  },
+  "homepage": "https://adminator.colorlib.com/",
+  "files": [
+    "dist/**/*",
+    "src/**/*",
+    "webpack.config.js",
+    "CLAUDE.md",
+    "CHANGELOG.md",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=22.22.2"
+  },
+  "scripts": {
+    "start": "webpack server",
+    "dev": "webpack-dashboard -t 'Project' -- webpack server",
+    "clean": "shx rm -rf ./dist",
+    "build": "npm run clean && cross-env NODE_ENV=production MINIFY=false webpack",
+    "build:analyze": "npm run clean && cross-env ANALYZE=true NODE_ENV=production webpack",
+    "release:minified": "npm run clean && cross-env NODE_ENV=production MINIFY=true webpack",
+    "release:unminified": "npm run clean && cross-env NODE_ENV=production MINIFY=false webpack",
+    "preview": "cross-env NODE_ENV=production webpack server",
+    "lint:js": "eslint ./src ./webpack ./tests ./*.js -f table",
+    "lint:scss": "stylelint ./src/**/*.scss",
+    "lint": "npm run lint:js && npm run lint:scss",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:email:e2e": "node tests/email.e2e.mjs",
+    "test:auth:e2e": "node tests/auth.e2e.mjs",
+    "test:accounts:e2e": "node tests/accounts.e2e.mjs",
+    "test:workspace:e2e": "node tests/workspace.e2e.mjs",
+    "explore:site": "node tests/site-explore.mjs",
+    "test:coverage": "vitest run --coverage",
+    "screenshots": "node scripts/screenshots.mjs",
+    "prepublishOnly": "npm run lint && npm run test:run && npm run release:minified",
+    "postpublish": "echo 'Package published successfully! View at: https://www.npmjs.com/package/adminator-admin-dashboard'",
+    "test:resources:e2e": "node tests/resources.e2e.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@vitest/coverage-v8": "^4.1.7",
+    "case-sensitive-paths-webpack-plugin": "^2.4.0",
+    "copy-webpack-plugin": "^14.0.0",
+    "cross-env": "^10.1.0",
+    "css-loader": "^7.1.4",
+    "css-minimizer-webpack-plugin": "^8.0.0",
+    "eslint": "^10.8.0",
+    "eslint-formatter-table": "^7.32.1",
+    "globals": "^17.8.0",
+    "html-webpack-plugin": "^5.6.8",
+    "jsdom": "^30.0.1",
+    "mini-css-extract-plugin": "^2.10.2",
+    "playwright": "^1.62.1",
+    "postcss": "^8.5.25",
+    "postcss-loader": "^8.2.1",
+    "postcss-preset-env": "^11.3.2",
+    "sass": "^1.102.0",
+    "sass-loader": "^17.0.0",
+    "shx": "^0.4.0",
+    "style-loader": "^4.0.0",
+    "stylelint": "^17.14.1",
+    "stylelint-config-standard": "^40.0.0",
+    "stylelint-config-standard-scss": "^17.0.0",
+    "terser-webpack-plugin": "^5.6.1",
+    "vitest": "^4.1.7",
+    "webpack": "^5.109.2",
+    "webpack-bundle-analyzer": "^5.3.1",
+    "webpack-cli": "^7.2.2",
+    "webpack-dashboard": "^3.3.8",
+    "webpack-dev-server": "^6.0.0"
+  },
+  "dependencies": {
+    "chart.js": "^4.5.1",
+    "fullcalendar": "^7.0.2",
+    "jsvectormap": "^1.7.0"
+  },
+  "overrides": {
+    "uuid": "^11.1.1"
+  }
+}

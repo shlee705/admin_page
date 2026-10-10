@@ -1,0 +1,50 @@
+{
+  "users": {
+    "originalRows": 13,
+    "allOriginalRowsPreserved": true
+  },
+  "auth_sessions": {
+    "originalRows": 3,
+    "allOriginalRowsPreserved": true
+  },
+  "workspace_states": {
+    "originalRows": 23,
+    "allOriginalRowsPreserved": true
+  },
+  "mock_mailboxes": {
+    "originalRows": 3,
+    "allOriginalRowsPreserved": true
+  },
+  "chat_rooms": {
+    "originalRows": 2,
+    "allOriginalRowsPreserved": true
+  },
+  "chat_members": {
+    "originalRows": 4,
+    "allOriginalRowsPreserved": true
+  },
+  "chat_messages": {
+    "originalRows": 4,
+    "allOriginalRowsPreserved": true
+  },
+  "calendar_events": {
+    "originalRows": 21,
+    "allOriginalRowsPreserved": true
+  },
+  "calendar_attendees": {
+    "originalRows": 1,
+    "allOriginalRowsPreserved": true
+  },
+  "calendar_imports": {
+    "originalRows": 4,
+    "allOriginalRowsPreserved": true
+  },
+  "internal_mail": {
+    "originalRows": 4,
+    "allOriginalRowsPreserved": true
+  },
+  "mail_submissions": {
+    "originalRows": 1,
+    "allOriginalRowsPreserved": true
+  }
+}

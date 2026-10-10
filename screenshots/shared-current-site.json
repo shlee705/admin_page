@@ -1,0 +1,9 @@
+{
+  "checks": [
+    "shared rooms, two-way live messages, reload",
+    "calendar create and cross-user edit sync",
+    "revision conflict and delete sync",
+    "default internal mail delivery, mobile inbox, sidebar"
+  ],
+  "errors": []
+}

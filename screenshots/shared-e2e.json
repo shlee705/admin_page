@@ -1,0 +1,12 @@
+{
+  "checks": [
+    "shared rooms, two-way live messages, reload",
+    "offline recovery from DB",
+    "calendar create and cross-user edit sync",
+    "revision conflict and delete sync",
+    "default internal mail delivery, mobile inbox, sidebar",
+    "internal email reply",
+    "unknown recipient error preserves compose"
+  ],
+  "errors": []
+}

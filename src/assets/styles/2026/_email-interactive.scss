@@ -1,0 +1,48 @@
+/* Interactive mailbox additions reuse the existing three-pane design tokens. */
+[data-email-app] button { cursor: pointer; }
+[data-email-app] button:disabled { opacity: 0.5; cursor: wait; }
+[data-email-app] :focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+[data-email-app] [data-error], [data-email-app] [data-compose-error] { color: var(--danger); }
+[data-email-app] [data-error]:empty, [data-email-app] [data-compose-error]:empty { display: none; }
+[data-email-app] [data-status] { margin: 8px 0 14px; color: var(--t-muted); min-height: 20px; }
+.email-app .mail-folder { width: 100%; text-align: left; }
+.email-app .mail-label-dot { background: var(--primary); }
+.email-app .mail-row { display: flex; align-items: center; }
+.email-app .mail-star { position: static; flex-shrink: 0; align-self: flex-end; }
+.email-row-open { display: flex; align-items: flex-start; gap: 12px; flex: 1; min-width: 0; text-align: left; color: inherit; }
+.email-row-open .mail-row-body { flex: 1; }
+.email-row-open .mail-row-subject, .email-row-open .mail-row-preview { display: block; }
+.email-row-open .mail-row-tags { display: flex; }
+.email-app .mail-row-time { max-width: 100px; overflow: hidden; text-overflow: ellipsis; }
+.email-actions, .email-filters, .email-label-editor { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.email-filters { font-size: 11px; }
+.email-filters label, .email-actions label { display: flex; flex-direction: column; gap: 4px; }
+[data-email-app] select { background: var(--bg-card); color: var(--t-base); border: 1px solid var(--border); padding: 5px; border-radius: 6px; max-width: 100%; }
+.email-empty { padding: 24px 16px; color: var(--t-muted); }
+.email-pagination { display: flex; justify-content: space-between; align-items: center; padding: 8px; font-size: 11px; border-top: 1px solid var(--border-soft); }
+.email-body-text { white-space: pre-wrap; overflow-wrap: anywhere; }
+.email-label-editor { padding: 12px; margin: 16px 0; border: 1px solid var(--border-soft); border-radius: 8px; font-size: 12px; }
+.email-label-editor legend { padding: 0 6px; }
+.email-compose-dialog { width: min(720px, calc(100vw - 32px)); max-height: 90vh; overflow-y: auto; border: 1px solid var(--border); border-radius: 14px; padding: 24px; background: var(--bg-card); color: var(--t-base); box-shadow: var(--shadow-card); }
+.email-compose-dialog::backdrop { background: rgb(0 0 0 / 50%); }
+.email-compose-page { padding: 24px; max-width: 960px; margin: auto; }
+.mail-compose-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.email-field { display: flex; flex-direction: column; gap: 6px; margin: 12px 0; font-size: 12px; color: var(--t-muted); }
+.email-field input, .email-field textarea { width: 100%; border: 1px solid var(--border); padding: 10px 12px; border-radius: 8px; background: var(--bg-card); color: var(--t-base); font: inherit; }
+.email-field textarea { resize: vertical; }
+.email-app .reader-toolbar { flex-wrap: wrap; padding: 12px; }
+.email-app .reader-attach-item { flex-wrap: wrap; }
+.email-app .reader-card-head { flex-wrap: wrap; overflow-wrap: anywhere; }
+.email-app .mail-list-scroll { min-height: 160px; }
+@media (width <= 1400px) {
+  .email-app.has-selection { grid-template-columns: 200px minmax(0, 1fr); }
+  .email-app.has-selection .mail-list { display: none; }
+  .email-app.has-selection .mail-reader { display: flex; min-height: 500px; }
+}
+@media (width <= 767px) {
+  .email-app, .email-app.has-selection { grid-template-columns: minmax(0, 1fr); }
+  .email-app .mail-rail { display: flex; border-right: 0; border-bottom: 1px solid var(--border-soft); max-height: 260px; }
+  .email-app.has-selection .mail-rail { display: none; }
+  .email-app .reader-scroll { padding: 16px; }
+  .email-compose-dialog { padding: 16px; }
+}

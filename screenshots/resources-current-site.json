@@ -1,0 +1,464 @@
+{
+  "base": "http://127.0.0.1:8000",
+  "checkedAt": "2026-10-09T14:52:09.652Z",
+  "pages": {
+    "404": {
+      "title": "404 · 2026 Redesign Preview",
+      "text": "ERROR · NOT FOUND\n404\nThis page wandered off\n\nThe link may be outdated, or the page might have been moved or deleted. Try the dashboard to get back on track.\n\nBack to dashboard\nGo back\nSTATUS 404\nCODE NOT_FOUND\nREF a8c1-9f23",
+      "buttons": [],
+      "placeholderLinks": []
+    },
+    "500": {
+      "title": "500 · 2026 Redesign Preview",
+      "text": "ERROR · SERVER\n500\nSomething broke on our end\n\nWe've been notified and are looking into it. Please try again in a moment, or head back to the dashboard.\n\nTry again\nDashboard\nSTATUS 500\nCODE INTERNAL_ERROR\nREF 7d2e-44b9",
+      "buttons": [],
+      "placeholderLinks": []
+    },
+    "index": {
+      "title": "Dashboard · 2026 Redesign Preview",
+      "text": "Adminator\nv4.3.0 · preview\nWORKSPACE\nDashboard\nCOMMUNICATIONS\nEmail\nCompose\nCalendar\nChat\nCOMPONENTS\nCharts\nNEW\nForms\nUI Elements\nButtons\nTables\nBasic Table\nData Table\nMaps\nGoogle Map\nVector Map\nPages\nBlank\n404\n500\nSign In\nSign Up\nA\nAlice\nreal_alice_1791557530052@adminator.test\nLog out\nWorkspace\nDashboard\nSearch...\n⌘K\n6\n0\nA\nFRIDAY · OCTOBER 9 · 2026\nWelcome back, Alice\n\nYour server calendar, real conversations and tasks. Analytics, sales and weather below are labeled design samples.\n\nExport\nNew report\n\nWorkspace loaded.\n\nSaved events\nSAVED\n6\nFrom your Calendar\nEvents today\nSAVED\n3\nLocal calendar dates\nUnread chat messages\nSAVED\n0\nReal conversation participants\nOpen tasks\nSAVED\n0\nYour private tasks\nUpcoming calendar events\nOpen Calendar\nSample · all-day reminder\n2026-10-10\nSample · a long event title for testing wrapping and detailed event presentation on small screens\n2026-10-10 14:00:00+09:00\nSample · multi-day workshop\n2026-10-11\nShared recurring planning\n2026-10-16 09:00:00+09:00\nShared recurring planning\n2026-10-23 09:00:00+09:00\nAccount activity\n\n0 unread internal emails · 0 unread mock emails (separate samples)\n\nTasks: 0 / 0 completed\n\nToday\n\nSample · planning meeting\n\nSample · overlapping review\n\nShared recurring planning\n\nRecent activity\n\ntasks · Task list updated · 2026. 10. 9. 오후 11:52:22\n\nmail · Browser internal mail · 2026. 10. 9. 오후 11:52:21\n\ncalendar · Shared recurring planning · 2026. 10. 9. 오후 11:52:18\n\nchat · Bob replies live · 2026. 10. 9. 오후 11:52:14\n\ncalendar · Sample · planning meeting · 2026. 10. 9. 오후 11:52:12\n\ncalendar · Sample · overlapping review · 2026. 10. 9. 오후 11:52:12\n\ncalendar · Sample · all-day reminder · 2026. 10. 9. 오후 11:52:12\n\ncalendar · Sample · multi-day workshop · 2026. 10. 9. 오후 11:52:12\n\ncalendar · Sample · a long event title for testing wrapping and detailed event presentation on small screens · 2026. 10. 9. 오후 11:52:12\n\nGEOGRAPHY\nSite visits\nView report\n\nDesign sample · Static fixture, not live account data.\n\nUnited States\n100K\n50%\nEurope\n1M\n80%\nAustralia\n450K\n40%\nIndia\n1B\n90%\n75%\nNew users\nfirst-time visitors\n50%\nNew purchases\nfrom new visits\n90%\nBounce rate\navg engagement\nPERFORMANCE\nLast 7 days · Account activity\nApril 2026\n\nDatabase counts of created events, sent chat messages and internal emails.\n\nSales growth\n54%\nDec sales\n$185K\nProfit growth\n60%\nDec profit\n$72K\nPERSONAL\nTodo list\nAdd task\nNew task\nAdd task\nNo tasks yet. Add your first task.\nCOMMERCE\nSales report\n\nDesign sample · Static fixture, not live account data.\n\nPERIOD\nApril 2026\n$6,000\nNAME\tSTATUS\tDATE\tPRICE\nItem #1\tUnavailable\tApr 18\t$12\nItem #2\tNew\tApr 19\t$34\nItem #3\tNew\tApr 20\t−$45\nItem #4\tUnavailable\tApr 21\t$65\nItem #5\tUsed\tApr 22\t$78\nItem #6\tUsed\tApr 23\t−$88\nItem #7\tOld\tApr 22\t$56\nCheck all sales\nTODAY\nWeather\nRīga, LV\n\nDesign sample · Static fixture, not live account data.\n\n32°F\nPartly cloudy · light breeze\nThursday\n\nAPR 23, 2026\n\nWind\n10km/h\nSunrise\n05:32am\nPressure\n1013hPa\nTHU\n32°\nFRI\n30°\nSAT\n28°\nSUN\n32°\nMON\n24°\nTUE\n28°\nWED\n32°\nCONVERSATIONS\nQuick chat\nOpen chat\nBob\nBob replies live\nReal chat · 0 unread\nOpen Chat to message a real account →\n© 2026 · Designed by Colorlib\nv4.3.0\npreview build",
+      "buttons": [
+        "\n              \n              Export\n            ",
+        "\n              \n              New report\n            ",
+        "Add task"
+      ],
+      "placeholderLinks": [
+        "\n                View report\n                \n              ",
+        "Check all sales "
+      ]
+    },
+    "email": {
+      "title": "Email · 2026 Redesign Preview",
+      "text": "Adminator\nv4.3.0 · preview\nWORKSPACE\nDashboard\nCOMMUNICATIONS\nEmail\nCompose\nCalendar\nChat\nCOMPONENTS\nCharts\nNEW\nForms\nUI Elements\nButtons\nTables\nBasic Table\nData Table\nMaps\nGoogle Map\nVector Map\nPages\nBlank\n404\n500\nSign In\nSign Up\nA\nAlice\nreal_alice_1791557530052@adminator.test\nLog out\nCommunications\nEmail\nInbox\nSearch...\n⌘K\n6\n0\nA\nCOMMUNICATIONS · MOCK MAILBOX\nInbox\n\nMock mailbox. Sending saves to your Sent folder; no email is delivered to recipients.\n\nReal internal mailbox\nRefresh\nCompose\nReset mock data\nSimulate next error\n\nLoading…\n\nCompose\nRead status\nAll\nUnread\nRead\nStarred\nAll\nStarred\nLabel\nAll labels\nSort\nNewest first\nOldest first\nAll\nPrimary\nUpdates\nPromotions\nPrevious\nNext\nSelect a message to read it.\n© 2026 · Designed by Colorlib\nv4.3.0\npreview build",
+      "buttons": [
+        "Refresh",
+        "Compose",
+        "Reset mock data",
+        "Simulate next error",
+        "Compose",
+        "All",
+        "Primary",
+        "Updates",
+        "Promotions",
+        "Previous",
+        "Next",
+        "Cancel",
+        "Save draft",
+        "Send"
+      ],
+      "placeholderLinks": []
+    },
+    "compose": {
+      "title": "Compose · 2026 Redesign Preview",
+      "text": "Adminator\nv4.3.0 · preview\nWORKSPACE\nDashboard\nCOMMUNICATIONS\nEmail\nCompose\nCalendar\nChat\nCOMPONENTS\nCharts\nNEW\nForms\nUI Elements\nButtons\nTables\nBasic Table\nData Table\nMaps\nGoogle Map\nVector Map\nPages\nBlank\n404\n500\nSign In\nSign Up\nA\nAlice\nreal_alice_1791557530052@adminator.test\nLog out\nCommunications\nCompose\nNew message\nSearch...\n⌘K\n6\n0\nA\nCOMMUNICATIONS · MOCK MAILBOX\nCompose\n\nMock mailbox. Sending saves to your Sent folder; no email is delivered to recipients.\n\nReal internal mailbox\nBack to Email\nReset mock data\nSimulate next error\n\nReady\n\nNew message\nCancel\n\nFrom: real_alice_1791557530052@adminator.test\n\nTo\nCC\nBCC\nSubject\nMessage\nAttach files (up to 2 MB each)\nSave draft\nSend\n© 2026 · Designed by Colorlib\nv4.3.0\npreview build",
+      "buttons": [
+        "Reset mock data",
+        "Simulate next error",
+        "Cancel",
+        "Save draft",
+        "Send"
+      ],
+      "placeholderLinks": []
+    },
+    "calendar": {
+      "title": "Calendar · 2026 Redesign Preview",
+      "text": "Adminator\nv4.3.0 · preview\nWORKSPACE\nDashboard\nCOMMUNICATIONS\nEmail\nCompose\nCalendar\nChat\nCOMPONENTS\nCharts\nNEW\nForms\nUI Elements\nButtons\nTables\nBasic Table\nData Table\nMaps\nGoogle Map\nVector Map\nPages\nBlank\n404\n500\nSign In\nSign Up\nA\nAlice\nreal_alice_1791557530052@adminator.test\nLog out\nCommunications\nCalendar\nSearch...\n⌘K\n6\n0\nA\nFRIDAY · OCTOBER 9 · 2026\nOctober 2026\n\n6 saved events · Server calendar · Shared invitations and repeating series. Samples remain labeled.\n\nExport\nNew event\nQuick add event\nOctober 2026\n‹\n›\nS\nM\nT\nW\nT\nF\nS\n27\n28\n29\n30\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n21\n22\n23\n24\n25\n26\n27\n28\n29\n30\n31\n1\n2\n3\n4\n5\n6\n7\nSearch events\nMy calendars\nFilter category\nAll categories\npersonal (1)\nwork (3)\nteam (1)\ntravel (1)\nfinance (0)\nbirthday (0)\nholiday (0)\nUpcoming\nSample · all-day reminder\n2026-10-10\nSample · a long event title for testing wrapping and detailed event presentation on small screens\n2026. 10. 10. 오후 2:00:00\nSample · multi-day workshop\n2026-10-11\nShared recurring planning\n2026. 10. 16. 오전 9:00:00\nShared recurring planning\n2026. 10. 23. 오전 9:00:00\nSee all events\nOctober 2026\nToday\nDay\nWeek\nMonth\nAgenda\nNew event\nReset my calendar samples\n\nCalendar ready.\n\nSUN\nMON\nTUE\nWED\nTHU\nFRI\nSAT\n27\n28\n29\n30\n1\n2\n3\n4\n5\n6\n7\n8\n9\n9a\nShared recurring planning\n10a\nSample · planning meeting\n10:30a\nSample · overlapping review\n10\nSample · all-day reminder\n2p\nSample · a long event title for testing wrapping and detailed event presentation on small screens\n11\nSample · multi-day workshop\n12\n13\n14\n15\n16\n9a\nShared recurring planning\n17\n18\n19\n20\n21\n22\n23\n9a\nShared recurring planning\n24\n25\n26\n27\n28\n29\n30\n31\n© 2026 · Designed by Colorlib\nv4.3.0\npreview build",
+      "buttons": [
+        "\n              \n              Export\n            ",
+        "\n              \n              New event\n            ",
+        "Quick add event",
+        "‹",
+        "›",
+        "27",
+        "28",
+        "29",
+        "30",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "20",
+        "21",
+        "22",
+        "23",
+        "24",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29",
+        "30",
+        "31",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "Sample · all-day reminder2026-10-10",
+        "Sample · a long event title for testing wrapping and detailed event presentation on small screens2026. 10. 10. 오후 2:00:00",
+        "Sample · multi-day workshop2026-10-11",
+        "Shared recurring planning2026. 10. 16. 오전 9:00:00",
+        "Shared recurring planning2026. 10. 23. 오전 9:00:00",
+        "See all events",
+        "\n                    \n                  ",
+        "Today",
+        "\n                    \n                  ",
+        "Day",
+        "Week",
+        "Month",
+        "Agenda",
+        "\n                  \n                ",
+        "\n                  \n                  New event\n                ",
+        "Reset my calendar samples"
+      ],
+      "placeholderLinks": []
+    },
+    "chat": {
+      "title": "Chat · 2026 Redesign Preview",
+      "text": "Adminator\nv4.3.0 · preview\nWORKSPACE\nDashboard\nCOMMUNICATIONS\nEmail\nCompose\nCalendar\nChat\nCOMPONENTS\nCharts\nNEW\nForms\nUI Elements\nButtons\nTables\nBasic Table\nData Table\nMaps\nGoogle Map\nVector Map\nPages\nBlank\n404\n500\nSign In\nSign Up\nA\nAlice\nreal_alice_1791557530052@adminator.test\nLog out\nCommunications\nChat\nSearch...\n⌘K\n6\n0\nA\nCONVERSATIONS\nChat — team\n\nMock chat · Messages are saved to your account only. No messages are delivered to other users.\n\nSearch\nNew chat\nSwitch to real account chat\nConversations MOCK\nSearch rooms\nSA\nSample design room\n오후 11:52\nThis is a test fixture. Messages you send are saved only to your account, not delivered to another user.\nSA\nSample planning room\n오후 11:52\nThis is a test fixture. Messages you send are saved only to your account, not delivered to another user.\n1\nPR\nPrivate notes\nNo messages yet\nNew private mock room\nCreate room\nReset my chat samples\nSample design room · Account-only mock conversation\nSA\nThis is a test fixture. Messages you send are saved only to your account, not delivered to another user.\nSample participant ·\n2026. 10. 9. 오후 11:52:12\n· Sample message\nMessage · Enter sends, Shift+Enter adds a line\n\nChat ready · mock mode.\n\n© 2026 · Designed by Colorlib\nv4.3.0\npreview build",
+      "buttons": [
+        "\n              \n              Search\n            ",
+        "\n              \n              New chat\n            ",
+        "Switch to real account chat",
+        "SASample design room오후 11:52This is a test fixture. Messages you send are saved only to your account, not delivered to another user.",
+        "SASample planning room오후 11:52This is a test fixture. Messages you send are saved only to your account, not delivered to another user.1",
+        "PRPrivate notesNo messages yet",
+        "Create room",
+        "Reset my chat samples",
+        ""
+      ],
+      "placeholderLinks": []
+    },
+    "charts": {
+      "title": "Charts · 2026 Redesign Preview",
+      "text": "Adminator\nv4.3.0 · preview\nWORKSPACE\nDashboard\nCOMMUNICATIONS\nEmail\nCompose\nCalendar\nChat\nCOMPONENTS\nCharts\nNEW\nForms\nUI Elements\nButtons\nTables\nBasic Table\nData Table\nMaps\nGoogle Map\nVector Map\nPages\nBlank\n404\n500\nSign In\nSign Up\nA\nAlice\nreal_alice_1791557530052@adminator.test\nLog out\nComponents\nCharts\nSearch...\n⌘K\n6\n0\nA\nCOMPONENTS · 04\nCharts\n\nReal Chart.js charts wired to the 2026 tokens — line, bar, area, doughnut, radar, stacked. They re-render automatically on theme toggle.\n\nExport PNG\nNew chart\n\nTemplate example · Sample data and controls. These examples do not manage real account roles, profiles, sales or locations.\n\nREVENUE\nYear-over-year\nM\nQ\nY\nTOTAL · 2026\n$1.24M\nYOY\n+38.2%\nBEST MONTH\nDec\nFORECAST\n$2.1M\nACQUISITION\nChannels\nView all\nDEVICES\nSession split\n42K SESSIONS\nBENCHMARK\nvs competitor\nMRR BY PLAN\nQuarterly stack\nENGAGEMENT · LAST 30 DAYS\nSessions trend\nTODAY\n432\n7D AVG\n388\n© 2026 · Designed by Colorlib\nv4.3.0\npreview build",
+      "buttons": [
+        "\n              \n              Export PNG\n            ",
+        "\n              \n              New chart\n            ",
+        "M",
+        "Q",
+        "Y"
+      ],
+      "placeholderLinks": [
+        "View all "
+      ],
+      "actionEvidence": {
+        "action": "New chart",
+        "textChanged": false,
+        "openDialogs": 0
+      },
+      "download": "chart-sample.png"
+    },
+    "forms": {
+      "title": "Forms · 2026 Redesign Preview",
+      "text": "Adminator\nv4.3.0 · preview\nWORKSPACE\nDashboard\nCOMMUNICATIONS\nEmail\nCompose\nCalendar\nChat\nCOMPONENTS\nCharts\nNEW\nForms\nUI Elements\nButtons\nTables\nBasic Table\nData Table\nMaps\nGoogle Map\nVector Map\nPages\nBlank\n404\n500\nSign In\nSign Up\nA\nAlice\nreal_alice_1791557530052@adminator.test\nLog out\nComponents\nForms\nSearch...\n⌘K\n6\n0\nA\nCOMPONENTS · 03\nForms\n\nInputs, selects, textareas, switches, checkboxes, validation states — and a working \"Profile settings\" form to show how it all comes together.\n\nCancel\nSave changes\n\nTemplate example · Sample data and controls. These examples do not manage real account roles, profiles, sales or locations.\n\nLIVE EXAMPLE\nProfile settings\nDRAFT\nFirst name\n*\nLast name\n*\nWork email\nUsed for sign-in and account notifications.\nRole\nOwner\nAdmin\nEditor\nViewer\nTimezone\nUTC\nEurope/Riga\nAmerica/New_York\nAsia/Tokyo\nWebsite\nhttps://\nShort bio\nUp to 280 characters. Markdown supported.\nNotifications\n02\nWeekly product updates\nMentions and replies\nMarketing newsletter\nTwo-factor auth reminders\nAll changes saved automatically\nCancel\nSave profile\nINPUTS\nStates\nDefault\nFilled\nDisabled\nWith icon\nInvalid\nPlease enter a valid email address.\nINPUTS\nSelect & textarea\nCountry\nLatvia\nUnited States\nGermany\nJapan\nDisabled select\nLocked plan\nDescription\nCHOICES\nCheckboxes & radios\nSubscribe to changelog\nGet product tips weekly\nSMS notifications (coming soon)\nPlan\nStarter — $0 / mo\nPro — $19 / mo\nTeam — $49 / mo\nCHOICES\nToggle switches\nEnable two-factor auth\nPublic profile\nAuto-save drafts every 30 seconds\nBeta features (locked)\nAll changes save instantly — no submit button needed.\n© 2026 · Designed by Colorlib\nv4.3.0\npreview build",
+      "buttons": [
+        "Cancel",
+        "Save changes",
+        "Cancel",
+        "Save profile"
+      ],
+      "placeholderLinks": [],
+      "formCount": 1
+    },
+    "buttons": {
+      "title": "Buttons · 2026 Redesign Preview",
+      "text": "Adminator\nv4.3.0 · preview\nWORKSPACE\nDashboard\nCOMMUNICATIONS\nEmail\nCompose\nCalendar\nChat\nCOMPONENTS\nCharts\nNEW\nForms\nUI Elements\nButtons\nTables\nBasic Table\nData Table\nMaps\nGoogle Map\nVector Map\nPages\nBlank\n404\n500\nSign In\nSign Up\nA\nAlice\nreal_alice_1791557530052@adminator.test\nLog out\nComponents\nButtons\nSearch...\n⌘K\n6\n0\nA\nCOMPONENTS · 01\nButtons\n\nSolid, soft, outline, and ghost variants — plus sizes, icons, button groups, and loading states. All theme-aware.\n\nTemplate example · Sample data and controls. These examples do not manage real account roles, profiles, sales or locations.\n\nSTYLE · SOLID\nFilled buttons\nPrimary\nSecondary\nSuccess\nWarning\nDanger\nInfo\nGhost\nSTYLE · SOFT\nSoft / tonal buttons\nPrimary\nSuccess\nWarning\nDanger\nInfo\nSTYLE · OUTLINE\nOutline buttons\nPrimary\nSuccess\nDanger\nGhost\nSIZING\nThree sizes\nSmall\nDefault\nLarge\nSmall\nDefault\nLarge\nICONS\nLeading & trailing\nNew\nContinue\nAdd\nGROUP\nSegmented control\nDay\nWeek\nMonth\nYear\nSTATE\nDisabled & loading\nDisabled\nDisabled\nSaving...\nLoading\n© 2026 · Designed by Colorlib\nv4.3.0\npreview build",
+      "buttons": [
+        "Primary",
+        "Secondary",
+        "Success",
+        "Warning",
+        "Danger",
+        "Info",
+        "Ghost",
+        "Primary",
+        "Success",
+        "Warning",
+        "Danger",
+        "Info",
+        "Primary",
+        "Success",
+        "Danger",
+        "Ghost",
+        "Small",
+        "Default",
+        "Large",
+        "Small",
+        "Default",
+        "Large",
+        " New",
+        "Continue ",
+        " Add",
+        "",
+        "\n                \n              ",
+        "Day",
+        "Week",
+        "Month",
+        "Year",
+        "",
+        "",
+        "",
+        "",
+        "Disabled",
+        "Disabled",
+        "\n                \n                Saving...\n              ",
+        "\n                \n                Loading\n              "
+      ],
+      "placeholderLinks": []
+    },
+    "ui": {
+      "title": "UI Elements · 2026 Redesign Preview",
+      "text": "Adminator\nv4.3.0 · preview\nWORKSPACE\nDashboard\nCOMMUNICATIONS\nEmail\nCompose\nCalendar\nChat\nCOMPONENTS\nCharts\nNEW\nForms\nUI Elements\nButtons\nTables\nBasic Table\nData Table\nMaps\nGoogle Map\nVector Map\nPages\nBlank\n404\n500\nSign In\nSign Up\nA\nAlice\nreal_alice_1791557530052@adminator.test\nLog out\nComponents\nUI Elements\nSearch...\n⌘K\n6\n0\nA\nCOMPONENTS · 02\nUI elements\n\nAlerts, badges, progress bars, spinners, tabs, accordions, modals — every primitive a screen needs, theme-aware out of the box.\n\nTemplate example · Sample data and controls. These examples do not manage real account roles, profiles, sales or locations.\n\nFEEDBACK\nAlerts\nNew release · v3.1.0\nTwo new components shipped today — segmented control and tonal buttons.\nAll checks passed\nCI completed in 1m 42s · 0 failing tests · ready to merge.\nStorage 92% full\nYou're approaching your plan limit. Upgrade to keep auto-backups running.\nPayment failed\nWe couldn't charge your card ending in •• 4242. Update your billing details to continue.\nMaintenance window scheduled for Saturday 02:00–03:00 UTC.\nINDICATORS\nBadges\nDefault\nPrimary\nSuccess\nWarning\nDanger\nInfo\nPurple\nSolid\nLive\nOnline\nIdle\nDown\nIDENTITY\nAvatar group\nJD\nSK\nLR\nMD\nPV\n+8\nJD\nSK\nLR\nMD\nSTATUS\nProgress bars\nStorage\n7.4 / 15 GB\nAPI quota\n82%\nFailure rate\n3%\nProfile completion\n100%\nThin · 4px\nSTATUS\nSpinners\nSM\nDEFAULT\nLG\nSUCCESS\nDANGER\nNAVIGATION\nTabs\nOverview\nActivity 12\nSettings\nBilling\nThe active tab uses the underline + primary color treatment. Pills variant available below.\nDay\nWeek\nMonth\nYear\nDISCLOSURE\nAccordion\nHow does the dark mode work?\nTheme is stored in localStorage and applied via a data-theme attribute on <html>. CSS variables flip in one transition. No flash on load thanks to the early-paint script.\nCan I customize the brand color?\nYes — change the --primary token in _tokens.scss. All components reference it via var(--primary), so a single edit propagates everywhere.\nIs jQuery required?\nNo — the 2026 design system is 100% vanilla JS with native classList / querySelector / IntersectionObserver.\nOVERLAYS\nModal\nDelete project?\nOnce deleted, the Northwind dashboard and its 142 saved views can\\'t be recovered. Anyone with shared links will lose access immediately.\nCancel\nDelete project\nHINTS\nTooltips\nLast sync 3 min ago\nHover me\n⌘ + Shift + P\nQuick command\nConnected · Postgres 16.2\nLive\n© 2026 · Designed by Colorlib\nv4.3.0\npreview build",
+      "buttons": [
+        "",
+        "",
+        "",
+        "",
+        "\n                  How does the dark mode work?\n                  \n                ",
+        "\n                  Can I customize the brand color?\n                  \n                ",
+        "\n                  Is jQuery required?\n                  \n                ",
+        "",
+        "Cancel",
+        "Delete project",
+        "Hover me",
+        "Quick command"
+      ],
+      "placeholderLinks": [
+        "Overview",
+        "Activity 12",
+        "Settings",
+        "Billing",
+        "Day",
+        "Week",
+        "Month",
+        "Year"
+      ],
+      "accordionOpened": false
+    },
+    "basic-table": {
+      "title": "Basic Table · 2026 Redesign Preview",
+      "text": "Adminator\nv4.3.0 · preview\nWORKSPACE\nDashboard\nCOMMUNICATIONS\nEmail\nCompose\nCalendar\nChat\nCOMPONENTS\nCharts\nNEW\nForms\nUI Elements\nButtons\nTables\nBasic Table\nData Table\nMaps\nGoogle Map\nVector Map\nPages\nBlank\n404\n500\nSign In\nSign Up\nA\nAlice\nreal_alice_1791557530052@adminator.test\nLog out\nComponents\nTables\nBasic\nSearch...\n⌘K\n6\n0\nA\nCOMPONENTS · TABLES\nBasic table\n\nA clean, theme-aware table — striped, hover-aware, with status badges and trend indicators.\n\nExport CSV\n\nTemplate example · Sample data and controls. These examples do not manage real account roles, profiles, sales or locations.\n\nSALES · APRIL 2026\nMonthly orders\n14 RECORDS\nORDER\tCUSTOMER\tPLAN\tSTATUS\tDATE\tAMOUNT\n#1042\tSara Kim\tPro · annual\tActive\tApr 22\t$228\n#1041\tLeo Reyes\tTeam · monthly\tActive\tApr 22\t$49\n#1040\tMira Doe\tPro · annual\tPast due\tApr 20\t$228\n#1039\tAnya Trent\tFree\tActive\tApr 19\t$0\n#1038\tPaolo Vega\tTeam · monthly\tActive\tApr 18\t$49\n#1037\tJess Choi\tPro · monthly\tCancelled\tApr 17\t−$19\n#1036\tRita Gomez\tPro · annual\tActive\tApr 17\t$228\n#1035\tMarcus Wei\tTeam · annual\tActive\tApr 16\t$540\nShowing 8 of 14 orders\nView all\nSTRIPED VARIANT\nServer status\nSERVICE\tREGION\tLATENCY\tUPTIME · 30D\tSTATUS\napi-gateway\teu-west-1\t42 ms\t\n\tUp\npostgres-primary\teu-west-1\t8 ms\t\n\tUp\npostgres-replica\tus-east-2\t94 ms\t\n\tDegraded\nredis-cache\teu-west-1\t2 ms\t\n\tUp\nworker-pool\teu-west-1\t—\t\n\tDown\n© 2026 · Designed by Colorlib\nv4.3.0\npreview build",
+      "buttons": [
+        "\n              \n              Export CSV\n            "
+      ],
+      "placeholderLinks": [
+        "View all "
+      ],
+      "download": "basic-table-samples.csv"
+    },
+    "datatable": {
+      "title": "Data Table · 2026 Redesign Preview",
+      "text": "Adminator\nv4.3.0 · preview\nWORKSPACE\nDashboard\nCOMMUNICATIONS\nEmail\nCompose\nCalendar\nChat\nCOMPONENTS\nCharts\nNEW\nForms\nUI Elements\nButtons\nTables\nBasic Table\nData Table\nMaps\nGoogle Map\nVector Map\nPages\nBlank\n404\n500\nSign In\nSign Up\nA\nAlice\nreal_alice_1791557530052@adminator.test\nLog out\nComponents\nTables\nData\nSearch...\n⌘K\n6\n0\nA\nCOMPONENTS · TABLES\nData table\n\nSortable columns, pagination, search, row selection, and inline actions — built without DataTables, vanilla JS only.\n\nExport\nInvite user\n\nTemplate example · Sample data and controls. These examples do not manage real account roles, profiles, sales or locations.\n\nFilter\n2\nAll roles\nAdmin\nEditor\nViewer\nAll status\nActive\nPending\nInactive\n\tUSER \n\tROLE \n\tDEPARTMENT\tSTATUS\tID\tLAST ACTIVE \n\t\n\n\t\nSK\nSara Kim\nsara.kim@northwind.com\n\tAdmin\tEngineering\tActive\tUSR-1042\tApr 22 · 09:42\t\n\n\n\t\nLR\nLeo Reyes\nleo@adminator.app\n\tAdmin\tEngineering\tActive\tUSR-1041\tApr 22 · 08:18\t\n\n\n\t\nMD\nMira Doe\nmira.doe@northwind.com\n\tEditor\tDesign\tActive\tUSR-1040\tApr 21 · 17:32\t\n\n\n\t\nAT\nAnya Trent\nanya@studio.io\n\tEditor\tMarketing\tActive\tUSR-1039\tApr 21 · 14:08\t\n\n\n\t\nPV\nPaolo Vega\np.vega@northwind.com\n\tViewer\tSales\tPending\tUSR-1038\tApr 21 · 11:54\t\n\n\n\t\nJC\nJess Choi\nj.choi@studio.io\n\tEditor\tDesign\tActive\tUSR-1037\tApr 20 · 19:21\t\n\n\n\t\nRG\nRita Gomez\nrita@northwind.com\n\tAdmin\tOperations\tActive\tUSR-1036\tApr 20 · 09:00\t\n\n\n\t\nMW\nMarcus Wei\nm.wei@northwind.com\n\tOwner\tExecutive\tActive\tUSR-1035\tApr 19 · 22:14\t\n\n\n\t\nYT\nYuki Tanaka\ny.tanaka@studio.io\n\tEditor\tEngineering\tInactive\tUSR-1034\tApr 18 · 13:47\t\n\n\n\t\nCB\nCarla Brun\nc.brun@northwind.com\n\tViewer\tFinance\tActive\tUSR-1033\tApr 18 · 10:30\t\n\n\n\t\nDP\nDiego Pinto\nd.pinto@studio.io\n\tEditor\tDesign\tActive\tUSR-1032\tApr 17 · 16:55\t\n\n\n\t\nHB\nHannah Bell\nh.bell@northwind.com\n\tAdmin\tEngineering\tActive\tUSR-1031\tApr 17 · 09:12\t\n\n\n\t\nOS\nOmar Saleh\no.saleh@studio.io\n\tViewer\tSales\tPending\tUSR-1030\tApr 16 · 14:20\t\n\n\n\t\nIL\nIris Larsen\ni.larsen@northwind.com\n\tEditor\tMarketing\tActive\tUSR-1029\tApr 16 · 11:08\t\n\n\n\t\nTP\nTom Park\nt.park@studio.io\n\tEditor\tEngineering\tActive\tUSR-1028\tApr 15 · 17:42\t\nShowing 1–15 of 142\n15 per page\n25 per page\n50 per page\n100 per page\n1\n2\n3\n…\n10\n© 2026 · Designed by Colorlib\nv4.3.0\npreview build",
+      "buttons": [
+        "\n              \n              Export\n            ",
+        "\n              \n              Invite user\n            ",
+        "\n                  \n                  Filter 2\n                ",
+        "\n                  \n                ",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "\n                  \n                ",
+        "1",
+        "2",
+        "3",
+        "…",
+        "10",
+        "\n                  \n                "
+      ],
+      "placeholderLinks": [],
+      "searchEvidence": {
+        "before": 15,
+        "after": 0
+      },
+      "actionEvidence": {
+        "action": "Invite user",
+        "textChanged": false,
+        "openDialogs": 0
+      },
+      "download": "datatable-samples.csv"
+    },
+    "google-maps": {
+      "title": "Google Maps · 2026 Redesign Preview",
+      "text": "Adminator\nv4.3.0 · preview\nWORKSPACE\nDashboard\nCOMMUNICATIONS\nEmail\nCompose\nCalendar\nChat\nCOMPONENTS\nCharts\nNEW\nForms\nUI Elements\nButtons\nTables\nBasic Table\nData Table\nMaps\nGoogle Map\nVector Map\nPages\nBlank\n404\n500\nSign In\nSign Up\nA\nAlice\nreal_alice_1791557530052@adminator.test\nLog out\nComponents\nMaps\nGoogle\nSearch...\n⌘K\n6\n0\nA\nCOMPONENTS · MAPS\nGoogle maps\n\nEmbedded Google Map of our HQ in Riga — drop in any place ID or coordinate to point it elsewhere.\n\nOpen in Google Maps\nAdd location\n\nTemplate example · Sample data and controls. These examples do not manage real account roles, profiles, sales or locations.\n\nADDRESS\nHQ · Riga\nOPEN\nAdminator OÜ\nBrīvības iela 99, Rīga, LV-1011, Latvia\nHours\nMon–Fri · 09:00 — 18:00 EET\nPhone\n+371 6755 5555\nEmail\nhello@adminator.app\nALL OFFICES\nOther locations\nView all\nCITY\tTEAM\tSTATUS\nRiga, LV\tHQ · 32\tOpen\nLondon, UK\tSales · 8\tOpen\nSan Francisco, US\tEng · 14\tOpen\nTokyo, JP\tSupport · 6\tHybrid\nSão Paulo, BR\t—\tComing Q3\n© 2026 · Designed by Colorlib\nv4.3.0\npreview build",
+      "buttons": [
+        "\n              \n              Add location\n            "
+      ],
+      "placeholderLinks": [
+        "View all "
+      ],
+      "actionEvidence": {
+        "action": "Add location",
+        "textChanged": false,
+        "openDialogs": 0
+      }
+    },
+    "vector-maps": {
+      "title": "Vector Maps · 2026 Redesign Preview",
+      "text": "Adminator\nv4.3.0 · preview\nWORKSPACE\nDashboard\nCOMMUNICATIONS\nEmail\nCompose\nCalendar\nChat\nCOMPONENTS\nCharts\nNEW\nForms\nUI Elements\nButtons\nTables\nBasic Table\nData Table\nMaps\nGoogle Map\nVector Map\nPages\nBlank\n404\n500\nSign In\nSign Up\nA\nAlice\nreal_alice_1791557530052@adminator.test\nLog out\nComponents\nMaps\nVector\nSearch...\n⌘K\n6\n0\nA\nCOMPONENTS · MAPS\nVector map\n\nReal jsvectormap rendered with the 2026 tokens — interactive markers for every region you operate in. Re-themes automatically.\n\nExport SVG\nAdd region\n\nTemplate example · Sample data and controls. These examples do not manage real account roles, profiles, sales or locations.\n\nWORLD · 10 MARKERS\nSessions by city\nLIVE · 2,184 ACTIVE\nRiga\nNew York\nSan Francisco\nLondon\nBerlin\nTokyo\nSydney\nSão Paulo\nCape Town\nDubai\n+\n−\nTOP CITIES\nActive sessions\nRiga\n486\n+12%\nLondon\n412\n+8%\nNew York\n380\nflat\nBerlin\n316\n+4%\nTokyo\n252\n−3%\nSan Francisco\n198\n+22%\nCONTINENT SPLIT\nGeographic mix\nEurope\n52%\n↑\n1,134\nsessions\nAmericas\n28%\n↑\n612\nsessions\nAsia-Pac\n15%\n↑\n328\nsessions\nOther\n5%\n↓\n110\nsessions\n© 2026 · Designed by Colorlib\nv4.3.0\npreview build",
+      "buttons": [
+        "\n              \n              Export SVG\n            ",
+        "\n              \n              Add region\n            "
+      ],
+      "placeholderLinks": [],
+      "actionEvidence": {
+        "action": "Add region",
+        "textChanged": false,
+        "openDialogs": 0
+      },
+      "download": "map-sample.svg"
+    },
+    "blank": {
+      "title": "Blank · 2026 Redesign Preview",
+      "text": "Adminator\nv4.3.0 · preview\nWORKSPACE\nDashboard\nCOMMUNICATIONS\nEmail\nCompose\nCalendar\nChat\nCOMPONENTS\nCharts\nNEW\nForms\nUI Elements\nButtons\nTables\nBasic Table\nData Table\nMaps\nGoogle Map\nVector Map\nPages\nBlank\n404\n500\nSign In\nSign Up\nA\nAlice\nreal_alice_1791557530052@adminator.test\nLog out\nPages\nBlank\nSearch...\n⌘K\n6\n0\nA\nFRIDAY · OCTOBER 9 · 2026\nBlank canvas\n\nA starter page with the 2026 shell, theme tokens, and animations all wired in. Drop your content into the empty card below — the rest is taken care of.\n\nDuplicate\nAdd section\n\nTemplate example · Sample data and controls. These examples do not manage real account roles, profiles, sales or locations.\n\nEmpty card\nUse this as a clean starting point for any new view — KPIs, tables, charts, anything.\n© 2026 · Designed by Colorlib\nv4.3.0\npreview build",
+      "buttons": [
+        "\n              \n              Duplicate\n            ",
+        "\n              \n              Add section\n            "
+      ],
+      "placeholderLinks": [],
+      "actionEvidence": {
+        "action": "Add section",
+        "textChanged": false,
+        "openDialogs": 0
+      }
+    },
+    "signin": {
+      "title": "Sign in · 2026 Redesign Preview",
+      "text": "Adminator\n2026 · V3.1 PREVIEW\nThe dashboard your team actually wants to open.\n\nFaster builds, cleaner tokens, and a design system that scales from a single chart to a 12-screen ops cockpit.\n\n\"We replaced four bespoke admin tools with one Adminator workspace. The dark mode alone earned its keep.\"\nSK\nSara Kim · Head of Engineering, Northwind\n© 2026\nBUILT IN RIGA, LV\nBack to home\nNew here? Create account\nWelcome back\n\nSign in to your Adminator workspace to pick up where you left off.\n\nUsername or internal email\nPassword\n\nSign in\nEXTERNAL SIGN-IN IS NOT CONFIGURED\nGoogle\nGitHub\nApple\nBy signing in you agree to our Terms and Privacy Policy.",
+      "buttons": [
+        "Sign in"
+      ],
+      "placeholderLinks": [
+        "Terms",
+        "Privacy Policy"
+      ]
+    },
+    "signup": {
+      "title": "Sign up · 2026 Redesign Preview",
+      "text": "Adminator\n2026 · V3.1 PREVIEW\nThe dashboard your team actually wants to open.\n\nFaster builds, cleaner tokens, and a design system that scales from a single chart to a 12-screen ops cockpit.\n\n\"We replaced four bespoke admin tools with one Adminator workspace. The dark mode alone earned its keep.\"\nSK\nSara Kim · Head of Engineering, Northwind\n© 2026\nBUILT IN RIGA, LV\nBack to home\nAlready have an account? Sign in\nCreate your account\n\nCreate an internal account. Your @adminator.test address is for mock mail only.\n\nUsername\n3–32 letters, numbers or underscores, starting with a letter. Case-insensitive.\nInternal email: username@adminator.test\nDisplay Name\nPassword\n12–128 characters.\nConfirm Password\n\nCreate account\nEXTERNAL SIGN-IN IS NOT CONFIGURED\nGoogle\nGitHub\nApple\nAlready a customer? Sign in",
+      "buttons": [
+        "Create account"
+      ],
+      "placeholderLinks": []
+    }
+  },
+  "scenarios": [
+    "Alice/Bob live send + reply + read receipts + reload + socket recovery + Eve denied",
+    "Calendar recurring shared event + attendee search + acceptance + search + Eve denied",
+    "Internal email browser composition + real delivery + Bob inbox and reader"
+  ],
+  "errors": [],
+  "mailHooks": [
+    "current-user-name",
+    "current-user-email",
+    "logout",
+    "account-menu-logout",
+    "email-mode",
+    "refresh",
+    "compose",
+    "email-status",
+    "email-error",
+    "mailbox",
+    "rail-compose",
+    "folder-inbox",
+    "folder-starred",
+    "folder-snoozed",
+    "folder-sent",
+    "folder-drafts",
+    "folder-spam",
+    "folder-trash",
+    "folder-archive",
+    "label-Work",
+    "label-Team",
+    "label-Finance",
+    "label-Invoices",
+    "label-Travel",
+    "search-mail",
+    "read-filter",
+    "star-filter",
+    "label-filter",
+    "sort-order",
+    "categories",
+    "category-all",
+    "category-primary",
+    "category-updates",
+    "category-promotions",
+    "email-list",
+    "empty-mailbox",
+    "previous-page",
+    "next-page",
+    "email-detail",
+    "compose-dialog",
+    "compose-form",
+    "cancel-compose",
+    "compose-to",
+    "compose-cc",
+    "compose-bcc",
+    "compose-subject",
+    "compose-body",
+    "compose-files",
+    "compose-attachments",
+    "compose-error",
+    "save-draft",
+    "send-email"
+  ]
+}

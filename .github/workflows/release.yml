@@ -1,0 +1,91 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [22.x]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v5
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linting
+        run: npm run lint
+
+      - name: Run tests
+        run: npm run test:run
+
+      # `zip -j` junks paths, which flattened assets/static/** to the archive
+      # root and broke every relative asset reference in the released zips.
+      # Zipping from inside dist/ preserves the directory structure.
+      - name: Build minified release
+        run: |
+          npm run release:minified
+          (cd dist && zip -r ../static_minified.zip .)
+
+      - name: Build unminified release
+        run: |
+          npm run release:unminified
+          (cd dist && zip -r ../static_unminified.zip .)
+
+      - name: Verify release archive structure
+        run: |
+          unzip -l static_minified.zip | grep -q 'assets/static/' \
+            || { echo "::error::Release zip lost its assets/static/ paths"; exit 1; }
+          unzip -l static_minified.zip | grep -q 'index.html' \
+            || { echo "::error::Release zip is missing index.html"; exit 1; }
+
+      - name: Get version
+        id: version
+        run: echo "version=v$(./ci/getVersion.sh)" >> $GITHUB_OUTPUT
+
+      # Not every push to master is a release — docs and CI commits land here
+      # too. Skip rather than fail when the tag already exists, so infra
+      # commits don't leave red runs on master. merge.yml keeps the hard
+      # failure, so a PR that is meant to ship must still bump the version.
+      - name: Check whether this version is already released
+        id: check
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          case "$VERSION" in
+            v[0-9]*.[0-9]*.[0-9]*) ;;
+            *) echo "::error::'$VERSION' is not a vMAJOR.MINOR.PATCH tag."; exit 1 ;;
+          esac
+          if [ -n "$(git ls-remote --tags origin "$VERSION")" ]; then
+            echo "::notice::$VERSION is already released — skipping the release step."
+            echo "should_release=false" >> $GITHUB_OUTPUT
+          else
+            echo "::notice::$VERSION is new — cutting a release."
+            echo "should_release=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create GitHub Release
+        if: steps.check.outputs.should_release == 'true'
+        uses: softprops/action-gh-release@v3
+        with:
+          name: ${{ steps.version.outputs.version }}
+          tag_name: ${{ steps.version.outputs.version }}
+          files: |
+            static_minified.zip
+            static_unminified.zip
+          fail_on_unmatched_files: true
+          prerelease: false
+          draft: false
+          generate_release_notes: true

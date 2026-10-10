@@ -1,0 +1,6 @@
+{
+  "chat_rooms": true,
+  "chat_messages": true,
+  "calendar_events": true,
+  "internal_mail": true
+}

@@ -1,0 +1,71 @@
+.auth-switch {
+  width: 100%;
+  margin-top: 12px;
+}
+
+.account-list {
+  max-height: 320px;
+  overflow-y: auto;
+  margin: 16px 0;
+}
+
+.account-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.account-choice {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 8px;
+  text-align: left;
+  color: var(--t-base);
+  background: var(--bg-muted);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.account-choice[aria-pressed='true'] {
+  border-color: var(--primary);
+}
+
+.account-avatar {
+  display: grid;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--primary);
+  background: var(--bg-card);
+}
+
+.account-details {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.account-details small {
+  color: var(--t-muted);
+}
+
+.account-dialog form[hidden] {
+  display: none;
+}
+
+.account-dialog [role='alert']:empty {
+  display: none;
+}
+
+.account-dialog :focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}

@@ -1,0 +1,14 @@
+html[data-auth='checking'] .shell { visibility: hidden; }
+.auth-gate { position: fixed; inset: 20% 10% auto; padding: 24px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; }
+[data-auth-error] { color: var(--danger); font-size: 13px; }
+[data-auth-error]:empty { display: none; }
+[data-auth-status] { color: var(--t-muted); font-size: 13px; }
+[data-auth-form] :disabled { opacity: 0.6; cursor: wait; }
+[data-auth-form] :focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+.social-btn[aria-disabled='true'] { opacity: 0.5; cursor: default; }
+.auth-logout { width: 100%; margin-top: 12px; }
+.workspace-role { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.workspace-name { overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 1100px) and (min-width: 769px) {
+  .auth-logout { padding: 4px; font-size: 10px; }
+}
