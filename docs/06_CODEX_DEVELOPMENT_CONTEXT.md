@@ -1,5 +1,21 @@
 # Codex 후속 개발 기술 맥락
 
+
+## 2026-10-12 버그 명세 체계 개편 — 현재 주입 계획
+
+현재 단계는 정상 기능 Baseline을 바탕으로 한 **주입 명세 준비 완료, 실제 주입 미착수**다. 현재 의도적으로 구현된 버그는 0건이다. 이전 QA 수정·테스트 성공 기록은 당시 증거이며 이번 문서 작업에서 재실행하지 않았다. 현재 정상 기준의 정확한 Git SHA·배포 코드·격리 데이터 버전은 다음 구현 작업 시작 전 고정한다.
+
+현행 기준은 [bugDocs/bugs.md](../bugDocs/bugs.md) 및 [기능](../bugDocs/functional.md)·[입력 검증](../bugDocs/validation.md)·[라우팅](../bugDocs/routing.md)·[UI](../bugDocs/ui.md)의 Markdown 명세다. 공통 기본 정보와 10개 설명 절, 유형별 확인 항목, 재사용 템플릿을 사용한다. F1/N1/U1은 미구현 작성 예시이며 V1~V5는 과거 프로젝트에서 옮긴 미구현 사례다. ID 대장은 예시도 예약하며 삭제 ID를 재사용하지 않는다. 과거 BUG ID·V ID는 별도 출처 메타데이터다.
+
+향후 개별 Git 브랜치에서 명세된 결함을 소스에 직접 구현하고 별도 통합 브랜치에서 모든 결함을 재현·회귀 검증한다. 정상/결함 버전은 Git SHA·빌드/배포 코드로 구분한다. 버그 토글·관리 UI·공개 Ground Truth API를 만들지 않는다. 기존 bugDocs TypeScript 7개는 외부 실행 참조를 발견하지 못한 과거 참고 자료로 그대로 보존했다. 이번에는 문서만 변경했고 기능 코드·DB·dist·브랜치는 변경하지 않았다.
+
+기술 제약: JS/HTML 문서 navigation이며 SPA/과거 React Checkout·ResetPassword를 전제하지 않는다. UI·API·저장 결과를 함께 확인하고 계정 격리·CSRF·revision/CAS·idempotency·shared/private 접근 계약을 불필요하게 훼손하지 않는다. Git은 DB 상태를 되돌리지 않으므로 격리 fixture 사본과 별도 데이터 버전을 사용한다. 개발 서버의 auto migration과 build의 dist 정리에 주의한다. 운영/성능/외부 메일 등의 기존 제한은 그대로 남는다.
+
+Ground Truth는 평가자·개발자 전용이며 미구현 사례는 실제 평가 정답 집합에서 제외한다. 기본 정적 root는 Webpack src/dist 및 FastAPI dist이고 bugDocs는 외부에 있다. copyPlugin/entry에서 문서 포함 참조가 없으며 backend 경로 경계 검사를 확인했다. 실제 배포 root 재정의·proxy·문서 사이트 권한·HTTP 노출은 별도 미검증이다. 저장소 루트를 정적으로 제공하거나 bugDocs를 공개 자산에 복사하지 않는다.
+
+다음 Codex는 이 문서와 bugDocs 가이드 → 해당 유형 명세 → 기능 기술 문서/API/실제 소스 → 관련 테스트를 읽는다. 정상 SHA·동작·데이터를 확인한 뒤 현재 기능에 맞는 명세를 확정한다. 사람용 docsForHuman은 필수 개발 맥락으로 사용하지 않는다. 이전 문서의 토글 플랫폼 제안은 역사 기록이며 현행 개발 방식으로 채택하지 않는다.
+
+
 최신 기준: **2026-10-12 QA 수정·회귀 완료**. 향후 Codex는 **이 문서→[08 인계](08_WORK_SESSION_HANDOFF.md)→[08 수정 보고](08_QA_REMEDIATION_REPORT.md)·[09 실행 결과](09_POST_FIX_REGRESSION_REPORT.md)→기능 문서·실제 코드** 순으로 읽는다. [07 사람용 요약](07_PROJECT_OVERVIEW_FOR_HUMANS.md)와 docsForHuman은 주요 개발 맥락을 대신하지 않는다.
 
 이 세션의 승인 범위는 첨부된 QA-001~014 실제 코드 수정·비파괴 migration·통합 회귀·문서 갱신이다. 이전 검수 전용 작업과 구별한다. 최초01~05 검수 보고는 수정 이전 역사적 증거이며 덮어쓰지 않았다. 아래 접힌 과거06 문서의 “초안CAS 없음”, “migration0005”, “14건 미해결”, “code/DB 미수정”은 **수정 이전 상태**다.
@@ -88,7 +104,7 @@ JS 경로는 `src/assets/scripts/2026`이다. 상태는 controller closure·serv
 
 ## 버그시스템·후속작업원칙
 
-현재의도적으로삽입된제품버그는없다. MockEmailApi.failNext/UI Simulate next error·dev expire·Playwrightroute503/abort는테스트장치이며독립다중bugregistry/toggle/조합플랫폼이아니다. G-01/G-02는사용자제외범위라구현하지않았다. 버그플랫폼은별도목표·defaultOFF·충돌그룹·cleanup·격리DB정책확정후개발한다.
+현재 의도적으로 삽입된 제품 버그는 없다. MockEmailApi.failNext/UI Simulate next error·dev expire·Playwright route503/abort는 기존 테스트 장치다. G-01/G-02는 이전 QA 세션 제외 범위였다. 현행 버그 주입 계획은 아래/상단의 2026-10-12 명세 개편 절과 bugDocs 가이드를 따른다. 런타임 토글 플랫폼은 개발하지 않는다.
 
 다음작업순서:실제운영목표/자료량확정→현재회귀기준으로CI실행→운영TLS·실기기/접근성→큰자료Calendar렌더링/JSON검색·count/반복poll측정→승인된구조개선. shared접근정책이나Bcc/Labelcount를성능을이유로변경하지않는다. 새로운소스수정후에는대상검사와관련통합회귀·build/dist일치를확인하고06/07/08handoff를갱신한다. 문서보다코드와Git을확인하고사용자dirty변경을보존한다.
 

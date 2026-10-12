@@ -1,5 +1,10 @@
 # Adminator 개발 문서
 
+## 버그 명세 준비 현황 (2026-10-12)
+
+정상 Baseline 보존·Git 기반 직접 주입을 위한 Markdown 체계를 정리했다. 실제 주입은 미착수이며 의도적 구현 버그는 0건이다. [명세 가이드](../bugDocs/bugs.md) → 유형별 문서 → [최신 Codex 기술 맥락](06_CODEX_DEVELOPMENT_CONTEXT.md)의 순서로 주입 작업을 준비한다. 과거 토글 제안은 현행 계획이 아니다. 기존 QA 검증 수치는 해당 세션 기록이며 이번 문서 작업에서 재실행하지 않았다.
+
+
 ## 최신 개발 진입점 (2026-10-12 수정 완료)
 
 [06 기술 맥락](06_CODEX_DEVELOPMENT_CONTEXT.md) → [08 작업 인계](08_WORK_SESSION_HANDOFF.md) → [08 QA 수정 결과](08_QA_REMEDIATION_REPORT.md)·[09 수정 후 회귀](09_POST_FIX_REGRESSION_REPORT.md)를 먼저 읽는다. QA14건 수정·프론트171/백엔드100·브라우저13종 통과, 개발 DB head0007·기존 데이터 보존.01~05는 수정 전 QA 역사 기록이다.07은 사람용 요약이며 Codex 개발 맥락을 대체하지 않는다. 아래 이전 문서 목록은 구조·기능 참조이며 최신 계약 변경은 현재06·기능 문서를 따른다.
