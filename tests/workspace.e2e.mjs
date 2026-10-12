@@ -8,8 +8,9 @@ try {
   browser = await chromium.launch({ headless: true, channel: 'chrome' }); await mkdir('screenshots', { recursive: true });
   for (const [name, viewport] of [['desktop', { width: 1600, height: 1000 }], ['mobile', { width: 390, height: 844 }]]) {
     const context = await browser.newContext({ viewport }); await createTestAccount(context, server.base, `workspace_${name}`, `Workspace ${name}`);
-    const page = await context.newPage(); page.on('pageerror', error => errors.push(error.message)); page.on('requestfailed', request => { if (request.url().startsWith(server.base)) failed.push(request.url()); });
-    page.on('console', message => { if (message.type() === 'error' && !/status of (422|503)/.test(message.text())) errors.push(`Console: ${message.text()}`); });
+    await context.route('https://fonts.googleapis.com/**',route=>route.abort()); await context.route('https://fonts.gstatic.com/**',route=>route.abort());
+    const page = await context.newPage(); page.on('dialog',dialog=>dialog.accept()); page.on('pageerror', error => errors.push(error.message)); page.on('requestfailed', request => { if (request.url().startsWith(server.base)) failed.push(request.url()); });
+    page.on('console', message => { if (message.type() === 'error' && !/status of (422|503)|net::ERR_FAILED/.test(message.text())) errors.push(`Console: ${message.text()}`); });
     await page.goto(`${server.base}/calendar.html`); await page.getByTestId('calendar-add').waitFor();
     assert.match(await page.locator('.cal-month').innerText(), new RegExp(new Date().toLocaleDateString('en-US', { month: 'long' })));
     const month = await page.locator('.cal-month').innerText(); await page.locator('.cal-main [aria-label="Next"]').click(); assert.notEqual(await page.locator('.cal-month').innerText(), month);
@@ -61,15 +62,30 @@ try {
     // Failed persistence must preserve text and show a recoverable error.
     await page.route('**/api/workspace/chat', route => route.request().method() === 'PUT' ? route.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ error: { message: 'Simulated save failure' } }) }) : route.continue());
     await page.getByTestId('chat-input').fill('Retain on failure'); await page.getByTestId('chat-send').click(); await page.getByTestId('chat-error').filter({ hasText: 'Simulated save failure' }).waitFor(); assert.equal(await page.getByTestId('chat-input').inputValue(), 'Retain on failure'); await page.unroute('**/api/workspace/chat');
-    await page.goto(`${server.base}/index.html`); await page.getByTestId('dashboard-status').filter({ hasText: 'loaded' }).waitFor(); assert.equal(await page.getByTestId('dashboard-metric-0').innerText(), '5'); assert.match(await page.locator('.hero-title').innerText(), new RegExp(`Workspace ${name}`));
-    await page.getByTestId('dashboard-task-title').fill('Persistent task'); await page.getByTestId('dashboard-task-add').click(); await page.getByTestId('dashboard-status').filter({ hasText: 'Task saved' }).waitFor(); await page.getByTestId('dashboard-task-toggle').check(); await page.getByTestId('dashboard-status').filter({ hasText: 'Task saved' }).waitFor();
-    await page.reload(); await page.getByTestId('dashboard-status').filter({ hasText: 'loaded' }).waitFor(); assert.equal(await page.getByTestId('dashboard-task-toggle').isChecked(), true);
-    await page.getByTestId('dashboard-report-open').click(); await page.getByTestId('dashboard-report').waitFor(); await page.getByTestId('dashboard-report-close').click();
-    const reportDownload = page.waitForEvent('download'); await page.getByTestId('dashboard-export').click(); assert.equal((await reportDownload).suggestedFilename(), 'workspace-report.json');
+    await page.goto(`${server.base}/index.html`); await page.getByTestId('dashboard-status').filter({ hasText: 'Updated' }).waitFor();
+    const summary = await (await context.request.get(`${server.base}/api/dashboard?timezoneName=Asia%2FSeoul&scope=related`)).json();
+    assert.equal(Number(await page.getByTestId('dashboard-metric-0').innerText()), summary.todayEvents.length);
+    assert.equal(await page.getByTestId('dashboard-metric-1').innerText(), '0');
+    assert.match(await page.locator('.hero-title').innerText(), new RegExp(`Workspace ${name}`));
+    await page.getByTestId('dashboard-task-title').fill('Persistent task'); await page.getByTestId('dashboard-task-add').click();
+    await page.getByTestId('dashboard-metric-1').filter({hasText:'1'}).waitFor();
+    const taskId = await page.getByTestId('dashboard-task-toggle').locator('..').getAttribute('data-task-id');
+    await page.getByTestId('dashboard-task-toggle').check(); await page.getByTestId('dashboard-metric-1').filter({hasText:'0'}).waitFor();
+    await page.reload(); await page.getByTestId('dashboard-status').filter({ hasText: 'Updated' }).waitFor();
+    const persisted = (await (await context.request.get(`${server.base}/api/workspace/tasks`)).json()).state.tasks.find(t=>t.id===taskId);
+    assert.equal(persisted.done, true); assert.ok(persisted.completedAt); assert.equal(await page.getByTestId('dashboard-task-toggle').count(), 0);
     await page.screenshot({ path: `screenshots/site-dashboard-${name}.png`, fullPage: true });
-    await page.getByTestId('dashboard-task-delete').click(); await page.getByTestId('dashboard-status').filter({ hasText: 'Task saved' }).waitFor(); assert.equal(await page.getByTestId('dashboard-task-toggle').count(), 0);
+    if (name === 'mobile') await page.locator('[data-drawer-open]').click();
+    await page.locator('a[href="reports.html"]').first().click(); await page.locator('[data-report] tbody tr').last().waitFor();
+    const taskReport = await (await context.request.get(`${server.base}/api/reports/tasks?days=7`)).json();
+    assert.equal(taskReport.completed.reduce((a,b)=>a+b,0), 1);
+    assert.equal(await page.locator('[data-report] tbody tr').count(), 7);
+    assert.equal(Number(await page.locator('[data-report] meter').last().getAttribute('value')), taskReport.completed.at(-1));
+    await page.goto(`${server.base}/tasks.html?task=${encodeURIComponent(taskId)}`); await page.locator('[data-task-editor] [name="done"]:checked').waitFor();
+    await page.locator('[data-delete-task]').click(); await page.locator('[data-hub-status]').filter({hasText:'Saved'}).waitFor();
+    assert.equal((await (await context.request.get(`${server.base}/api/workspace/tasks`)).json()).state.tasks.length, 0);
     const bob = await browser.newContext(); await createTestAccount(bob, server.base, `workspace_bob_${name}`, 'Bob'); const bobState = await (await bob.request.get(`${server.base}/api/workspace/chat`)).json(); assert.equal(bobState.state, null); await bob.close(); await context.close();
-    console.log(`${name}: Calendar CRUD/views/export/reset, Chat rooms/send/persistence/failure, Dashboard tasks/report/export and account isolation passed`);
+    console.log(`${name}: Calendar CRUD/views/export/reset, Chat rooms/send/persistence/failure, Home task persistence/completion, Reports, Tasks deletion and account isolation passed`);
   }
   assert.deepEqual(errors, []); assert.deepEqual(failed, []); console.log('No browser page errors or failed local requests.');
 } finally { await browser?.close(); await server.stop(); }

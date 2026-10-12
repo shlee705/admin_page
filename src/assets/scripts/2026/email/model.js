@@ -20,6 +20,7 @@
  * @property {boolean} isStarred
  * @property {string} folderId
  * @property {string[]} labels
+ * @property {number} revision Observed revision used for draft CAS.
  * @property {Attachment[]} attachments
  * @property {?string} inReplyTo
  * @property {string[]} references
@@ -33,6 +34,21 @@ export class EmailError extends Error {
 export const SELF = { name: 'John Doe', address: 'john@adminator.app' };
 export const FOLDERS = ['inbox', 'starred', 'snoozed', 'sent', 'drafts', 'spam', 'trash', 'archive'];
 export const LABELS = ['Work', 'Team', 'Finance', 'Invoices', 'Travel'];
+/** Fixed labels: JSON array, at most five entries, exact spelling, first occurrence wins. */
+export function validateLabels(labels = []) {
+  if (!Array.isArray(labels) || labels.length > 5 || labels.some(label => typeof label !== 'string' || !label.length || label.length > 8 || !LABELS.includes(label))) {
+    throw new EmailError('VALIDATION', 'Labels must be an array of at most five supported names: Work, Team, Finance, Invoices, Travel.');
+  }
+  return [...new Set(labels)];
+}
+/** Legacy values stay in persistence; only supported labels are shown and counted. */
+export function visibleLabels(labels) {
+  return Array.isArray(labels) ? [...new Set(labels.filter(label => LABELS.includes(label)))] : [];
+}
+/** Owner-scoped totals include every physical folder, including Trash and Spam. */
+export function countLabels(emails) {
+  return LABELS.map(id => ({ id, name: id, total: emails.filter(mail => visibleLabels(mail.labels).includes(id)).length }));
+}
 export const MAX_ATTACHMENT_SIZE = 2 * 1024 * 1024;
 export const ATTACHMENT_TYPES = ['text/plain', 'text/csv', 'application/pdf', 'image/png', 'image/jpeg', 'image/gif'];
 export const clone = (value) => JSON.parse(JSON.stringify(value));
@@ -43,8 +59,9 @@ export function normalizeEmail(data) {
     id: data.id, accountId: data.accountId, messageId: null, threadId: data.id,
     from: SELF, to: [], cc: [], bcc: [], subject: '', bodyText: '', bodyHtml: '',
     receivedAt: null, sentAt: null, updatedAt: new Date().toISOString(),
-    isRead: false, isStarred: false, folderId: 'inbox', labels: [], attachments: [],
+    isRead: false, isStarred: false, folderId: 'inbox', attachments: [],
     inReplyTo: null, references: [], category: 'primary', deliveryStatus: 'received', ...clone(data),
+    labels: visibleLabels(data.labels), revision: Number.isSafeInteger(data.revision) && data.revision > 0 ? data.revision : 1,
   };
 }
 
@@ -54,6 +71,7 @@ export function parseAddresses(value) {
 }
 
 export function validateMessage(data, sending = false) {
+  data.labels = validateLabels(data.labels);
   for (const field of ['to', 'cc', 'bcc']) {
     if (!Array.isArray(data[field])) throw new EmailError('VALIDATION', `${field} must be an address list.`);
     for (const person of data[field]) {

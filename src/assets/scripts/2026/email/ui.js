@@ -1,11 +1,12 @@
 import { createTask } from '../service-hub.js';
 import { createEmailService } from './service.js';
+import { LABELS } from './model.js';
 
 const escape = (value = '') => String(value ?? '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
 const starIcon = '<svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17.14 14.14 18.18 21.02 12 17.77 5.82 21.02 6.86 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
 const folderIcon = '<svg viewBox="0 0 24 24"><path d="M3 5h6l2 2h10v13H3z"/></svg>';
 const button = (action, text, extra = '') => `<button type="button" class="btn btn--ghost" data-action="${action}" data-testid="${action}" ${extra}>${text}</button>`;
-const addresses = (people = []) => people.map((p) => p.address).join(', ');
+const addresses = (people = []) => Array.isArray(people) ? people.map((p) => p.address).join(', ') : String(people ?? '');
 const date = (value) => value ? new Date(value).toLocaleString() : 'Draft';
 const size = (bytes) => `${(bytes / 1024).toFixed(1)} KB`;
 
@@ -18,6 +19,7 @@ function composeMarkup() {
     <label class="email-field">Attach files (up to 2 MB each)<input type="file" name="files" multiple accept="text/plain,text/csv,application/pdf,image/png,image/jpeg,image/gif" data-testid="compose-files"></label>
     <div data-compose-attachments data-testid="compose-attachments"></div>
     <p role="alert" data-compose-error data-testid="compose-error"></p>
+    <div data-draft-conflict hidden><p>Your input has been kept. Reload replaces this form with the latest saved draft. Keep my input opens a new draft so the other editor's changes stay safe.</p>${button('reload-draft', 'Reload latest draft', 'hidden')}${button('keep-draft-input', 'Keep my input as a new draft', 'hidden')}</div>
     <div class="mail-compose-heading">${button('save-draft', 'Save draft')}<button class="btn btn--primary" type="submit" data-testid="send-email">Send</button></div>
   </form>`;
 }
@@ -39,7 +41,9 @@ export async function initEmailPage({ service: injectedService, config: accountC
   try { service = injectedService || createEmailService(config); }
   catch (error) { root.textContent = error.message; root.setAttribute('role', 'alert'); return; }
   const state = { folderId: 'inbox', query: '', category: '', sort: 'newest', offset: 0, limit: 25, selected: null, labels: [], folders: [], page: { items: [], total: 0 }, busy: false, compose: null, attachments: [] };
+  state.label = ''; state.read = undefined; state.starred = undefined;
   let disposed = false;
+  let committedQuery;
   root.innerHTML = `<section class="hero mail-hero"><div class="hero-text"><span class="eyebrow">Communications · ${mode === 'mock' ? 'Mock mailbox' : 'Connected mailbox'}</span><h1 class="hero-title" data-mail-title>${standalone ? 'Compose' : 'Inbox'}</h1><p class="hero-sub">${mode === 'mock' ? 'Mock mailbox. Sending saves to your Sent folder; no email is delivered to recipients.' : mode === 'internal' ? 'Internal account mail · Registered @adminator.test recipients only. Text messages are delivered to their database inbox.' : 'Manage your mailbox.'}</p></div><div class="hero-actions"><a class="btn" data-testid="email-mode" href="${standalone ? 'compose' : 'email'}.html${mode === 'internal' ? '?mailMode=mock' : '?mailMode=internal'}">${mode === 'internal' ? 'Preserved mock mailbox' : 'Real internal mailbox'}</a>${standalone ? `<a class="btn btn--ghost" href="email.html${mode === 'internal' ? '?mailMode=internal' : ''}">Back to Email</a>` : button('refresh', 'Refresh') + button('compose', 'Compose')}${mode === 'mock' ? button('reset-mail', 'Reset mock data') + button('fail-next', 'Simulate next error') : ''}</div></section>
     <p role="status" aria-live="polite" data-status data-testid="email-status"></p><p role="alert" data-error data-testid="email-error"></p>
     ${standalone ? `<section class="card email-compose-page">${composeMarkup()}</section>` : `<section class="mail-shell email-app" aria-label="Email" data-testid="mailbox"><aside class="mail-rail"><button class="mail-compose" data-action="compose" data-testid="rail-compose">Compose</button><div data-folders></div><div data-labels></div></aside><section class="mail-list"><div class="mail-list-head"><div class="mail-list-title" data-list-title></div><div class="mail-search"><input type="search" aria-label="Search mail" placeholder="Search sender, recipient, subject, body…" data-testid="search-mail"></div><div class="email-filters">${controlsMarkup}</div></div><div class="mail-tabs" data-testid="categories">${['', 'primary', 'updates', 'promotions'].map((category) => `<button class="mail-tab${!category ? ' is-active' : ''}" data-category="${category}" aria-pressed="${!category}" data-testid="category-${category || 'all'}">${category ? category[0].toUpperCase() + category.slice(1) : 'All'}</button>`).join('')}</div><div class="mail-list-scroll" data-message-list data-testid="email-list"></div><div class="email-pagination">${button('previous-page', 'Previous')}<span data-page-info></span>${button('next-page', 'Next')}</div></section><section class="mail-reader" data-reader data-testid="email-detail"><div class="reader-scroll">Select a message to read it.</div></section></section><dialog class="email-compose-dialog" aria-labelledby="compose-title" data-testid="compose-dialog">${composeMarkup()}</dialog>`}`;
@@ -58,7 +62,7 @@ export async function initEmailPage({ service: injectedService, config: accountC
     };
   }
   window.addEventListener('adminator-account-changing', () => {
-    disposed = true; form.reset(); if (dialog?.open) dialog.close();
+    disposed = true; clearTimeout(searchTimer); root.replaceChildren(); form.reset(); if (dialog?.open) dialog.close();
     Object.assign(state, { selected: null, compose: null, attachments: [], labels: [], folders: [], page: { items: [], total: 0 } });
   }, { once: true });
   const status = (message) => { if (!disposed) $('[data-status]').textContent = message; };
@@ -85,6 +89,7 @@ export async function initEmailPage({ service: injectedService, config: accountC
       if (disposed) return;
       error(failure.message); status('Operation failed');
       if (state.compose) $('[data-compose-error]').textContent = failure.message;
+      if (state.compose?.id && (failure.status === 409 || ['CONFLICT', 'HTTP_409'].includes(failure.code))) showDraftConflict(true);
     } finally {
       if (!disposed) {
         setBusy(false);
@@ -98,15 +103,33 @@ export async function initEmailPage({ service: injectedService, config: accountC
   async function refresh() {
     if (standalone || disposed) return;
     const query = { folderId: state.folderId, query: state.query, category: state.category, sort: state.sort, offset: state.offset, limit: state.limit, label: state.label, starred: state.starred, read: state.read };
-    const [page, folders, labels] = await Promise.all([service.searchEmails(query), service.getFolders(), service.getLabels()]);
+    let snapshot; let snapshotError;
+    try { snapshot = await service.getMailboxSnapshot?.(query); } catch (failure) { snapshotError = failure; }
+    const results = snapshot
+      ? [snapshot.page, snapshot.folders, snapshot.labels].map(value => ({ status: 'fulfilled', value }))
+      : snapshotError ? [0, 1, 2].map(() => ({ status: 'rejected', reason: snapshotError }))
+        : await Promise.allSettled([service.searchEmails(query), service.getFolders(), service.getLabels()]);
     if (disposed) return;
+    const labels = results[2].status === 'fulfilled' ? results[2].value : LABELS.map(id => ({id, name:id}));
+    if (results[2].status === 'rejected') error('Label counts unavailable. Refresh to retry.');
+    if (results[0].status === 'rejected' || results[1].status === 'rejected') {
+      if (committedQuery) Object.assign(state, committedQuery);
+      renderLabels(labels);
+      root.querySelectorAll('[data-filter]').forEach(el => { el.value = state[el.dataset.filter] === undefined ? '' : String(state[el.dataset.filter]); });
+      $('[data-testid="search-mail"]').value = state.query;
+      root.querySelectorAll('[data-category]').forEach(el => { const active = el.dataset.category === state.category; el.classList.toggle('is-active', active); el.setAttribute('aria-pressed', String(active)); });
+      if (!state.selected) await renderReader();
+      throw (results[0].status === 'rejected' ? results[0].reason : results[1].reason);
+    }
+    const page = results[0].value, folders = results[1].value;
     state.page = page; state.folders = folders; state.labels = labels;
+    committedQuery = { ...query };
     if (page.total && state.offset >= page.total) { state.offset = Math.max(0, Math.floor((page.total - 1) / state.limit) * state.limit); return refresh(); }
     const currentFolder = folders.find((f) => f.id === state.folderId);
     $('[data-mail-title]').textContent = `${currentFolder.name} · ${currentFolder.unread} unread`;
-    $('[data-list-title]').textContent = `${currentFolder.name} · ${page.total} results`;
+    $('[data-list-title]').innerHTML = `${escape(currentFolder.name)} · ${page.total} results${state.label ? ` <span class="mail-tag" data-testid="active-label">Label: ${escape(state.label)} ${button('clear-label', '×', 'aria-label="Clear label filter"')}</span>` : ''}`;
     $('[data-folders]').innerHTML = `<div class="mail-rail-label">Folders · total / unread</div>${  folders.map((folder) => `<button class="mail-folder${state.folderId === folder.id ? ' is-active' : ''}" data-folder="${escape(folder.id)}" data-testid="folder-${escape(folder.id)}" aria-pressed="${state.folderId === folder.id}">${folder.id === 'starred' ? starIcon : folderIcon}<span class="mail-folder-name">${escape(folder.name)}</span><span class="mail-folder-count">${folder.total} / ${folder.unread}</span></button>`).join('')}`;
-    $('[data-labels]').innerHTML = `<div class="mail-rail-label">Labels</div>${  labels.map((label) => `<button class="mail-folder" data-label="${escape(label.id)}" data-testid="label-${escape(label.id)}"><span class="mail-label-dot"></span><span class="mail-folder-name">${escape(label.name)}</span><span class="mail-folder-count">${label.total}</span></button>`).join('')}`;
+    renderLabels(labels);
     $('[data-filter="label"]').innerHTML = `<option value="">All labels</option>${  labels.map((label) => `<option value="${escape(label.id)}">${escape(label.name)}</option>`).join('')}`;
     $('[data-filter="label"]').value = state.label || '';
     $('[data-message-list]').innerHTML = page.items.length ? page.items.map((mail, i) => `<article class="mail-row${!mail.isRead ? ' is-unread' : ''}${mail.id === state.selected?.id ? ' is-active' : ''}" data-email-id="${escape(mail.id)}" data-testid="email-row-${escape(mail.id)}" data-read="${mail.isRead}"><button class="email-row-open" data-open="${escape(mail.id)}" aria-label="Read ${escape(mail.subject)}" aria-pressed="${mail.id === state.selected?.id}"><span class="mail-row-avatar ma-${i % 5 + 1}">${escape((mail.from.name || mail.from.address).slice(0, 2).toUpperCase())}</span><span class="mail-row-body"><span class="mail-row-top"><span class="mail-row-from">${escape(mail.from.name || mail.from.address)}</span><span class="mail-row-time">${escape(date(mail.sentAt || mail.receivedAt))}</span></span><span class="mail-row-subject">${escape(mail.subject || '(No subject)')}</span><span class="mail-row-preview">${escape(mail.bodyText)}</span><span class="mail-row-tags">${tags(mail)}${mail.attachments.length ? `<span class="mail-tag attach">${mail.attachments.length} files</span>` : ''}</span></span></button><button class="mail-star${mail.isStarred ? ' is-on' : ''}" data-star="${escape(mail.id)}" aria-label="${mail.isStarred ? 'Unstar' : 'Star'} ${escape(mail.subject)}" aria-pressed="${mail.isStarred}" data-testid="star-${escape(mail.id)}">${starIcon}</button></article>`).join('') : '<p class="email-empty" data-testid="empty-mailbox">No messages match this view.</p>';
@@ -132,10 +155,15 @@ export async function initEmailPage({ service: injectedService, config: accountC
     form.reset();
     for (const name of ['to', 'cc', 'bcc']) form.elements[name].value = addresses(data[name]);
     form.elements.subject.value = data.subject || ''; form.elements.bodyText.value = data.bodyText || '';
-    $('[data-compose-error]').textContent = ''; renderComposeAttachments();
+    $('[data-compose-error]').textContent = ''; showDraftConflict(false); renderComposeAttachments();
     $('#compose-title').textContent = data.id ? 'Edit draft' : 'New message';
     if (dialog && !dialog.open) dialog.showModal();
     form.elements.to.focus();
+  }
+  function showDraftConflict(visible) {
+    $('[data-draft-conflict]').hidden = !visible;
+    $('[data-action="reload-draft"]').hidden = !visible;
+    $('[data-action="keep-draft-input"]').hidden = !visible;
   }
   function closeCompose() {
     state.compose = null; state.attachments = []; form.reset(); window.dispatchEvent(new CustomEvent('adminator-form-saved', {detail:form}));
@@ -161,13 +189,31 @@ export async function initEmailPage({ service: injectedService, config: accountC
     if (clear) state.selected = null;
     await refresh(); await renderReader();
   }
+  function renderLabels(labels) {
+    $('[data-labels]').innerHTML = `<div class="mail-rail-label">Labels · all folders</div>${labels.map(label => `<button class="mail-folder${state.label === label.id ? ' is-active' : ''}" data-label="${escape(label.id)}" data-testid="label-${escape(label.id)}" aria-pressed="${state.label === label.id}"><span class="mail-label-dot"></span><span class="mail-folder-name">${escape(label.name)}</span><span class="mail-folder-count" title="${Number.isSafeInteger(label.total) && label.total >= 0 ? 'All folders, including Trash and Spam' : 'Count unavailable; refresh to retry'}">${Number.isSafeInteger(label.total) && label.total >= 0 ? label.total : '—'}</span></button>`).join('')}`;
+  }
+  function changeLabel(label) {
+    return run(async () => { state.label = label; state.offset = 0; state.selected = null; await refresh(); await renderReader(); });
+  }
   const actions = {
+    'clear-label': () => changeLabel(''),
     'followup-task': () => createTask(hub, state.selected.subject || 'Follow-up mail', {kind:'mail',id:state.selected.id}),
     refresh: () => run(async () => { await refresh(); if (state.selected) await renderReader(); }, 'Mailbox refreshed'),
     compose: () => openCompose(),
     'cancel-compose': () => { closeCompose(); status('Composition cancelled. Previously saved drafts are retained.'); },
+    'reload-draft': () => run(async () => {
+      const latest = await service.getEmailById(state.compose.id);
+      if (latest.folderId !== 'drafts') throw Error('This message is no longer a draft. Keep your input as a new draft.');
+      openCompose(latest); window.dispatchEvent(new CustomEvent('adminator-form-saved', {detail:form}));
+    }, 'Latest draft loaded'),
+    'keep-draft-input': () => {
+      const input = composeData(); delete input.id; delete input.revision; delete input.expectedRevision; delete input.clientId;
+      openCompose(input); error(''); status('Input kept as a new draft. Save or send when ready.');
+      form.dispatchEvent(new Event('input', {bubbles:true}));
+    },
     'save-draft': () => run(async () => {
       const draft = await service.saveDraft(composeData()); state.compose = draft; window.dispatchEvent(new CustomEvent('adminator-form-saved', {detail:form}));
+      showDraftConflict(false);
       await refresh(); if (state.selected?.id === draft.id) await renderReader();
     }, 'Draft saved'),
     'reset-mail': () => run(async () => {
@@ -198,9 +244,9 @@ export async function initEmailPage({ service: injectedService, config: accountC
     if (target.dataset.open) { run(() => select(target.dataset.open), 'Message selected'); return; }
     if (target.dataset.star) { run(async () => { await service.toggleStar(target.dataset.star); await refresh(); }, 'Star updated'); return; }
     if (target.dataset.folder) {
-      run(async () => { state.folderId = target.dataset.folder; state.offset = 0; state.selected = null; await refresh(); await renderReader(); $('.mail-shell').classList.remove('has-selection'); }); return;
+      run(async () => { state.folderId = target.dataset.folder; state.label = ''; state.offset = 0; state.selected = null; await refresh(); await renderReader(); $('.mail-shell').classList.remove('has-selection'); }); return;
     }
-    if (target.dataset.label) { $('[data-filter="label"]').value = target.dataset.label; state.label = target.dataset.label; state.offset = 0; run(refresh); return; }
+    if (target.dataset.label) { changeLabel(state.label === target.dataset.label ? '' : target.dataset.label); return; }
     if (target.hasAttribute('data-category')) {
       state.category = target.dataset.category; state.offset = 0;
       root.querySelectorAll('[data-category]').forEach((el) => { el.classList.toggle('is-active', el === target); el.setAttribute('aria-pressed', String(el === target)); }); run(refresh); return;
@@ -218,6 +264,7 @@ export async function initEmailPage({ service: injectedService, config: accountC
     if (state.busy) return;
     if (target.dataset.filter) {
       const key = target.dataset.filter;
+      if (key === 'label') { changeLabel(target.value); return; }
       state[key] = ['read', 'starred'].includes(key) ? target.value ? target.value === 'true' : undefined : target.value;
       state.offset = 0; run(refresh);
     }
@@ -231,6 +278,7 @@ export async function initEmailPage({ service: injectedService, config: accountC
   $('[data-testid="search-mail"]')?.addEventListener('input', (event) => {
     const value = event.target.value; clearTimeout(searchTimer);
     const search = () => {
+      if (disposed) return;
       if (state.busy) { searchTimer = setTimeout(search, 200); return; }
       state.query = value; state.offset = 0; run(refresh);
     };
@@ -250,10 +298,20 @@ export async function initEmailPage({ service: injectedService, config: accountC
   const params = new URLSearchParams(location.search);
   if (mode === 'internal' && params.get('mail') && !standalone) await run(async () => { const m = await service.getEmailById(params.get('mail')); state.folderId=m.folderId; await select(m.id); }, 'Message opened');
   if (standalone && params.get('to')) { form.elements.to.value = params.get('to'); }
-  if (mode === 'internal' && hub?.preferences?.state.mailAutoRefresh && !standalone) {
-    const timer = setInterval(() => { if (!disposed && !document.hidden && !state.busy && !dialog?.open) run(async () => {await refresh(); status(`Inbox updated ${new Date().toLocaleTimeString()}`);}); },30000);
-    window.addEventListener('pagehide',()=>clearInterval(timer),{once:true});
-    window.addEventListener('adminator-account-changing',()=>{recipientGeneration++;clearInterval(timer);},{once:true});
+  if (mode === 'internal' && hub?.preferences && !standalone) {
+    let timer; let unsubscribe;
+    const stopRefresh = () => { clearInterval(timer); timer = null; };
+    const syncRefresh = () => {
+      stopRefresh();
+      if (!disposed && hub.preferences.state.mailAutoRefresh) timer = setInterval(() => {
+        if (!disposed && !document.hidden && !state.busy && !dialog?.open) run(async () => {await refresh(); status(`Inbox updated ${new Date().toLocaleTimeString()}`);});
+      },30000);
+    };
+    const watchPreferences = () => { unsubscribe?.(); unsubscribe = hub.preferences.subscribe?.(syncRefresh); syncRefresh(); };
+    watchPreferences();
+    window.addEventListener('pagehide', () => {stopRefresh(); unsubscribe?.(); unsubscribe = null;});
+    window.addEventListener('pageshow', event => {if (event.persisted && !disposed) watchPreferences();});
+    window.addEventListener('adminator-account-changing',()=>{recipientGeneration++;stopRefresh();unsubscribe?.();},{once:true});
   }
   // Narrow test hooks call the service, never bypass data access; no hooks in REST mode.
   if (mode === 'mock') root.emailTest = { reset: () => actions['reset-mail'](), failNext: () => actions['fail-next']() };

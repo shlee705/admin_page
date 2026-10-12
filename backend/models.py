@@ -85,7 +85,10 @@ class ChatRoom(Base):
     __tablename__ = "chat_rooms"
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
     name: Mapped[str | None] = mapped_column(String(80), nullable=True)
-    created_by: Mapped[str | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    # Attribution columns added by 0004 are identifiers, without physical FKs.
+    # Match the preserved migration schema; adding constraints needs a separate
+    # backed-up migration rather than an implicit SQLite table rebuild.
+    created_by: Mapped[str | None] = mapped_column(String(36), nullable=True)
     is_shared: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     pair_key: Mapped[str] = mapped_column(String(80), unique=True, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
@@ -115,7 +118,7 @@ class CalendarEvent(Base):
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
     owner_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
     is_shared: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-    updated_by: Mapped[str | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    updated_by: Mapped[str | None] = mapped_column(String(36), nullable=True)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, nullable=False)
     legacy_id: Mapped[str | None] = mapped_column(String(80), nullable=True)
     data_json: Mapped[str] = mapped_column(Text, nullable=False)
@@ -143,10 +146,20 @@ class InternalMail(Base):
     id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid4()))
     owner_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
     data_json: Mapped[str] = mapped_column(Text, nullable=False)
+    revision: Mapped[int] = mapped_column(Integer, nullable=False, default=1, server_default="1")
 
 class MailSubmission(Base):
     __tablename__ = "mail_submissions"
     owner_id: Mapped[str] = mapped_column(ForeignKey("users.id"), primary_key=True)
     client_id: Mapped[str] = mapped_column(String(80), primary_key=True)
     payload: Mapped[str] = mapped_column(Text, nullable=False)
+    response_json: Mapped[str] = mapped_column(Text, nullable=False)
+
+
+class CalendarSubmission(Base):
+    """An immutable creation receipt survives subsequent event edits/deletion."""
+    __tablename__ = "calendar_submissions"
+    owner_id: Mapped[str] = mapped_column(ForeignKey("users.id"), primary_key=True)
+    client_id: Mapped[str] = mapped_column(String(80), primary_key=True)
+    fingerprint: Mapped[str] = mapped_column(String(64), nullable=False)
     response_json: Mapped[str] = mapped_column(Text, nullable=False)

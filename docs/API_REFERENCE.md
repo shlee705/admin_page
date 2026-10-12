@@ -1,6 +1,8 @@
 # 구현된 API 기준
 
-기준일: 2026-10-11. `backend/app.py`, `accounts.py`, `resources.py`, `mail.py`, `service_hub.py`의 등록 경로를 대조했다. JSON은 camelCase이며 아래 경로는 동일 origin이다. 개발 `/api/docs`와 `/api/openapi.json`은 production에서 비활성이다. 알 수 없는 `/api/...`는 JSON 404다.
+최신 검증과 호환 주의사항은 [06](06_CODEX_DEVELOPMENT_CONTEXT.md), [09](09_POST_FIX_REGRESSION_REPORT.md)를 따른다.
+
+기준일: 2026-10-12 수정 후. `backend/app.py`, `accounts.py`, `resources.py`, `mail.py`, `service_hub.py`의 등록 경로를 대조했다. JSON은 camelCase이며 아래 경로는 동일 origin이다. 개발 `/api/docs`와 `/api/openapi.json`은 production에서 비활성이다. 알 수 없는 `/api/...`는 JSON 404다.
 
 ## 공통 계약
 
@@ -52,7 +54,7 @@ Mock namespace는 `[a-zA-Z0-9_-]{1,64}`, state는 version1/emails/files이며 �
 |---|---|---|
 | GET | `/api/chat/rooms` | `{rooms:[Room]}` |
 | POST | `/api/chat/rooms` | `{name}` 공유 또는 `{userId}` 1:1 → 201 `{id}` |
-| GET | `/api/chat/rooms/{room_id}/messages` | after≥0, limit 기본100/1–200 → `{messages,nextAfter,hasMore}` |
+| GET | `/api/chat/rooms/{room_id}/messages` | after≥0, limit 기본100/1–200, latest=true 또는 before≥1 → `{messages,nextAfter,hasMore,hasOlder,oldestSequence}`; 최근/이전 page도 오름차순 반환 |
 | POST | `/api/chat/rooms/{room_id}/messages` | `{body,clientId}` → 201 Message; 동일 재시도도 같은 메시지 |
 | POST | `/api/chat/rooms/{room_id}/read` | `{sequence}` → `{sequence}`; 방 순번 검증/단조 증가 |
 | WS | `/api/chat/ws` | 허용 Origin·쿠키; 잘못된 세션/Origin은 거부/1008 |
@@ -76,8 +78,8 @@ WS 서버 payload:
 |---|---|---|
 | POST | `/api/calendar/import` | `{timezone}` → `{imported,timezone}`; 재호출 imported=0 |
 | POST | `/api/calendar/samples/reset` | 없음 → `{restored}`; import marker 필요 |
-| GET | `/api/calendar/events` | q 최대200, expand 기본false → `{events}` |
-| POST | `/api/calendar/events` | EventInput → 201 Event; 신규 shared |
+| GET | `/api/calendar/events` | q 최대200, expand 기본false, start/end ISO 기간(양끝 필수·양수≤366일) → `{events}`; 기간+expand=true이면 `{events,series,upcoming}` |
+| POST | `/api/calendar/events` | EventInput(clientId?1–80) / Idempotency-Key → 201 Event; 신규 shared; durable owner retry |
 | GET | `/api/calendar/events/{eid}` | Event |
 | PATCH | `/api/calendar/events/{eid}` | 전체 EventInput+expectedRevision → Event |
 | DELETE | `/api/calendar/events/{eid}` | revision≥1 query →204 |
@@ -89,22 +91,26 @@ WS 서버 payload:
 
 title 1–200, description≤4000, start/end≤40, timezone≤80, location≤300, attendeeIds≤50. category=personal/work/team/travel/finance/birthday/holiday. recurrence=null 또는 daily/weekly/monthly, interval1–30/count1–366다. PATCH는 부분 필드 병합이 아니라 전체 편집 입력이며 expectedRevision 불일치/누락은409다.
 
-Event는 입력에서 expectedRevision/attendeeIds를 빼고 id/ownerId/revision/shared/createdBy/updatedBy/updatedAt/version/canEdit/createdAt/attendees(userId,displayName,status)를 더한다. revision과 version은 같은 값이다. expand는 같은 시리즈 ID와 occurrence를 사용한다. timed는 UTC 저장, 종일은 날짜/exclusive end다. shared는 전체 인증 수정 가능, private는 소유자 편집/참석자 조회, RSVP는 본인 attendee만 허용한다. 단일 occurrence/기간 paging은 없다. 시간대/샘플 조건은 [Calendar](CALENDAR_IMPLEMENTATION.md)를 따른다.
+Event는 입력에서 expectedRevision/attendeeIds/clientId를 빼고 id/ownerId/revision/shared/createdBy/updatedBy/updatedAt/version/canEdit/createdAt/attendees(userId,displayName,status)를 더한다. revision과 version은 같은 값이다. expand는 같은 시리즈 ID와 occurrence를 사용한다. timed는 UTC 저장, 종일은 날짜/exclusive end다. shared는 전체 인증 수정 가능, private는 소유자 편집/참석자 조회, RSVP는 본인 attendee만 허용한다. 단일 occurrence 편집은 없다. 기간 query는 교차 발생일을 반환하며 series는 접근 가능한 원본 전체, upcoming은 각 시리즈 미래 최대5개 후보를 반환한다. 시간대/샘플 조건은 [Calendar](CALENDAR_IMPLEMENTATION.md)를 따른다.
+
+Calendar 생성 retry는 동일 owner/ID·정규화 payload이면 최초 응답을 반환하고 다른 payload는409다. 이벤트 edit/delete 및 process 재시작 후에도 receipt를 유지한다. clientId/header가 없으면 호환 POST를 허용하며 Idempotency-Status=unprotected, 있으면 protected다. header/body를 함께 보내면 일치해야 한다. 최신 event는 별도 GET으로 확인한다.
 
 ## 내부 메일
 
 | Method | 경로 | 입력/응답 |
 |---|---|---|
-| GET | `/api/mail/emails` | `{items:[Email]}`; 자기 전체 목록 |
+| GET | `/api/mail/emails` | 무옵션은 `{items:[Email]}` 자기 전체 목록; summary=true이면 page/count snapshot(아래 설명) |
 | GET | `/api/mail/emails/{mid}` | Email; 타 owner=404 |
-| POST | `/api/mail/drafts` | MailInput, 기존 편집은 id →201 Email |
+| POST | `/api/mail/drafts` | MailInput, 기존 편집은 id+expectedRevision →201 Email(revision 포함) |
 | POST | `/api/mail/send` | MailInput →201 `{email,status:"delivered-internal",requestId}` |
 | PATCH | `/api/mail/emails/{mid}` | folderId?/isRead?/labels? →Email |
 | POST | `/api/mail/emails/{mid}/star` | 없음 →별표 전환 Email |
 
-MailInput은 clientId?(1–80), id?/threadId?, to/cc/bcc(각 최대50의 name≤80/address≤255), subject≤200/bodyText≤10000/bodyHtml=""/attachments=[], labels≤5, category=primary|updates|promotions, inReplyTo?/references≤100이다. 발신은 To·제목·본문이 있어야 하며 모든 주소가 활성 등록 내부 계정이어야 한다. body clientId 또는 Idempotency-Key header로 재시도 ID를 지정한다. 둘 다 지정하면 같아야 하며 빈/80자 초과 header는422다. 같은 owner/ID/내용은 기존 결과, 다른 내용=409다. 응답 Idempotency-Status=protected|unprotected; 기존 ID 없는 호출은 허용하되 중복 방지를 보장하지 않는다. draft는 초안 폴더만 수정할 수 있고 revision은 없다.
+MailInput은 clientId?(1–80), id?/threadId?, to/cc/bcc(각 최대50의 name≤80/address≤255), subject≤200/bodyText≤10000/bodyHtml=""/attachments=[], labels는 strict 배열≤5·원소≤8이며 Work/Team/Finance/Invoices/Travel만 허용하고 중복 제거, category=primary|updates|promotions, inReplyTo?/references≤100이다. 발신은 To·제목·본문이 있어야 하며 모든 주소가 활성 등록 내부 계정이어야 한다. body clientId 또는 Idempotency-Key header로 재시도 ID를 지정한다. 둘 다 지정하면 같아야 하며 빈/80자 초과 header는422다. 같은 owner/ID/내용은 기존 결과, 다른 내용=409다. 응답 Idempotency-Status=protected|unprotected; 기존 ID 없는 호출은 허용하되 중복 방지를 보장하지 않는다. draft는 초안 폴더만 수정할 수 있으며 id가 있는 편집/발신은 observed expectedRevision(양수 strict integer)이 필수다. 누락/stale409; 성공 변경은 revision+1, 새 초안은1이다.
 
 PATCH folderId는 inbox/snoozed/spam/trash/archive, draft는 trash만 이동할 수 있다. 영구 DELETE/attachments API는 없다. DTO·답장·사본·Mock 구분은 [Email](EMAIL_ARCHITECTURE.md)에 설명한다.
+
+메일 summary=true는 기본limit25/최대100,offset≥0와 folderId/query/label/category/read/starred/sort(newest|oldest)/threadId를 지원한다. 응답은 `{items,total,offset,limit,folders:[{id,name,total,unread}],labels:[{id,name,total}]}`. Label count는 전체 owner의 physical folder(Trash/Spam 포함)에서 중복 Label을 메시지당1번 세며 query/page에 제한되지 않는다. SQLite snapshot에서 page와 두 count를 일관되게 계산한다. 수신본 labels=[]·category=primary·bcc=[], 발신 분류는 유지한다. legacy invalid Label은 표시만 정리하고 raw JSON은 보존한다.
 
 ## 업무 허브·집계
 
@@ -132,4 +138,4 @@ Dashboard는 eventCount/todayEvents/upcomingEvents(최대10)/unreadChat/recentCh
 | POST | `/api/dev/expire-session` | 현재 쿠키 세션 → `{expired:true}` |
 | POST | `/api/dev/reset` | 설정 DB의 계정 초기화 → `{reset:true}` |
 
-ChatRoom/CalendarEvent/CalendarImport/InternalMail/MailSubmission이 존재하면 reset은409로 삭제 전에 중단한다. 계정·세션·업무 자료를 그대로 보존한다. 협업 전체 삭제에는 사용하지 않고 새 임시 DB로 테스트한다. 기존 개발 DB에서 관리 API는 호출하지 않았다.
+ChatRoom/CalendarEvent/CalendarImport/CalendarSubmission/InternalMail/MailSubmission이 존재하면 reset은409로 삭제 전에 중단한다. 계정·세션·업무 자료를 그대로 보존한다. 협업 전체 삭제에는 사용하지 않고 새 임시 DB로 테스트한다. 기존 개발 DB에서 관리 API는 호출하지 않았다.

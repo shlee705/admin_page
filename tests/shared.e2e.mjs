@@ -23,6 +23,9 @@ try {
   await bc.setOffline(false); await b.reload(); await b.getByTestId('chat-room').filter({hasText:'Everyone room'}).first().click();
   await b.getByTestId('chat-message').filter({hasText:'Message during reconnect'}).waitFor(); checks.push('offline recovery from DB');
   await Promise.all([a.goto(`${server.base}/calendar.html`),b.goto(`${server.base}/calendar.html`)]);
+  // The default "related" view intentionally hides unrelated shared events.
+  await b.locator('[data-calendar-scope]').waitFor();
+  await b.locator('[data-calendar-scope]').selectOption('all');
   await a.getByTestId('calendar-add').click(); await a.getByTestId('event-title').fill('Everyone meeting'); await a.getByTestId('event-save').click();
   await b.getByTestId('calendar-event').filter({hasText:'Everyone meeting'}).first().waitFor(); await b.getByTestId('calendar-event').filter({hasText:'Everyone meeting'}).first().click();
   await b.getByTestId('event-title').fill('Bob updated meeting'); await b.getByTestId('event-save').click();
@@ -36,9 +39,9 @@ try {
   await Promise.all([a.goto(`${server.base}/email.html`),b.goto(`${server.base}/email.html`)]);
   assert.equal(await a.locator('[data-shell-sidebar] a[href="compose.html"]').count(),0);
   await a.getByTestId('compose').click(); await a.getByTestId('compose-to').fill(bob.emailAddress); await a.getByTestId('compose-subject').fill('Real default mail'); await a.getByTestId('compose-body').fill('Internal delivery'); await a.getByTestId('send-email').click(); await a.getByTestId('compose-dialog').waitFor({state:'hidden'});
-  await b.reload(); await b.getByText('Real default mail',{exact:true}).first().click(); await b.getByText('Internal delivery',{exact:true}).first().waitFor(); checks.push('default internal mail delivery, mobile inbox, sidebar');
+  await b.reload(); await b.getByTestId('email-list').getByText('Real default mail',{exact:true}).first().click(); await b.getByText('Internal delivery',{exact:true}).first().waitFor(); checks.push('default internal mail delivery, mobile inbox, sidebar');
   await b.getByTestId('reply').click(); await b.getByTestId('compose-body').fill('Bob internal reply'); await b.getByTestId('send-email').click(); await b.getByTestId('compose-dialog').waitFor({state:'hidden'});
-  await a.reload(); await a.getByText('Re: Real default mail',{exact:true}).first().click(); await a.getByText('Bob internal reply',{exact:true}).first().waitFor(); checks.push('internal email reply');
+  await a.reload(); await a.getByTestId('email-list').getByText('Re: Real default mail',{exact:true}).first().click(); await a.getByText('Bob internal reply',{exact:true}).first().waitFor(); checks.push('internal email reply');
   await a.getByTestId('compose').click(); await a.getByTestId('compose-to').fill('missing@adminator.test'); await a.getByTestId('compose-subject').fill('Missing recipient'); await a.getByTestId('compose-body').fill('Must fail'); await a.getByTestId('send-email').click();
   await a.locator('[data-compose-error]').filter({hasText:'registered'}).waitFor(); assert.equal(await a.getByTestId('compose-dialog').isVisible(),true); checks.push('unknown recipient error preserves compose');
   await a.screenshot({path:'screenshots/shared-email.png',fullPage:true}); assert.deepEqual(errors,[]);

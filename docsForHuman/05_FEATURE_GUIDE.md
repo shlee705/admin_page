@@ -1,84 +1,45 @@
-## 2026-10-10 다중 계정 최신 업데이트
+# 기능 사용법
 
-사이드바 프로필 → Switch Account → Log out 순서다. Switch Account → Add account → Username/Email+Password로 추가하면 새 계정을 활성화한다. 등록된 유효 계정을 클릭하면 현재 페이지를 새 계정으로 다시 로드한다. Remove는 선택 계정의 현재 브라우저 권한만 폐기한다. Log out은 활성 계정만 제거하고 다른 유효 계정이 있으면 전환한다. 제거 후 재등록에는 비밀번호가 필요하다. 모바일은 메뉴를 먼저 연다.
+기준일: 2026-10-11. 메뉴의 영문 이름은 현재 화면 기준이다.
 
-[사용 안내](10_MULTI_ACCOUNT_SWITCHING.md) · [Codex 상세 문서](../docs/MULTI_ACCOUNT_SESSION_IMPLEMENTATION.md). 아래 이전 기록과 다른 인증 정책은 이 업데이트를 기준으로 한다.
+## 계정과 설정
 
----
+Sign up에서 username·표시명·비밀번호 확인을 입력한 뒤 Sign in한다. username은 영문자로 시작하는 영문/숫자/밑줄3–32자, 가입 비밀번호는12–128자다. 내부 주소 또는 username으로 로그인한다.
 
-# 2026-10-10 공유 협업 업데이트
+Switch Account → Add account에서 다른 계정의 비밀번호를 확인하면 목록에 추가되고 즉시 활성화된다. 등록된 유효 계정은 다시 비밀번호를 입력하지 않고 전환한다. 최대10개, 같은 브라우저의 모든 탭이 활성 계정을 공유한다. 전환하면 현재 URL을 다시 로드한다.
 
-Chat에 진입하면 실제 모드가 기본이다. New shared room에 이름을 입력하고 Create room을 누르면 전체 사용자 공유 방을 만든다. 다른 계정도 목록·메시지를 조회하고 답장할 수 있다. 기존 실제 계정 검색으로 여는 1:1 방은 비공개다. 보존 Mock은 모드 전환 버튼 또는 chat.html?chatMode=mock으로 접근한다. Calendar에서 새 일정은 공유 일정이며 다른 사용자도 수정·삭제할 수 있다. 개인 일정 자동 import는 중단했고 원본은 보존했다. 개인 샘플 Reset은 명시적으로 개인 자료만 복원한다. Email은 기본 실제 내부 메일함이다. 등록된 username@adminator.test를 To/Cc/Bcc에 입력한다. 성공 시에만 delivered-internal을 표시한다. 보존 Mock은 email.html?mailMode=mock이다. 첨부는 내부 모드에서 지원하지 않는다.
+Remove는 선택한 계정의 이 브라우저 로그인 권한만 제거한다. Log out은 현재 계정만 제거하며 다른 유효 계정이 있으면 전환한다. Settings의 Sign out all accounts on this browser는 이 브라우저 전체를 종료한다. 회원/업무 자료나 다른 브라우저 로그인을 삭제하지 않는다. 미저장 입력 경고가 나오면 먼저 저장하거나 전환을 취소한다. 강제 만료/다른 탭 변경은 입력 보관을 보장하지 않는다.
 
-상세 구현·검증: [공유 협업 구현 보고서](../docs/SHARED_COLLABORATION_REPORT.md). 아래는 이전 구현의 상세 기록이며 정책이 다른 경우 이 업데이트를 우선한다.
+Settings에서 표시명, 시간대, 테마, 기본 일정 범위, 홈 카드 표시, 메일 자동 갱신을 저장한다. 내부 주소·username·비밀번호·역할을 바꾸는 화면은 아니다.
 
----
+## 홈·할 일·업무 연결
 
-# 사용자 기능 안내
+Home은 오늘/다가오는 일정, 미완료 할 일, 최근 메일/대화와 확인할 항목을 보여 준다. 행을 선택하면 해당 원본으로 이동한다. Refresh로 최신 상태를 확인한다.
 
-기준일: 2026-10-09. 화면의 Mock/Sample 표시는 실제 상대에게 전달되거나 외부 정보를 조회하는 기능과 구분하기 위한 표시다.
+My tasks에서 제목·메모·마감 날짜·중요도·완료를 저장하고 open/all/today/overdue/done 필터와 검색을 사용한다. 마감 날짜의 오늘은 계정 시간대를 따른다. 메일 reader·일정 상세·채팅 메시지의 Create follow-up task는 개인 할 일을 만들며 원본 링크를 남긴다. 원본이 사라져도 할 일은 남는다.
 
-## 계정
+Work report는7/30/90일의 현재 보존 할 일 완료 날짜를 보여 준다. 삭제한 할 일과 완료시각 없는 과거 자료는 집계되지 않는다. 성과 평가·불변 감사 기록으로 해석하지 않는다.
 
-1. Sign up에서 username, 표시 이름, 비밀번호와 확인값을 입력한다.
-2. username은 문자로 시작하는 3–32자 영문/숫자/밑줄이다. 비밀번호는 12–128자다.
-3. Sign in에서 username 또는 `username@adminator.test`와 비밀번호로 로그인한다.
-4. 상단 사용자 메뉴에서 Sign out으로 현재 세션을 종료한다. 세션이 만료되면 다시 로그인한다.
+## 일정
 
-다른 사용자의 계정으로 전환하려면 먼저 로그아웃한다. 자동 테스트의 비밀번호와 쿠키를 문서에 저장하지 않는다.
+Calendar의 New event/Quick add 또는 날짜 선택으로 제목·시간·timezone·반복·참석자를 입력한다. **새 일정은 전체 로그인 사용자에게 공유되며 다른 사용자도 수정·삭제할 수 있다.** 참석자를 지정해도 비공개로 바뀌지 않는다. 기존 비공개 일정은 기존 권한을 유지한다.
 
-## Dashboard와 할 일
+반복은 Daily/Weekly/Monthly의 유한 횟수이며 클릭한 발생일을 수정/삭제해도 전체 시리즈에 적용된다. 종일 Last day는 마지막 포함 날짜다. 초대받은 사용자는 Accept/Decline으로 응답한다. 충돌 시 입력을 보존하며 Load latest version으로 최신 자료를 검토한다.
 
-1. Dashboard에서 저장 일정 수, 오늘 일정, 실제 unread Chat, 개인 미완료 할 일을 확인한다.
-2. Account activity에서 내부 unread Email과 별도 Mock unread Email, 오늘 일정, 최근 활동을 확인한다.
-3. New task를 작성하고 Add task를 누른다. 체크하면 완료, Delete로 해당 개인 작업을 제거한다.
-4. New report는 요약 모달, Export는 JSON 파일을 제공한다.
-5. 최근 7일 차트는 DB 활동이다. Site visits, Sales, Weather에 Sample 표시가 있으면 실제 분석/매출/기상 정보가 아니다.
+범위와 카테고리 필터를 함께 사용할 수 있다. related는 본인 생성/참석 일정을 보여 주며 다른 공유 일정은 all에서 확인한다. 일정 동기화는3초 재조회다. Reset my private calendar samples는 공유/초대 리소스를 보존하지만 개인 legacy snapshot을 샘플로 바꾸는 동작도 포함하므로 일반 새로고침으로 사용하지 않는다.
 
-목록과 통계는 페이지 진입/새로고침 때 갱신된다. Chat의 실시간 통지와 Dashboard 갱신은 서로 다른 기능이다.
+## 채팅·메일·구성원
 
-## Calendar
+Chat은 실제 모드가 기본이다. New shared room으로 전체 공유 방을 만들거나 실제 사용자 검색/People의 Chat으로 비공개1:1을 연다. Enter는 전송, Shift+Enter는 줄바꿈이다. Stored는 서버 저장, 읽음 표시는 상대 읽음 기록이다. 즐겨찾기와 방 내용 검색으로 원문을 다시 찾는다.
 
-1. 처음 진입하면 기존 일정이 현재 브라우저 timezone을 사용해 서버 리소스로 복사된다. 원래 snapshot은 보존한다.
-2. New event, Quick add 또는 날짜/시간 선택으로 모달을 연다.
-3. 제목, 설명, 시작/종료, 카테고리, 위치 및 IANA timezone을 입력한다. 예: `Asia/Seoul`, `America/New_York`.
-4. 반복은 Daily/Weekly/Monthly, 간격 및 전체 발생 횟수를 정한다. 무한 반복과 개별 발생일 수정은 지원하지 않는다.
-5. Find attendees에 실제 username/표시 이름 2자 이상을 입력하고 검색 결과 버튼을 눌러 초대할 계정을 추가한다.
-6. Save event를 누른다. 실패하면 오류와 입력이 유지된다. 시작보다 빠른 종료와 모호한 DST 입력은 수정해야 한다.
-7. 초대받은 계정은 일정을 클릭하고 Accept invitation 또는 Decline invitation을 누른다. 소유자만 본문을 편집/삭제할 수 있다.
-8. 기존 일정을 클릭해 편집/삭제한다. 반복일을 클릭해도 시리즈 전체에 적용된다. 비반복 소유 일정은 드래그/끝 핸들로 조절할 수 있다.
-9. Search events, 카테고리, Day/Week/Month/Agenda를 사용한다. Export는 시리즈 정의 JSON을 내려받는다.
+Email은 내부 메일함이 기본이다. Compose에서 활성 구성원을 검색해 To/Cc/Bcc를 선택하고 텍스트 본문을 보내거나 Save draft한다. delivered-internal 성공은 서비스 내부 전달이다. 자기 읽음/Trash 이동은 상대 사본에 영향을 주지 않는다. 실제 첨부·외부 이메일은 지원하지 않는다. 자동 목록 갱신은 설정에 따라30초이며 작성 중에는 보류한다.
 
-종일 Last day는 마지막 포함 날짜다. 시간 모달은 일정 timezone 기준이고 캘린더 격자는 브라우저 timezone으로 표시한다. Reset my calendar samples는 원래 샘플만 복원하며 직접 만든 리소스와 공유한 샘플은 보존한다. 기존 snapshot의 초기화 기능도 동작하므로 누르기 전에 목적을 확인한다.
+People은 공개 연락처 검색·메일 작성·1:1 진입이며 계정관리/RBAC 화면이 아니다. Search는 자기 또는 접근 가능한 원본만 찾는다. Needs attention은 마감·초대·미읽음을 모으며 처리/읽음은 원래 화면에서 한다.
 
-## 실제 Chat
+개발용 보존 Mock은 `email.html?mailMode=mock`, `chat.html?chatMode=mock`으로 선택한다. Mock 첨부/전송은 실제 내부 전달과 다른 테스트 기능이다. 더 상세한 계약은 [개발 문서](../docs/README.md)에 있다.
 
-1. Chat에서 **Switch to real account chat**을 누른다. LIVE 표시를 확인한다.
-2. Find real users 입력에 username 또는 표시 이름을 2자 이상 입력한다.
-3. 결과의 계정을 클릭하면 그 계정과 1:1 방을 만든다. 같은 상대와 다시 만들면 같은 방을 연다.
-4. 메시지를 입력하고 Enter 또는 전송 버튼을 누른다. Shift+Enter는 줄바꿈이다.
-5. 상대방은 별도 로그인한 Chat LIVE 화면에서 방을 열고 실시간 수신/답장을 할 수 있다.
-6. Stored on server는 DB 저장 성공, Read by recipient는 상대가 읽음 커서를 저장했음을 뜻한다. 상대가 접속 중이라는 표시를 만들어내지 않는다.
-7. 연결이 끊기면 재접속 안내가 나온다. HTTP가 살아 있다면 계속 저장할 수 있고, 새로고침 및 방 선택으로 DB 이력을 복구한다.
+## Email Label 사용
 
-**Switch to preserved mock chat**으로 원래 데이터에 돌아간다. Mock 방과 `fixture-*` 참가자는 실제 계정이 아니다. Mock 전송은 자기 계정에만 저장된다. Reset my chat samples는 Mock에만 적용하며 실제 방/메시지를 삭제하지 않는다.
+Inbox, Sent 등 메일함을 선택한 뒤 Work/Team/Finance/Invoices/Travel을 누르면 그 메일함 안에서 해당 Label의 메일만 보인다. 같은 Label을 다시 누르거나 목록 상단의 ×를 누르면 해제된다. 다른 Label을 누르면 교체되고, 메일함을 바꾸면 자동으로 해제된다. 검색 등 다른 조건은 유지된다.
 
-## Email
-
-기본 Email/Compose는 보존된 Mock 메일함이다. 전송 결과의 Mock 안내를 확인한다. 기존 작성/답장/전달/임시 저장/검색/폴더/별표/첨부/초기화 기능을 사용할 수 있다.
-
-실제 내부 전송은 다음과 같다.
-
-1. **Real internal mailbox** 링크로 내부 모드에 들어간다. URL은 `email.html?mailMode=internal`이다.
-2. Compose를 누르고 받는 사람에 등록된 `username@adminator.test`를 입력한다. 외부 주소는 거부된다.
-3. 제목과 텍스트 본문을 입력한다. To/Cc/Bcc를 사용할 수 있다. 내부 첨부파일은 아직 지원하지 않는다.
-4. Save draft로 저장하거나 Send로 전송한다. 성공 상태는 `delivered-internal`이다.
-5. 상대 계정은 같은 내부 모드 Inbox에서 Refresh 또는 재접속하여 수신한다. 읽으면 자기 메일만 읽음 처리된다.
-6. 검색/필터/폴더 이동/별표/Trash 삭제를 사용한다. 삭제와 읽음은 상대방의 별도 사본에 영향을 주지 않는다.
-7. **Preserved mock mailbox**로 기존 Mock 데이터에 돌아갈 수 있다. 두 메일함 데이터는 합쳐지지 않는다.
-
-외부 이메일 주소와 일반 메일 앱에서는 수신되지 않는다. SMTP/IMAP 연결은 구현되지 않았다.
-
-## 기타 페이지
-
-표 샘플은 CSV, Charts는 첫 차트 PNG, Vector map은 SVG를 내보낼 수 있다. DataTable은 샘플 행 검색과 View 상세를 제공한다. Forms는 샘플 입력 검증/초기화만 하며 프로필/역할을 저장하지 않는다. 무동작 예제 버튼의 목록은 구현 현황 문서를 참고한다.
+선택한 Label은 사이드바 배경과 상단 표시로 확인할 수 있다. 오른쪽 숫자는 현재 계정의 전체 메일 중 해당 Label이 붙은 메일 수이며 Spam과 Trash도 포함한다. 삭제·복구만으로 숫자는 바뀌지 않고 Label을 추가·제거하면 갱신된다. 조회할 수 없을 때는0 대신 `—`가 표시되며 Refresh로 다시 확인한다. 결과가 없으면 빈 목록 안내를 표시한다.

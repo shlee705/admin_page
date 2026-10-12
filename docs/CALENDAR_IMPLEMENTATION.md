@@ -1,14 +1,16 @@
 # Calendar 구현과 시간 모델
 
+2026-10-12: durable clientId/Idempotency-Key receipt·원본 create retry·원래 zone 이동·기간 snapshot·변경 없는 render 생략·설정 복구를 적용했다. receipt는 restart/edit/delete 후에도 최초 응답을 보존한다. 신규 ID-less POST는 legacy unprotected 계약이다. [09 검증](09_POST_FIX_REGRESSION_REPORT.md).
+
 기준일: 2026-10-11. 근거: `calendar.js`, `workspace/resources.js:ResourceCalendar`, `backend/resources.py`. 실제 리소스 API가 현재 화면의 기본이며 legacy snapshot 설명은 [아카이브](archive/README.md)에 보존했다.
 
 ## 화면과 서비스
 
 FullCalendar의 Day/Week/Month/Agenda, Today/월 이동, 날짜·범위 선택, 미니 캘린더, Quick add/New event, CRUD, 검색·카테고리·범위 선택, Upcoming, JSON export, 반복·참석자·RSVP를 연결한다. 수정 dialog는 native dialog, label/alert/status/testid를 쓰고 저장 실패 시 입력을 남긴다. 409에서는 최신 제목/시간/revision과 Load latest version을 제공하며 자동 병합하지 않는다.
 
-`ResourceCalendar.list()`는 전용 이벤트 API를 읽고 `occurrences()`는 expand=true를 별도 조회한다. PATCH/DELETE는 기존 revision을 보낸다. 보이는 화면에서 편집 모달이 닫혀 있고 저장 중이 아닐 때 3초 재조회한다. 계정 변경/pagehide에서 timer를 종료한다. 서버 push가 아니다.
+실제 화면은 `ResourceCalendar.viewSnapshot(activeStart,activeEnd)` 한 번으로 기간 발생일·모든 visible series·upcoming 후보를 읽는다. legacy list/occurrences도 남아 있고 occurrences의 중복 list 호출은 제거했다. PATCH/DELETE는 기존 revision을 보낸다. 보이는 화면에서 편집 모달이 닫혀 있고 저장 중이 아닐 때 3초 재조회한다. 계정 변경/pagehide에서 timer를 종료한다. 서버 push가 아니다.
 
-UI editable은 `canEdit && !recurrence`다. 비반복 shared 이벤트도 canEdit=true라 편집·drag/resize할 수 있다. 이동은 브라우저 local 시간과 timezone을 전달하고 실패 시 FullCalendar revert를 호출한다. 반복 발생일을 클릭해도 전체 시리즈를 수정/삭제하며 개별 occurrence drag는 비활성이다.
+UI editable은 `canEdit && !recurrence`다. 비반복 shared 이벤트도 canEdit=true라 편집·drag/resize할 수 있다. timed 이동은 UTC instant와 이벤트 원래 IANA timezone, 종일은 dateOnly를 전달하고 실패 시 FullCalendar revert를 호출한다. 반복 발생일을 클릭해도 전체 시리즈를 수정/삭제하며 개별 occurrence drag는 비활성이다.
 
 범위와 카테고리는 각각 `[data-calendar-scope]`, `[data-testid="calendar-filter"]`에 연결한다. rail 재생성 후에도 두 필터가 독립적으로 유지되며 DOM 회귀 테스트로 검증했다. 저장 commit이 확인되면 모달을 닫고 dirty 상태를 해제한다. 후속 조회 실패는 저장 성공과 분리해 안내한다. RSVP 실패 후 기존 read-only 제어를 복원하고, 이전 모달의 지연 참석자 검색 결과는 폐기한다.
 
@@ -20,11 +22,11 @@ UI editable은 `canEdit && !recurrence`다. 비반복 shared 이벤트도 canEdi
 
 ## 데이터·시간대·반복
 
-EventInput은 title(1–200), description(4000), start/end(40), allDay, category, timezone(80), location(300), recurrence?, attendeeIds, expectedRevision?다. category는 personal/work/team/travel/finance/birthday/holiday다. 정확한 응답 메타데이터와 경로는 [API](API_REFERENCE.md)에 있다.
+EventInput은 title(1–200), description(4000), start/end(40), allDay, category, timezone(80), location(300), recurrence?, attendeeIds, expectedRevision?, clientId?(1–80)다. category는 personal/work/team/travel/finance/birthday/holiday다. 정확한 응답 메타데이터와 경로는 [API](API_REFERENCE.md)에 있다.
 
 종일은 YYYY-MM-DD이고 end exclusive다. UI Last day는 inclusive라 저장 시 하루를 더한다. timed 입력은 IANA zone에서 해석하고 UTC로 저장한다. 명시 offset이 있는 입력은 해당 instant를 zone으로 변환한다. offset 없는 ambiguous/nonexistent DST wall time은 거절한다. 모달은 이벤트 timezone, FullCalendar 격자/Calendar Upcoming은 브라우저 timezone, Home 표시와 보고서 날짜는 계정 timezone이다. 모두 동일한 시간대 표시라고 설명하지 않는다.
 
-recurrence는 daily/weekly/monthly, interval 1–30, count 1–366의 유한 반복이다. 월 반복에 없는 날짜는 월말로 보정한다. 지역 wall time을 유지하며 발생일을 계산하고 존재하지 않는 DST 시각/음수 duration 시리즈는 거절한다. expand 응답은 시리즈 ID와 occurrence 순번을 반환한다. 표준 RRULE 전체, 예외일, 단일 발생일 편집, 기간(from/to) paging은 없다.
+recurrence는 daily/weekly/monthly, interval 1–30, count 1–366의 유한 반복이다. 월 반복에 없는 날짜는 월말로 보정한다. 지역 wall time을 유지하며 발생일을 계산하고 존재하지 않는 DST 시각/음수 duration 시리즈는 거절한다. expand 응답은 시리즈 ID와 occurrence 순번을 반환한다. 표준 RRULE 전체, 예외일, 단일 발생일 편집은 없다. start/end 기간 query는 양끝 필수·양수≤366일이며 교차 발생일을 반환한다.
 
 ## legacy import와 샘플 복원
 
@@ -34,4 +36,4 @@ recurrence는 daily/weekly/monthly, interval 1–30, count 1–366의 유한 반
 
 샘플은 오늘 회의·겹친 시간·내일 종일·다일 워크숍·긴 제목 5개다. 자동 공유 시드가 아니며 명시 Reset/import 시 개인 자료로 만든다. Reset은 기존 legacy snapshot의 사용자 수정도 덮을 수 있으므로 import와 복원을 일반 조회처럼 취급하지 않는다.
 
-테스트 위치와 PC 마우스/모바일 검증의 차이는 [TESTING](TESTING.md)에 있다. DST offset 선택 UI, 실제 기기 터치, 기간 쿼리는 남은 과제다.
+테스트 위치와 PC 마우스/모바일 검증의 차이는 [TESTING](TESTING.md)에 있다. DST offset 선택 UI와 실제 기기 터치는 남은 과제다. 기간 query와 실제PC마우스 DST drag/resize는 최신09에서 검증했다.

@@ -1,16 +1,18 @@
 """Authenticated collaboration resources, independent of preserved mock snapshots."""
 import asyncio
 import calendar
+import hashlib
 import json
 import time
+from itertools import islice
 from datetime import datetime, timedelta, timezone
 from uuid import uuid4
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel, ConfigDict, Field, model_validator
-from sqlalchemy import select, func, or_
+from sqlalchemy import select, func, or_, and_
 from sqlalchemy.exc import IntegrityError
-from backend.models import User, ChatRoom, ChatMember, ChatMessage, CalendarEvent, CalendarAttendee, CalendarImport, WorkspaceState, MockMailbox, InternalMail, utcnow
+from backend.models import User, ChatRoom, ChatMember, ChatMessage, CalendarEvent, CalendarAttendee, CalendarImport, CalendarSubmission, WorkspaceState, MockMailbox, InternalMail, utcnow
 from backend.security import authenticated, check_csrf, public_user
 
 
@@ -43,6 +45,7 @@ class Recurrence(DTO):
 
 
 class EventInput(DTO):
+    clientId: str | None = Field(default=None, min_length=1, max_length=80)
     title: str = Field(min_length=1, max_length=200)
     description: str = Field(default="", max_length=4000)
     start: str = Field(max_length=40)
@@ -57,6 +60,8 @@ class EventInput(DTO):
 
     @model_validator(mode="after")
     def valid_dates(self):
+        if self.clientId is not None and not self.clientId.strip():
+            raise ValueError("Request ID cannot be blank")
         if not self.title.strip():
             raise ValueError("Title cannot be blank")
         zone = get_zone(self.timezone)
@@ -108,7 +113,7 @@ def parse_time(value, all_day, zone):
 
 
 def event_data(data):
-    result = data.model_dump(exclude={"expectedRevision", "attendeeIds"})
+    result = data.model_dump(exclude={"expectedRevision", "attendeeIds", "clientId"})
     result["title"] = result["title"].strip()
     zone = get_zone(data.timezone)
     for key in ["start", "end"]:
@@ -117,11 +122,18 @@ def event_data(data):
     return result
 
 
-def occurrences(data):
+def occurrences(data, start_at=None, end_at=None):
     zone = get_zone(data["timezone"])
     start, end = parse_time(data["start"], data["allDay"], zone), parse_time(data["end"], data["allDay"], zone)
     rule = data.get("recurrence")
-    for index in range(rule["count"] if rule else 1):
+    first, stop = 0, rule["count"] if rule else 1
+    if rule and rule["frequency"] in {"daily", "weekly"}:
+        days = rule["interval"] * (7 if rule["frequency"] == "weekly" else 1)
+        if start_at:
+            first = max(0, (start_at.astimezone(zone).date() - end.date()).days // days - 1)
+        if end_at:
+            stop = min(stop, (end_at.astimezone(zone).date() - start.date()).days // days + 2)
+    for index in range(first, max(first, stop)):
         def shift(dt):
             if not rule:
                 return dt
@@ -138,6 +150,10 @@ def occurrences(data):
             for dt in [a, b]:
                 if dt.astimezone(timezone.utc).astimezone(zone).replace(tzinfo=None) != dt.replace(tzinfo=None):
                     raise ValueError("Recurring series crosses a nonexistent DST local time")
+        if start_at and b.astimezone(timezone.utc) <= start_at:
+            continue
+        if end_at and a.astimezone(timezone.utc) >= end_at:
+            continue
         yield {**data, "start": a.date().isoformat() if data["allDay"] else a.isoformat(), "end": b.date().isoformat() if data["allDay"] else b.isoformat(), "occurrence": index}
 
 
@@ -151,21 +167,24 @@ def install_resources(app, database, settings):
             check_csrf(request, db, settings)
         return user
 
-    def member(db, room_id, user_id):
+    def member(db, room_id, user_id, persist=False):
         row = db.get(ChatMember, (room_id, user_id))
         room = db.get(ChatRoom, room_id)
         if not row and room and room.is_shared:
-            from sqlalchemy.dialects.sqlite import insert
-            db.execute(insert(ChatMember).values(room_id=room_id, user_id=user_id, read_sequence=0).on_conflict_do_nothing())
-            db.commit()
-            row = db.get(ChatMember, (room_id, user_id))
+            row = ChatMember(room_id=room_id, user_id=user_id, read_sequence=0)
+            if persist:
+                # Official SQLite path: join atomically, without committing the
+                # mutation early. Validation failures roll this insertion back.
+                from sqlalchemy.dialects.sqlite import insert
+                db.execute(insert(ChatMember).values(room_id=room_id, user_id=user_id, read_sequence=0).on_conflict_do_nothing())
+                row = db.get(ChatMember, (room_id, user_id))
         if not row:
             raise HTTPException(404, "Conversation not found")
         return row
 
-    def message_json(db, row):
-        sender = db.get(User, row.sender_id)
-        return {"id": row.id, "sequence": row.sequence, "roomId": row.room_id, "senderId": row.sender_id, "senderName": sender.display_name, "clientId": row.client_id, "body": row.body, "sentAt": iso(row.sent_at), "delivery": "stored"}
+    def message_json(db, row, senders=None):
+        sender_name = senders[row.sender_id] if senders is not None else db.get(User, row.sender_id).display_name
+        return {"id": row.id, "sequence": row.sequence, "roomId": row.room_id, "senderId": row.sender_id, "senderName": sender_name, "clientId": row.client_id, "body": row.body, "sentAt": iso(row.sent_at), "delivery": "stored"}
 
     async def broadcast(user_ids, payload):
         for user_id in user_ids:
@@ -203,9 +222,9 @@ def install_resources(app, database, settings):
         room = db.scalar(select(ChatRoom).where(ChatRoom.pair_key == pair))
         if not room:
             room = ChatRoom(pair_key=pair)
-            db.add(room); db.flush()
-            db.add_all([ChatMember(room_id=room.id, user_id=uid) for uid in [user.id, other.id]])
             try:
+                db.add(room); db.flush()
+                db.add_all([ChatMember(room_id=room.id, user_id=uid) for uid in [user.id, other.id]])
                 db.commit()
             except IntegrityError:
                 db.rollback()
@@ -214,15 +233,35 @@ def install_resources(app, database, settings):
         return {"id": room.id}
 
     def rooms_for(db, uid):
+        joined = select(ChatMember.room_id).where(ChatMember.user_id == uid)
+        rooms = db.scalars(select(ChatRoom).where(or_(ChatRoom.is_shared.is_(True), ChatRoom.id.in_(joined)))).all()
+        if not rooms:
+            return []
+        ids = [room.id for room in rooms]
+        members_by_room = {rid: [] for rid in ids}
+        for entry in db.scalars(select(ChatMember).where(ChatMember.room_id.in_(ids))):
+            members_by_room[entry.room_id].append(entry)
+        people = db.execute(select(User.id, User.display_name, User.is_active)).all()
+        names = {person.id: person.display_name for person in people}
+        active_ids = [person.id for person in people if person.is_active]
+        last_sequences = select(func.max(ChatMessage.sequence)).where(ChatMessage.room_id.in_(ids)).group_by(ChatMessage.room_id)
+        last = {m.room_id: m for m in db.scalars(select(ChatMessage).where(ChatMessage.sequence.in_(last_sequences)))}
+        unread = dict(db.execute(select(ChatMessage.room_id, func.count()).outerjoin(ChatMember,
+            and_(ChatMember.room_id == ChatMessage.room_id, ChatMember.user_id == uid)).where(
+            ChatMessage.room_id.in_(ids), ChatMessage.sender_id != uid,
+            ChatMessage.sequence > func.coalesce(ChatMember.read_sequence, 0)).group_by(ChatMessage.room_id)).all())
         result = []
-        for room in db.scalars(select(ChatRoom).where(ChatRoom.is_shared.is_(True))).all():
-            member(db, room.id, uid)
-        for membership in db.scalars(select(ChatMember).where(ChatMember.user_id == uid)).all():
-            room = db.get(ChatRoom, membership.room_id)
-            members = db.scalars(select(ChatMember).where(ChatMember.room_id == membership.room_id)).all()
-            last = db.scalar(select(ChatMessage).where(ChatMessage.room_id == membership.room_id).order_by(ChatMessage.sequence.desc()).limit(1))
-            unread = db.scalar(select(func.count()).select_from(ChatMessage).where(ChatMessage.room_id == membership.room_id, ChatMessage.sender_id != uid, ChatMessage.sequence > membership.read_sequence))
-            result.append({"id": membership.room_id, "shared": room.is_shared, "createdBy": room.created_by, "createdAt": iso(room.created_at), "name": room.name or ", ".join(db.get(User, m.user_id).display_name for m in members if m.user_id != uid), "participantIds": [m.user_id for m in members], "readCursors": {m.user_id: m.read_sequence for m in members}, "unread": unread, "messages": [message_json(db, last)] if last else []})
+        for room in rooms:
+            members = members_by_room[room.id]
+            cursors = {m.user_id: m.read_sequence for m in members}
+            participants = active_ids if room.is_shared else list(cursors)
+            for participant in participants:
+                cursors.setdefault(participant, 0)
+            latest = last.get(room.id)
+            result.append({"id": room.id, "shared": room.is_shared, "createdBy": room.created_by,
+                "createdAt": iso(room.created_at), "name": room.name or ", ".join(names[m.user_id] for m in members if m.user_id != uid),
+                "participantIds": participants, "readCursors": cursors, "unread": unread.get(room.id, 0),
+                "messages": [message_json(db, latest, names)] if latest else []})
         return sorted(result, key=lambda r: r["messages"][-1]["sequence"] if r["messages"] else 0, reverse=True)
 
     @router.get("/chat/rooms")
@@ -230,14 +269,27 @@ def install_resources(app, database, settings):
         return {"rooms": rooms_for(db, identity(request, db).id)}
 
     @router.get("/chat/rooms/{room_id}/messages")
-    def messages(room_id: str, request: Request, after: int = Query(default=0, ge=0), limit: int = Query(default=100, ge=1, le=200), db=Depends(database)):
+    def messages(room_id: str, request: Request, after: int = Query(default=0, ge=0),
+                 limit: int = Query(default=100, ge=1, le=200), before: int | None = Query(default=None, ge=1),
+                 latest: bool = False, db=Depends(database)):
         user = identity(request, db); member(db, room_id, user.id)
-        rows = db.scalars(select(ChatMessage).where(ChatMessage.room_id == room_id, ChatMessage.sequence > after).order_by(ChatMessage.sequence).limit(limit)).all()
-        return {"messages": [message_json(db, row) for row in rows], "nextAfter": rows[-1].sequence if rows else after, "hasMore": len(rows) == limit}
+        recent = latest or before is not None
+        query = select(ChatMessage).where(ChatMessage.room_id == room_id)
+        query = query.where(ChatMessage.sequence < before) if before is not None else query.where(ChatMessage.sequence > after)
+        query = query.order_by(ChatMessage.sequence.desc() if recent else ChatMessage.sequence)
+        rows = db.scalars(query.limit(limit + 1)).all()
+        has_more = len(rows) > limit
+        rows = rows[:limit]
+        if recent:
+            rows.reverse()
+        names = dict(db.execute(select(User.id, User.display_name).where(User.id.in_({row.sender_id for row in rows}))).all()) if rows else {}
+        return {"messages": [message_json(db, row, names) for row in rows],
+            "nextAfter": rows[-1].sequence if rows else after, "hasMore": has_more if not recent else False,
+            "hasOlder": has_more if recent else False, "oldestSequence": rows[0].sequence if rows else None}
 
     @router.post("/chat/rooms/{room_id}/messages", status_code=201)
     async def send_message(room_id: str, data: MessageInput, request: Request, db=Depends(database)):
-        user = identity(request, db, True); member(db, room_id, user.id)
+        user = identity(request, db, True); member(db, room_id, user.id, persist=True)
         body = data.body.strip()
         if not body:
             raise HTTPException(422, "Message cannot be blank")
@@ -263,7 +315,7 @@ def install_resources(app, database, settings):
 
     @router.post("/chat/rooms/{room_id}/read")
     async def mark_read(room_id: str, data: ReadInput, request: Request, db=Depends(database)):
-        user = identity(request, db, True); membership = member(db, room_id, user.id)
+        user = identity(request, db, True); membership = member(db, room_id, user.id, persist=True)
         if data.sequence and not db.scalar(select(ChatMessage).where(ChatMessage.room_id == room_id, ChatMessage.sequence == data.sequence)):
             raise HTTPException(422, "Read cursor must refer to this conversation")
         # SQL MAX-like conditional update keeps concurrent read acknowledgements monotonic.
@@ -311,10 +363,11 @@ def install_resources(app, database, settings):
             raise HTTPException(404, "Event not found")
         return row
 
-    def event_json(db, row, uid):
+    def event_json(db, row, uid, attendees=None, names=None):
         data = json.loads(row.data_json)
-        attendees = db.scalars(select(CalendarAttendee).where(CalendarAttendee.event_id == row.id)).all()
-        return {**data, "id": row.id, "ownerId": row.owner_id, "revision": row.revision, "shared": row.is_shared, "createdBy": row.owner_id, "updatedBy": row.updated_by or row.owner_id, "updatedAt": iso(row.updated_at), "version": row.revision, "canEdit": row.is_shared or row.owner_id == uid, "createdAt": iso(row.created_at), "attendees": [{"userId": a.user_id, "displayName": db.get(User, a.user_id).display_name, "status": a.status} for a in attendees]}
+        if attendees is None:
+            attendees = db.scalars(select(CalendarAttendee).where(CalendarAttendee.event_id == row.id)).all()
+        return {**data, "id": row.id, "ownerId": row.owner_id, "revision": row.revision, "shared": row.is_shared, "createdBy": row.owner_id, "updatedBy": row.updated_by or row.owner_id, "updatedAt": iso(row.updated_at), "version": row.revision, "canEdit": row.is_shared or row.owner_id == uid, "createdAt": iso(row.created_at), "attendees": [{"userId": a.user_id, "displayName": names[a.user_id] if names is not None else db.get(User, a.user_id).display_name, "status": a.status} for a in attendees]}
 
     def visible_events(db, uid):
         invited = select(CalendarAttendee.event_id).where(CalendarAttendee.user_id == uid)
@@ -374,7 +427,7 @@ def install_resources(app, database, settings):
             if not record["id"].startswith("sample-"):
                 continue
             row = db.scalar(select(CalendarEvent).where(CalendarEvent.owner_id == user.id, CalendarEvent.legacy_id == record["id"]))
-            if row and db.scalar(select(CalendarAttendee).where(CalendarAttendee.event_id == row.id)):
+            if row and (row.is_shared or db.scalar(select(CalendarAttendee).where(CalendarAttendee.event_id == row.id))):
                 continue
             item = EventInput(**{k:v for k,v in record.items() if k != "id"}, timezone=imported.timezone)
             if row:
@@ -385,19 +438,83 @@ def install_resources(app, database, settings):
         db.commit()
         return {"restored": restored}
 
+    def events_json(db, rows, uid):
+        groups = {row.id: [] for row in rows}
+        if not groups:
+            return []
+        attendees = db.scalars(select(CalendarAttendee).where(CalendarAttendee.event_id.in_(groups))).all()
+        names = dict(db.execute(select(User.id, User.display_name).where(User.id.in_({a.user_id for a in attendees}))).all()) if attendees else {}
+        for attendee in attendees:
+            groups[attendee.event_id].append(attendee)
+        return [event_json(db, row, uid, groups[row.id], names) for row in rows]
+
     @router.get("/calendar/events")
-    def list_events(request: Request, q: str = Query(default="", max_length=200), expand: bool = False, db=Depends(database)):
+    def list_events(request: Request, q: str = Query(default="", max_length=200), expand: bool = False,
+                    start: str | None = None, end: str | None = None, db=Depends(database)):
         user = identity(request, db)
-        items = [event_json(db, row, user.id) for row in visible_events(db, user.id)]
+        start_at = end_at = None
+        if start is not None or end is not None:
+            try:
+                if not start or not end:
+                    raise ValueError("Both start and end are required")
+                start_at = datetime.fromisoformat(start.replace('Z', '+00:00'))
+                end_at = datetime.fromisoformat(end.replace('Z', '+00:00'))
+                start_at = start_at.replace(tzinfo=timezone.utc) if start_at.tzinfo is None else start_at.astimezone(timezone.utc)
+                end_at = end_at.replace(tzinfo=timezone.utc) if end_at.tzinfo is None else end_at.astimezone(timezone.utc)
+                if not start_at < end_at or end_at - start_at > timedelta(days=366):
+                    raise ValueError("Calendar range must be positive and at most 366 days")
+            except ValueError as error:
+                raise HTTPException(422, str(error))
+        items = events_json(db, visible_events(db, user.id), user.id)
         items = [item for item in items if q.lower() in (item["title"] + item["description"] + item.get("location", "")).lower()]
-        return {"events": [occurrence for item in items for occurrence in occurrences(item)] if expand else items}
+        if expand:
+            result = {"events": [occurrence for item in items for occurrence in occurrences(item, start_at, end_at)]}
+            if start_at:
+                result['series'] = items
+                now = datetime.now(timezone.utc)
+                # Five per series is enough to derive any scope's next five in
+                # the client, including repeated occurrences outside this view.
+                result['upcoming'] = sorted((e for item in items for e in islice(occurrences(item, now), 5)),
+                    key=lambda e: parse_time(e['start'], e['allDay'], get_zone(e['timezone'])))
+            return result
+        return {"events": items}
 
     @router.post("/calendar/events", status_code=201)
-    def create_event(data: EventInput, request: Request, db=Depends(database)):
+    def create_event(data: EventInput, request: Request, response: Response, db=Depends(database)):
         user = identity(request, db, True)
-        row = CalendarEvent(owner_id=user.id, is_shared=True, updated_by=user.id, data_json=json.dumps(event_data(data)))
-        db.add(row); db.flush(); set_attendees(db, row, data.attendeeIds); db.commit()
-        return event_json(db, row, user.id)
+        retry_key = request.headers.get("Idempotency-Key")
+        if retry_key is not None:
+            if not retry_key.strip() or len(retry_key) > 80 or (data.clientId and data.clientId != retry_key):
+                raise HTTPException(422, "Provide one matching request ID of 1–80 characters")
+            data = data.model_copy(update={"clientId": retry_key})
+        # ID-less legacy callers remain supported, with an explicit limited guarantee.
+        response.headers["Idempotency-Status"] = "protected" if data.clientId else "unprotected"
+        normalized = event_data(data)
+        fingerprint = hashlib.sha256(json.dumps({**normalized, "attendeeIds": sorted(data.attendeeIds)}, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+
+        def saved_response(saved):
+            if not saved or saved.fingerprint != fingerprint:
+                raise HTTPException(409, "Event request ID was already used for different input; retry the original request")
+            return json.loads(saved.response_json)
+
+        if data.clientId:
+            saved = db.get(CalendarSubmission, (user.id, data.clientId))
+            if saved:
+                return saved_response(saved)
+        row = CalendarEvent(owner_id=user.id, is_shared=True, updated_by=user.id, data_json=json.dumps(normalized))
+        try:
+            db.add(row); db.flush(); set_attendees(db, row, data.attendeeIds); db.flush()
+            result = event_json(db, row, user.id)
+            if data.clientId:
+                db.add(CalendarSubmission(owner_id=user.id, client_id=data.clientId, fingerprint=fingerprint, response_json=json.dumps(result)))
+            # The event, invitations and durable response succeed or roll back together.
+            db.commit()
+        except IntegrityError:
+            db.rollback()
+            if not data.clientId:
+                raise
+            return saved_response(db.get(CalendarSubmission, (user.id, data.clientId)))
+        return result
 
     @router.get("/calendar/events/{eid}")
     def get_event(eid: str, request: Request, db=Depends(database)):
@@ -445,10 +562,10 @@ def install_resources(app, database, settings):
         now = datetime.now(zone); today = now.replace(hour=0, minute=0, second=0, microsecond=0)
         tomorrow = today + timedelta(days=1)
         rows = visible_events(db, user.id)
-        events = [event_json(db, row, user.id) for row in rows]
+        events = events_json(db, rows, user.id)
         if scope != "all":
             events = [e for e in events if (e["ownerId"] == user.id if scope == "owned" else any(a["userId"] == user.id for a in e["attendees"]) if scope == "invited" else e["ownerId"] == user.id or any(a["userId"] == user.id and a["status"] != "declined" for a in e["attendees"]))]
-        expanded = [occ for item in events for occ in occurrences(item) if not any(a["userId"] == user.id and a["status"] == "declined" for a in item["attendees"])]
+        expanded = [occ for item in events for occ in occurrences(item, today) if not any(a["userId"] == user.id and a["status"] == "declined" for a in item["attendees"])]
         today_events = [e for e in expanded if parse_time(e["start"], e["allDay"], get_zone(e["timezone"])) < tomorrow and parse_time(e["end"], e["allDay"], get_zone(e["timezone"])) > today]
         upcoming = sorted([e for e in expanded if parse_time(e["end"], e["allDay"], get_zone(e["timezone"])) > now], key=lambda e: parse_time(e["start"], e["allDay"], get_zone(e["timezone"])))[:10]
         rooms = rooms_for(db, user.id)

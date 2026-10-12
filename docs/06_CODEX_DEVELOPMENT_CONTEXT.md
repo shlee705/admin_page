@@ -1,5 +1,104 @@
 # Codex 후속 개발 기술 맥락
 
+최신 기준: **2026-10-12 QA 수정·회귀 완료**. 향후 Codex는 **이 문서→[08 인계](08_WORK_SESSION_HANDOFF.md)→[08 수정 보고](08_QA_REMEDIATION_REPORT.md)·[09 실행 결과](09_POST_FIX_REGRESSION_REPORT.md)→기능 문서·실제 코드** 순으로 읽는다. [07 사람용 요약](07_PROJECT_OVERVIEW_FOR_HUMANS.md)와 docsForHuman은 주요 개발 맥락을 대신하지 않는다.
+
+이 세션의 승인 범위는 첨부된 QA-001~014 실제 코드 수정·비파괴 migration·통합 회귀·문서 갱신이다. 이전 검수 전용 작업과 구별한다. 최초01~05 검수 보고는 수정 이전 역사적 증거이며 덮어쓰지 않았다. 아래 접힌 과거06 문서의 “초안CAS 없음”, “migration0005”, “14건 미해결”, “code/DB 미수정”은 **수정 이전 상태**다.
+
+## 현재 단계·판정
+
+Adminator4.3.0 기반 내부 협업 앱이다. 사용자당 메일·Tasks·Preferences/Mock snapshot과 전역 shared Calendar/Chat, private legacy Calendar/1:1 Chat을 함께 구현했다. **QA14개 해결, frontend171/backend100/브라우저13종/lint/production build 통과**. 현재 SQLite·단일 프로세스의 다음 개발/격리 기능 테스트 기준 버전이다. 운영 인증·부하·원격CI 전수 검증 상태는 아니다.
+
+이전 세션은 사용량 제한으로 QA-009 화면 연결과 전체 회귀가 중단됐다. 요청받은08_WORK_SESSION_HANDOFF가 없고06/07은 검수 시점에 머물러 있었다. source/Git/QA 증거로 상태를 복구했으며 기존 수정 의도를 유지했다. 대규모 재작성·새 도메인 추가·reset/revert는 하지 않았다. 기존 소스/dist/docsForHuman/screenshots의 dirty 변경은 사용자 자료로 보존했다.
+
+## 최신 모듈·실행 관계
+
+| 영역 | 책임·현행 변경 |
+|---|---|
+| HTML24개 / webpack | 각 HTML mount/data-active; shared entry+optional vendor/Email chunks. SPA router 없음 |
+| `index.js` | 인증→Shell→핵심 업무 초기화; Preferences load는 비차단·retry notice; EmailUI는 mail page에서만 dynamic import |
+| `Shell.js/init.js/palette.js` | canonical NAV/breadcrumb·drawer/dropdown·테마 공통 action·viewport popover 보정 |
+| `auth/client.js`·accounts UI / backend accounts/security | cookie+CSRF·X-Account-ID·grant rotation·A↔B·BroadcastChannel reload |
+| `service-hub.js/dashboard.js` | AccountPreferences 상태/구독/CAS, Tasks/Settings/People/Search/Attention/Reports·Home·sourceTask·dirty guard |
+| `email/model/service/ui/internal-api/mock-api` | 고정 Label validation, revision-aware draft/send recovery, 내부 snapshot·Mock fallback·compose |
+| `calendar.js/chat.js/workspace/resources.js` | bounded Calendar snapshot, original-zone move, immutable create retry; recent/incremental/older Chat·deep link·WS |
+| backend `app/config/database` | 조립·보호 정적 hosting·공통 오류 헤더·환경·SQLite Unicode SQL 함수·Alembic |
+| backend `mail/mail_queries` | 내부 owner 사본·원자 CAS·recipient 분류·single page/count snapshot |
+| backend `resources/service_hub/workspace` | Calendar receipt/bounded occurrence·batched rooms/events·권한·업무 집계·strict snapshot |
+
+JS 경로는 `src/assets/scripts/2026`이다. 상태는 controller closure·service cache·DB revision이며 페이지 간 HTML navigation으로 초기화된다. 공유자료의 인증 접근 범위는 변경하지 않았다. forms/blank는Settings,charts는Reports(Reports active),basic-table은calendar?view=agenda,datatable은Tasks를 유지한다. ui/buttons/지도는 예제이며 신규 업무CRUD가 아니다.
+
+환경 Node24.20.0/Python3.12.14, Vitest4.1.10/Playwright1.62.1. FastAPI8000,Webpackdev4000,preview3001. `ADMINATOR_API_TARGET`은 backend target이다. AUTH_ORIGINS를 별도 지정하면 기본 목록을 대체한다. default DB는 cwd 기준 `sqlite:///./backend/data/adminator.db`; dotenv 자동 load 없음. production은HTTPS origin/Secure cookie/auto_migrate=false/dev admin OFF 필수다.
+
+## 인증·데이터 격리 유지
+
+세션 사용자만 서버 owner를 결정한다. 로그인 쿠키는HttpOnly, 클라이언트 secret은localStorage에 저장하지 않는다. AuthClient 요청15초 timeout·credentials/CSRF·응답X-Account-ID 검사를 유지한다. 브라우저 묶음 최대10계정이며 같은 브라우저 탭은 활성 계정을 공유한다. 실패한 추가·전환은 기존 활성 context를 보존하고 제거는유효fallback/마지막logout을 따른다. 만료 자동fallback 없음.
+
+`adminator-account-changing`에서 disposed·구독·timer/WS·입력/DOM을 정리한다. 옛 계정 응답은 폐기한다. dirty guard는 일반 이동을 취소할 수 있으나 session expiry/다른 탭 강제 전환을 막지 않는다. owner/Bcc/private 접근/회전/expiry는 API와 브라우저 회귀로 재확인했다.
+
+## 바뀐 저장·API 계약
+
+### 내부 Email·Label
+
+- Mail 응답은 integer `revision`을 포함한다. 기존draft POST와draft→send는 `id`+`expectedRevision` 필요. 서버는owner/id/revision을 UPDATE 조건으로 사용한다. 누락/stale409는사용자 입력을 보존하며 자동 덮어쓰기/자동병합을 하지 않는다. 신규draft는revision1, 성공변경은+1이다. 읽음/Label/star변경도revision을 갱신하므로 오래된 편집본은충돌할 수 있다.
+- 구 API 소비자는GET에서 revision을 읽어 기존draft 변경에 함께 보내야 한다. 새draft ID-less 생성은 유지한다. send는owner/clientId 또는Idempotency-Key·본문 fingerprint로중복 배달을 방지한다. UI 실패 재시도는처음 보낸body/ID를 유지하고GET이revision을갱신해도retry body는바꾸지 않는다.
+- To/Cc/Bcc/self 수신 사본의labels=[]·category=primary·bcc=[]; 발신 개인분류 유지. 내부첨부/SMTP/IMAP는없다. bodyText10000자·send/draft128KiB.
+- Label은Work/Team/Finance/Invoices/Travel 고정5개. strict 배열·원소문자열·원소≤8/항목≤5·enum·중복제거. legacy invalid label은raw JSON에서삭제하지않고표시만정리한다. explicit 재분류/초안 저장에서이전값을legacyLabels로보관하고 무관한PATCH는raw값을유지한다.
+- 같은Label재클릭/상단×해제, 다른Label교체,모든folder이동시Label초기화. count는owner 전체physical folder(Trash/Spam포함)·메시지당1번. virtualStarred중복 없음. 정상0과실패—구별. 실패한snapshot은committedQuery와현재rows를복구한다.
+- `GET /api/mail/emails?summary=true&folderId=...&limit=25&offset=0`은 `{items,total,offset,limit,folders,labels}`. limit≤100, query/label/category/read/starred/sort/threadId 필터. SQLite에서는BEGIN으로page와counts를같은읽기snapshot에고정하고JSON SQL집계한다. Unicode검색과literal%/_ 및client haystack순서회귀가있다. 무옵션legacy `{items}`전량계약은유지한다. thread읽기는전체thread에scopequery를사용한다. 비SQLitefallback은Python전량조회라성능보장이없다.
+- Mock와외부RESTadapter를삭제하지않았다. Mock단위fallback Promise.allSettled와내부한번snapshot을구별한다. 외부REST서비스를이번에연결/검증하지않았다.
+
+### Calendar
+
+- UI 신규폼은clientId를발급하고불확실한응답실패시첫입력을동결한다. “Retry original request”는변경된폼값이아닌동결body를재전송한다.422같은확정validation실패후에는입력을고쳐저장할수있다.
+- 서버 `calendar_submissions` owner/clientId receipt는event/attendee와같은transaction에저장한다. 같은정규화payload는최초201응답,다른payload409. processrestart/일정edit/delete후에도최초receipt가남는다. 삭제된일정을retry로다시만들지않는다. 최신상태는별도GET한다. ID-less호환POST는허용하되Idempotency-Status=unprotected다.
+- timed는UTC instant·IANAtimezone,종일은date/exclusiveend. drag/resize는원래zone과Date.toISOString(),all-day는dateOnly를보낸다.시리즈전체폼편집·유한daily/weekly/monthly,단일occurrence drag차단정책유지. DSTambiguous/nonexistentoffset없는입력거절.
+- `GET /api/calendar/events?expand=true&start=<ISO>&end=<ISO>`는양끝모두·양수≤366일조건, `{events,series,upcoming}`. events는교차발생일,series는접근가능모든원본(export/편집용),upcoming은시리즈마다미래최대5발생일후보. client는scope에서다음5개를선택해표시기간밖·같은시리즈반복도보존한다. daily/weekly는범위index로과거를건너뛰며monthly는최대366loop다. 무범위expand계약유지.
+- FullCalendar.activeStart/activeEnd의snapshot1요청.3초poll은모달/저장/hidden시중지,동시refresh직렬화·변경없는DOM재생성생략·pagehide/accountdispose. Preferences복구는zone/scope를적용하나기존unsaved모달은바꾸지않는다.
+- 신규shared는전체인증사용자조회·편집·삭제가능,legacyprivate는owner/invitee조회·owner편집. attendee선택은private전환이아니다. scope는표시필터. import는명시API이며자동첫방문/양방향동기화없음. sampleReset은shared/초대보존.
+
+### Chat·Preferences·기타 업무
+
+- 방목록은authorized방의member/lastMessage/unread/sender를batch조회하여N+1을제거한다. shared전체인증/private두멤버정책유지;GET목록/이력은member를저장하지않는다.
+- 기존after/limit메시지계약에latest=true/before를추가했다.최근100개부터캐시하고이후lastsequence이후만조회. hasOlder/oldestSequence/nextAfter를사용하며Load earlier messages로이전100개씩prepend·scroll보존. 과거message deep link는찾을때까지olderpage를로드한다. DB전역sequence를방별연속번호로가정하지않는다. 캐시merge는sequence로중복제거,동시initialhistory는같은promise를사용한다.
+- sendretry의clientId유지·HTTPcommit→WS알림·REST복구·단조readcursor는동일하다. unchanged thread는DOM재생성을생략하며message/readcursor변경은반영한다. 단일process WS접속목록이므로multi-worker용broker는별도과제다.
+- AccountPreferences는loading/unavailable/ready와subscribe/unsubscribe/dispose,serialized CAS save. loaded되기전fallback을서버에쓰지않고계정save는차단한다. retry성공시theme/icon·Homecard/zone·Settings·Emailtimer·Calendarscope/zone·Chatfavorite를알린다. 사용자의unsaved폼은유지한다.
+- topbar와palette는단일toggleTheme,programmatic/userInitiated이벤트구분. 계정Theme의최종적용과localStorage earlypaint역할유지.
+- Tasks는개인workspace snapshot최대500/CAS/256KiB;completedAt와sourceID만기록,삭제업무는report에서사라짐. Home/Attention/Search/Reports는원본자료집계이며불변감사원장없음. 최근7/30/90일Taskreport정책유지.
+
+## DB·보존·빌드
+
+업무/인증ORM16개(원래15+calendar_submissions),migration0001→0007.0006은internal_mail.revision기본1열추가,0007은durablecalendarreceipt표추가. 적용직전SQLitebackup과사본upgrade/full-old-columns rowcomparison→개발DB명시upgrade→동일comparison·integrity_check/foreign_key_check를통과했다. **개발DB현재head0007,기존모든데이터보존**. receipt FK는User만,cascade없음. devreset은receipt만남아도409다.0004~0007downgrade는차단되며단순downgrade/reset은rollback방법이아니다.
+
+증거root: `C:/Users/custa/.codex/visualizations/2026/10/12/01a12d6c-f054-7083-8a93-e63166e8b139/remediation`.
+- `evidence/adminator-before.db`: 최초수정전일관사본.
+- `evidence/adminator-pre-migrate-resume.db`: live migration직전사본.
+- `evidence/migration-{clone,live}-result.json`: 전체기존행/값보존·count·FK/integrity.
+- `dist-pre-install`:반영직전dirtydist전체보관.
+- `build-final1/stats.json`, `evidence/dist-install.json`: minifiedproduction warnings0·51개asset해시일치.
+
+`npm run build`는clean으로dist삭제하므로dirtydist가있는후속작업은별도output을우선사용한다. 이번에는manifest.paths.build만메모리에서QA경로로설정,검증뒤51개파일만dist에copy했다. 이전무관파일/원본font/bg는삭제하지않았다. entry325994→221900B,FullCalendar6분할최대224098B;threshold확대없음. 분할총량은minify단일보다5.6%증가한다.
+
+## 검증·남는범위
+
+전체frontend171/backend100·lint0error/0warning·productionbuild0error/0warning·dependencycheck와13종E2E(PC/mobile)가통과했다. Resources24HTML×2viewport,실제DSTgesture/lost201retry/초안경쟁/Label회귀/Preferences15초timeout·503복구·HTTP/WSproxy를포함한다. 명령·로그·첫실패보완과계측값은09에있다. 원본개발DB로fixture/reset/테스트계정을만들지않았고생성한임시server는종료했다. Starlette/httpxdeprecation1건은남았다.
+
+확인된14QA의미해결0. 그러나JSONcountscan·Calendar모든visible series전송·Home/Search계산은자료량에비례한다. CalendarDOM약18,200·longtask916ms,3초poll/상단30초poll은유지된다. legacy전량API는제거하지않았고더빨라졌다고주장하지않는다. 실제Chrome응답/heap은측정시점/GC의영향을받는다.3sample최대값은productionp95가아니다.
+
+미검증:운영HTTPS/TLSproxy·PostgreSQL·multiworker/WSbroker·실기기/screenreader·장시간누수/남용/부하·원격CI·외부iframe내부/외부RESTmail·최신취약점전수감사·disasterrestore. 정상BFCachepersisted=true는최초QA부터미검증이며일반back/reload만검증했다.
+
+## 버그시스템·후속작업원칙
+
+현재의도적으로삽입된제품버그는없다. MockEmailApi.failNext/UI Simulate next error·dev expire·Playwrightroute503/abort는테스트장치이며독립다중bugregistry/toggle/조합플랫폼이아니다. G-01/G-02는사용자제외범위라구현하지않았다. 버그플랫폼은별도목표·defaultOFF·충돌그룹·cleanup·격리DB정책확정후개발한다.
+
+다음작업순서:실제운영목표/자료량확정→현재회귀기준으로CI실행→운영TLS·실기기/접근성→큰자료Calendar렌더링/JSON검색·count/반복poll측정→승인된구조개선. shared접근정책이나Bcc/Labelcount를성능을이유로변경하지않는다. 새로운소스수정후에는대상검사와관련통합회귀·build/dist일치를확인하고06/07/08handoff를갱신한다. 문서보다코드와Git을확인하고사용자dirty변경을보존한다.
+
+---
+
+<details>
+<summary>보존된 수정 이전 최종 QA 기술 문서 — 현재 구현 상태로 인용하지 말 것</summary>
+
+# Codex 후속 개발 기술 맥락
+
 기준일: **2026-10-12 (Asia/Seoul)**. 현행 소스와 최종 QA를 연결하는 기본 개발 진입점이다. **향후 Codex는 이 문서, 기능별 기술 문서와 실제 소스를 우선 참조한다. 07_PROJECT_OVERVIEW_FOR_HUMANS.md와 docsForHuman은 사람용 요약이며 주요 개발 맥락을 대신하지 않는다.**
 
 이번 요청은 검수 전용이었다. 수정·배포·DB 변경의 승인이 아니다. 아래 수정 순서는 제안이며 코드·테스트·설정·dist·개발 DB를 보존했다.
@@ -110,3 +209,5 @@ Legacy Calendar import는 schema upgrade와 다른 명시 API다. 자동 첫 방
 3. 임시 DB에서 최소 재현과 기존 핵심 회귀를 확보한다. 검수 하네스를 정식 test로 옮길지는 새 작업 범위를 따른다.
 4. schema/contract 변경은 자료 보존·호환·CSRF/owner/Bcc/retry·다른 탭 영향을 검토한다.
 5. 수정 후 필요한 build/lint/test를 실행하고 날짜·증거·미실행 범위를 갱신한다. 상세 맥락과 사람용 요약을 분리 유지한다.
+
+</details>

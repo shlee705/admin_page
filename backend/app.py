@@ -11,7 +11,7 @@ from sqlalchemy.exc import IntegrityError
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 from backend.config import Settings
 from backend.database import create_database, migrate
-from backend.models import User, MockMailbox, AuthSession, AuthAttempt, WorkspaceState, BrowserSession, utcnow
+from backend.models import User, MockMailbox, AuthSession, AuthAttempt, WorkspaceState, BrowserSession, ChatRoom, CalendarEvent, CalendarImport, CalendarSubmission, InternalMail, MailSubmission, utcnow
 from backend.schemas import LoginInput, RegisterInput, MailboxInput
 from backend.workspace import validate_workspace
 from backend.security import PASSWORDS, DUMMY_HASH, authenticated, check_csrf, new_session, public_user, rate_limit, session_for, session_payload, verify_password
@@ -38,38 +38,8 @@ def create_app(settings=None):
         with session_factory() as db:
             yield db
 
-    @app.exception_handler(HTTPException)
-    async def api_error(_, exception):
-        return JSONResponse({"error": {"code": f"HTTP_{exception.status_code}", "message": str(exception.detail)}}, status_code=exception.status_code, headers=exception.headers)
-
-    @app.exception_handler(RequestValidationError)
-    async def validation_error(_, exception):
-        # Never echo rejected input: passwords are included in Pydantic error inputs.
-        fields = [{"field": ".".join(str(part) for part in item["loc"] if part != "body"), "message": item["msg"]} for item in exception.errors()]
-        return JSONResponse({"error": {"code": "VALIDATION", "message": fields[0]["message"] if fields else "Invalid request", "fields": fields}}, status_code=422)
-
-    @app.exception_handler(Exception)
-    async def internal_error(_, exception):
-        return JSONResponse({"error": {"code": "HTTP_500", "message": "Account service failed. Please retry."}}, status_code=500)
-
-    @app.middleware("http")
-    async def guard(request, call_next):
-        unsafe = request.method not in {"GET", "HEAD", "OPTIONS"}
-        origin = request.headers.get("origin")
-        if request.headers.get("sec-fetch-site") == "cross-site" and request.url.path.startswith("/api/"):
-            return JSONResponse({"error": {"code": "ORIGIN", "message": "Cross-site requests are not allowed"}}, status_code=403)
-        if unsafe and (not origin or origin not in settings.allowed_origins):
-            return JSONResponse({"error": {"code": "ORIGIN", "message": "Trusted Origin header required"}}, status_code=403)
-        if unsafe:
-            maximum = 8 * 1024 * 1024 if request.url.path == "/api/mock-mailbox" else (300000 if request.url.path.startswith("/api/workspace/") else 16384)
-            chunks, total = [], 0
-            async for chunk in request.stream():
-                total += len(chunk)
-                if total > maximum:
-                    return JSONResponse({"error": {"code": "TOO_LARGE", "message": "Request body too large"}}, status_code=413)
-                chunks.append(chunk)
-            request._body = b"".join(chunks)
-        response = await call_next(request)
+    def response_with_headers(response, request):
+        """One policy for ordinary responses, short circuits and handled 500s."""
         response.headers["Cache-Control"] = "no-store"
         response.headers["X-Content-Type-Options"] = "nosniff"
         response.headers["X-Frame-Options"] = "DENY"
@@ -79,6 +49,40 @@ def create_app(settings=None):
         if settings.cookie_secure:
             response.headers["Strict-Transport-Security"] = "max-age=31536000"
         return response
+
+    @app.exception_handler(HTTPException)
+    async def api_error(request, exception):
+        return response_with_headers(JSONResponse({"error": {"code": f"HTTP_{exception.status_code}", "message": str(exception.detail)}}, status_code=exception.status_code, headers=exception.headers), request)
+
+    @app.exception_handler(RequestValidationError)
+    async def validation_error(request, exception):
+        # Never echo rejected input: passwords are included in Pydantic error inputs.
+        fields = [{"field": ".".join(str(part) for part in item["loc"] if part != "body"), "message": item["msg"]} for item in exception.errors()]
+        return response_with_headers(JSONResponse({"error": {"code": "VALIDATION", "message": fields[0]["message"] if fields else "Invalid request", "fields": fields}}, status_code=422), request)
+
+    @app.exception_handler(Exception)
+    async def internal_error(request, exception):
+        return response_with_headers(JSONResponse({"error": {"code": "HTTP_500", "message": "Account service failed. Please retry."}}, status_code=500), request)
+
+    @app.middleware("http")
+    async def guard(request, call_next):
+        unsafe = request.method not in {"GET", "HEAD", "OPTIONS"}
+        origin = request.headers.get("origin")
+        if request.headers.get("sec-fetch-site") == "cross-site" and request.url.path.startswith("/api/"):
+            return response_with_headers(JSONResponse({"error": {"code": "ORIGIN", "message": "Cross-site requests are not allowed"}}, status_code=403), request)
+        if unsafe and (not origin or origin not in settings.allowed_origins):
+            return response_with_headers(JSONResponse({"error": {"code": "ORIGIN", "message": "Trusted Origin header required"}}, status_code=403), request)
+        if unsafe:
+            maximum = 8 * 1024 * 1024 if request.url.path == "/api/mock-mailbox" else (300000 if request.url.path.startswith("/api/workspace/") else (128 * 1024 if request.url.path in {"/api/mail/send", "/api/mail/drafts"} else 16384))
+            chunks, total = [], 0
+            async for chunk in request.stream():
+                total += len(chunk)
+                if total > maximum:
+                    return response_with_headers(JSONResponse({"error": {"code": "TOO_LARGE", "message": "Request body too large"}}, status_code=413), request)
+                chunks.append(chunk)
+            request._body = b"".join(chunks)
+        response = await call_next(request)
+        return response_with_headers(response, request)
 
     from backend.resources import install_resources
     install_resources(app, database, settings)
@@ -258,6 +262,10 @@ def create_app(settings=None):
         @app.post("/api/dev/reset")
         def dev_reset(request: Request, db=Depends(database)):
             dev_authorized(request)
+            # Preserve collaboration data rather than cascade-delete it or fail
+            # midway on mail submission references during this legacy reset.
+            if any(db.scalar(select(model).limit(1)) is not None for model in [ChatRoom, CalendarEvent, CalendarImport, CalendarSubmission, InternalMail, MailSubmission]):
+                raise HTTPException(409, "Reset blocked: collaboration data exists. Use a separate disposable test database.")
             for model in [WorkspaceState, MockMailbox, AuthSession, BrowserSession, AuthAttempt, User]:
                 db.execute(delete(model))
             db.commit()

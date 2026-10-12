@@ -1,5 +1,7 @@
 import { escapeHtml as esc } from './workspace/store.js';
 import { dateOnly } from './workspace/services.js';
+import { canonicalPage } from './Shell.js';
+import { setTheme } from './init.js';
 
 export function resourceLink(kind, id, roomId) {
   const params = new URLSearchParams();
@@ -10,9 +12,54 @@ export function resourceLink(kind, id, roomId) {
 }
 
 export class AccountPreferences {
-  constructor(client) { this.client = client; this.state = null; this.revision = 0; }
-  async load() { const result = await this.client.request('/api/preferences'); this.state = result.preferences; this.revision = result.revision; return this.state; }
-  async save(patch) { const result = await this.client.request('/api/preferences', { method: 'PUT', body: { preferences: { ...this.state, ...patch }, expectedRevision: this.revision } }); this.state = result.preferences; this.revision = result.revision; return this.state; }
+  constructor(client) {
+    this.client = client;
+    this.state = { timezone: 'Asia/Seoul', theme: 'system', calendarScope: 'related', mailAutoRefresh: true, homeCards: ['calendar', 'tasks', 'mail', 'chat'], favoriteRooms: [] };
+    this.revision = 0; this.status = 'unavailable'; this.error = null; this.listeners = new Set(); this.disposed = false; this.pending = null; this.queue = Promise.resolve();
+    this.onAccountChange = () => this.dispose();
+    window.addEventListener('adminator-account-changing', this.onAccountChange, { once: true });
+  }
+  get available() { return !this.disposed && this.status === 'ready'; }
+  subscribe(listener) { if (!this.disposed) this.listeners.add(listener); return () => this.listeners.delete(listener); }
+  notify(source, recovered = false) {
+    if (this.disposed) return;
+    const detail = { preferences: this, state: this.state, status: this.status, error: this.error, source, recovered };
+    this.listeners.forEach(listener => listener(detail));
+    window.dispatchEvent(new CustomEvent('adminator-preferences-changed', { detail }));
+  }
+  load() {
+    if (this.disposed) return Promise.resolve(this.state);
+    if (this.pending) return this.pending;
+    const recovered = this.error !== null;
+    this.status = 'loading'; this.notify('load');
+    this.pending = (async () => {
+      try {
+        const result = await this.client.request('/api/preferences');
+        if (this.disposed) return this.state;
+        this.state = result.preferences; this.revision = result.revision; this.error = null; this.status = 'ready'; this.notify('load', recovered); return this.state;
+      } catch (error) {
+        if (!this.disposed) { this.error = error; this.status = 'unavailable'; this.notify('load'); }
+        throw error;
+      } finally { this.pending = null; }
+    })();
+    return this.pending;
+  }
+  save(patch) {
+    const save = async () => {
+      if (this.disposed) throw Error('Account preferences were disposed. Reload the active account.');
+      if (!this.available) throw Error('Preferences unavailable. Retry loading before saving account settings.');
+      try {
+        const result = await this.client.request('/api/preferences', { method: 'PUT', body: { preferences: { ...this.state, ...patch }, expectedRevision: this.revision } });
+        if (this.disposed) return this.state;
+        this.state = result.preferences; this.revision = result.revision; this.notify('save'); return this.state;
+      } catch (error) {
+        if (!this.disposed) { this.error = error; this.status = 'unavailable'; this.notify('save'); }
+        throw error;
+      }
+    };
+    const result = this.queue.then(save); this.queue = result.catch(() => {}); return result;
+  }
+  dispose() { this.disposed = true; this.listeners.clear(); window.removeEventListener('adminator-account-changing', this.onAccountChange); }
 }
 
 export function createTask(services, title, source = null) {
@@ -40,8 +87,7 @@ export function installDirtyGuard() {
 }
 
 export async function initServiceHub(services, auth) {
-  const aliases = { forms: 'settings', charts: 'reports', blank: 'settings', 'basic-table': 'calendar' };
-  const active = aliases[document.body.dataset.active] || document.body.dataset.active;
+  const active = canonicalPage(document.body.dataset.active);
   if (!['tasks', 'settings', 'people', 'search', 'attention', 'reports'].includes(active)) return;
   const main = document.querySelector('main.content');
   const labels = { tasks: 'My tasks', settings: 'Profile & preferences', people: 'People', search: 'Workspace search', attention: 'Needs attention', reports: 'Work report' };
@@ -76,12 +122,25 @@ export async function initServiceHub(services, auth) {
         await services.tasks.mutate(state => { const index = state.tasks.findIndex(t => t.id === task.id); if (old && index < 0) throw Error('Task no longer exists.'); if (index < 0) state.tasks.push(task); else state.tasks[index] = task; }); edit(task); render(); }); };
       host.querySelector('[data-delete-task]').onclick = () => { if (selected && window.confirm('Delete this task? The original mail, event or message will remain.')) run(async () => { await services.tasks.mutate(s => { s.tasks = s.tasks.filter(t => t.id !== selected.id); }); edit(); render(); }); };
       const id = new URLSearchParams(location.search).get('task'); const task = services.tasks.state.tasks.find(t => t.id === id); if (task) host.querySelector('[data-task-filter]').value = 'all'; edit(task); render(); if (id && !task) throw Error('Task unavailable. Choose another task or create one.');
+      const unsubscribe = services.preferences.subscribe(({ status }) => { if (!disposed && status === 'ready') render(); });
+      window.addEventListener('adminator-account-changing', unsubscribe, { once: true });
     }, 'Tasks loaded. Due dates use your account timezone.');
   } else if (active === 'settings') {
     const p = services.preferences.state;
     host.innerHTML = `<form data-profile-form><h2>My profile</h2><label>Display name<input name="displayName" maxlength="80" required value="${esc(auth.user.displayName)}"></label><p>Username: ${esc(auth.user.username)}<br>Internal address: ${esc(auth.user.emailAddress)}</p><button class="btn btn--primary">Save profile</button></form><hr><form data-preference-form><h2>Preferences</h2><label>IANA timezone<input name="timezone" required value="${esc(p.timezone)}" list="timezones"><datalist id="timezones"><option>Asia/Seoul</option><option>UTC</option><option>America/New_York</option><option>Europe/London</option></datalist></label><label>Theme<select name="theme">${['system','light','dark'].map(v => `<option ${p.theme === v ? 'selected' : ''}>${v}</option>`).join('')}</select></label><label>Default calendar scope<select name="calendarScope">${['related','all','owned','invited'].map(v => `<option ${p.calendarScope === v ? 'selected' : ''}>${v}</option>`).join('')}</select></label><label class="workspace-check"><input type="checkbox" name="mailAutoRefresh" ${p.mailAutoRefresh ? 'checked' : ''}>Refresh inbox automatically every 30 seconds</label><fieldset><legend>Home cards</legend>${['calendar','tasks','mail','chat'].map(v => `<label class="workspace-check"><input type="checkbox" name="homeCard" value="${v}" ${p.homeCards.includes(v) ? 'checked' : ''}>${v}</label>`).join('')}</fieldset><button class="btn btn--primary">Save preferences</button> <button type="button" class="btn" data-reset-home>Restore home cards</button></form><hr><p>Browser tabs share the active account. Switching reloads the page. Save mail drafts before switching.</p>`;
     host.querySelector('[data-profile-form]').onsubmit = e => { e.preventDefault(); run(async () => { const result = await services.client.request('/api/users/me', { method:'PATCH', body:{ displayName:e.target.elements.displayName.value } }); Object.assign(auth.user, result.user); document.querySelectorAll('.workspace-name,.dd-profile-name').forEach(el => { el.textContent = result.user.displayName; }); clean(e.target); }); };
     host.querySelector('[data-preference-form]').onsubmit = e => { e.preventDefault(); run(async () => { const f = e.target; await services.preferences.save({ timezone:f.elements.timezone.value, theme:f.elements.theme.value, calendarScope:f.elements.calendarScope.value, mailAutoRefresh:f.elements.mailAutoRefresh.checked, homeCards:[...f.querySelectorAll('[name="homeCard"]:checked')].map(el => el.value) }); applyPreferences(services.preferences.state); clean(f); }); };
+    const preferenceForm = host.querySelector('[data-preference-form]');
+    const syncPreferences = ({ state, status, source }) => {
+      if (disposed) return;
+      preferenceForm.querySelectorAll('input,select,button').forEach(input => { input.disabled = status !== 'ready'; });
+      if (status !== 'ready' || source !== 'load') return;
+      preferenceForm.elements.timezone.value = state.timezone; preferenceForm.elements.theme.value = state.theme; preferenceForm.elements.calendarScope.value = state.calendarScope; preferenceForm.elements.mailAutoRefresh.checked = state.mailAutoRefresh;
+      preferenceForm.querySelectorAll('[name="homeCard"]').forEach(input => { input.checked = state.homeCards.includes(input.value); }); clean(preferenceForm);
+    };
+    syncPreferences({ state: p, status: services.preferences.status, source: 'load' });
+    const unsubscribe = services.preferences.subscribe(syncPreferences);
+    window.addEventListener('adminator-account-changing', unsubscribe, { once: true });
     const logoutAll = document.createElement('button'); logoutAll.className='btn'; logoutAll.textContent='Sign out all accounts on this browser'; host.append(logoutAll); logoutAll.onclick=()=>{if(window.adminatorCanLeave() && window.confirm('Sign out all saved accounts on this browser?')) run(async()=>{await services.client.request('/api/auth/logout-all',{method:'POST',allowContextChange:true}); services.client.broadcastChange?.(); location.replace('signin.html');});};
     host.querySelector('[data-reset-home]').onclick = () => host.querySelectorAll('[name="homeCard"]').forEach(el => { el.checked = true; }); status.textContent = 'Settings loaded.';
   } else if (active === 'people') {
@@ -105,8 +164,7 @@ export async function initServiceHub(services, auth) {
 
 export function applyPreferences(p) {
   const theme = p.theme === 'system' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : p.theme;
-  document.documentElement.dataset.theme = theme;
-  localStorage.setItem('dash26-theme', theme);
+  setTheme(theme);
 }
 
 export function taskCompletion(task, done) { task.done = done; task.completedAt = done ? task.completedAt || new Date().toISOString() : null; }

@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parent.parent
 class Settings:
     environment: str = field(default_factory=lambda: os.getenv("APP_ENV", "development"))
     database_url: str = field(default_factory=lambda: os.getenv("DATABASE_URL", "sqlite:///./backend/data/adminator.db"))
-    allowed_origins: tuple[str, ...] = field(default_factory=lambda: tuple(os.getenv("AUTH_ORIGINS", "http://127.0.0.1:8000,http://localhost:8000,http://127.0.0.1:4000,http://localhost:4000").split(",")))
+    allowed_origins: tuple[str, ...] = field(default_factory=lambda: tuple(os.getenv("AUTH_ORIGINS", "http://127.0.0.1:8000,http://localhost:8000,http://127.0.0.1:4000,http://localhost:4000,http://127.0.0.1:3001,http://localhost:3001").split(",")))
     session_ttl: int = field(default_factory=lambda: int(os.getenv("AUTH_SESSION_TTL", "28800")))
     cookie_secure: bool = field(default_factory=lambda: os.getenv("AUTH_COOKIE_SECURE", "false").lower() == "true")
     enable_dev_admin: bool = field(default_factory=lambda: os.getenv("AUTH_DEV_ADMIN", "false").lower() == "true")

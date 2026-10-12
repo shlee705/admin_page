@@ -1,4 +1,4 @@
-import { clone, EmailError, FOLDERS, LABELS, matchesFolder, normalizeEmail, queryEmails, SELF } from './model.js';
+import { clone, countLabels, EmailError, FOLDERS, matchesFolder, normalizeEmail, queryEmails, SELF, validateLabels, visibleLabels } from './model.js';
 import { seedEmails } from './seed.js';
 
 /** Async persistence boundary. Instances for different accounts/namespaces never share records. */
@@ -12,6 +12,7 @@ export class MockEmailApi {
     this.latency = latency;
     this.failure = null;
     this.queue = Promise.resolve();
+    this.revisions = new Map();
   }
   failNext(message = 'Simulated network failure') { this.failure = message; }
   async execute(operation) {
@@ -27,7 +28,9 @@ export class MockEmailApi {
         if (this.persistence) throw error;
         throw new EmailError('STORAGE', `Cannot read mailbox: ${error.message}. Use Reset mock data to recover.`);
       }
-      const result = await operation(state);
+      // Keep synchronous localStorage read/CAS/write in one turn across adapters.
+      const operationResult = operation(state);
+      const result = operationResult?.then ? await operationResult : operationResult;
       try { if (this.persistence) await this.persistence.save(state); else this.storage.setItem(this.key, JSON.stringify(state)); }
       catch (error) { if (this.persistence) throw error; throw new EmailError('STORAGE', 'Mailbox could not be saved. Browser storage is full or unavailable.'); }
       return clone(result);
@@ -40,12 +43,20 @@ export class MockEmailApi {
     if (!mail) throw new EmailError('NOT_FOUND', 'Email not found.');
     return mail;
   }
-  getEmails(query = {}) { return this.execute((state) => queryEmails(state.emails, query)); }
+  view(mail) { const result = normalizeEmail(mail); this.revisions.set(result.id, result.revision); return result; }
+  checkRevision(draft, data) {
+    const expected = data.expectedRevision ?? data.revision ?? this.revisions.get(draft.id);
+    if (expected !== (draft.revision || 1)) throw new EmailError('CONFLICT', 'Draft changed in another editor. Your input is kept; reload the latest draft or keep your input as a new draft.');
+  }
+  preserveLegacyLabels(mail) {
+    if (JSON.stringify(mail.labels) !== JSON.stringify(visibleLabels(mail.labels)) && mail.legacyLabels === undefined) mail.legacyLabels = clone(mail.labels ?? null);
+  }
+  getEmails(query = {}) { return this.execute((state) => queryEmails(state.emails.map(mail => this.view(mail)), query)); }
   searchEmails(query) { return this.getEmails(typeof query === 'string' ? { query } : query); }
-  getEmailById(id) { return this.execute((state) => this.find(state, id)); }
-  getThread(threadId) { return this.execute((state) => state.emails.filter((e) => e.threadId === threadId && !['trash', 'spam'].includes(e.folderId)).sort((a, b) => Date.parse(a.sentAt || a.receivedAt || a.updatedAt) - Date.parse(b.sentAt || b.receivedAt || b.updatedAt))); }
+  getEmailById(id) { return this.execute((state) => this.view(this.find(state, id))); }
+  getThread(threadId) { return this.execute((state) => state.emails.filter((e) => e.threadId === threadId && !['trash', 'spam'].includes(e.folderId)).sort((a, b) => Date.parse(a.sentAt || a.receivedAt || a.updatedAt) - Date.parse(b.sentAt || b.receivedAt || b.updatedAt)).map(mail => this.view(mail))); }
   mutate(id, changes) { return this.execute((state) => {
-    const mail = this.find(state, id); Object.assign(mail, typeof changes === 'function' ? changes(mail) : changes, { updatedAt: new Date().toISOString() }); return mail;
+    const mail = this.find(state, id); Object.assign(mail, typeof changes === 'function' ? changes(mail) : changes, { updatedAt: new Date().toISOString(), revision: (mail.revision || 1) + 1 }); return this.view(mail);
   }); }
   deleteEmail(id) { return this.moveEmail(id, 'trash'); }
   moveEmail(id, folderId) {
@@ -53,29 +64,30 @@ export class MockEmailApi {
     return this.execute((state) => {
       const mail = this.find(state, id);
       if (mail.folderId === 'drafts' && folderId !== 'trash') throw new EmailError('VALIDATION', 'Save or send the draft before moving it.');
-      mail.folderId = folderId; mail.updatedAt = new Date().toISOString(); return mail;
+      mail.folderId = folderId; mail.updatedAt = new Date().toISOString(); mail.revision = (mail.revision || 1) + 1; return this.view(mail);
     });
   }
   markAsRead(id) { return this.mutate(id, { isRead: true }); }
   markAsUnread(id) { return this.mutate(id, { isRead: false }); }
   toggleStar(id) { return this.mutate(id, (mail) => ({ isStarred: !mail.isStarred })); }
-  updateLabels(id, labels) {
-    if (labels.some((label) => !LABELS.includes(label))) return Promise.reject(new EmailError('VALIDATION', 'Unknown label.'));
-    return this.mutate(id, { labels: [...new Set(labels)] });
+  async updateLabels(id, labels) {
+    labels = validateLabels(labels);
+    return this.mutate(id, mail => { this.preserveLegacyLabels(mail); return { labels }; });
   }
   getFolders() { return this.execute((state) => FOLDERS.map((id) => {
     const mails = state.emails.filter((e) => matchesFolder(e, id));
     return { id, name: id[0].toUpperCase() + id.slice(1), virtual: id === 'starred', total: mails.length, unread: mails.filter((e) => !e.isRead).length };
   })); }
-  getLabels() { return this.execute((state) => LABELS.map((name) => ({ id: name, name, total: state.emails.filter((e) => e.labels.includes(name)).length }))); }
+  getLabels() { return this.execute((state) => countLabels(state.emails)); }
   createMessage(state, data, folderId) {
+    const input = { ...data }; delete input.expectedRevision; delete input.revision;
     const id = globalThis.crypto.randomUUID();
     this.checkAttachments(state, data.attachments || []);
-    const mail = normalizeEmail({ ...data, id, accountId: this.accountId, from: this.identity, folderId,
+    const mail = normalizeEmail({ ...input, labels: validateLabels(data.labels), revision: 1, id, accountId: this.accountId, from: this.identity, folderId,
       threadId: data.threadId || id, messageId: folderId === 'sent' ? `<${id}@mock.adminator>` : null,
       isRead: true, deliveryStatus: folderId === 'sent' ? 'mock-sent' : 'draft',
       sentAt: folderId === 'sent' ? new Date().toISOString() : null, receivedAt: null });
-    state.emails.push(mail); return mail;
+    state.emails.push(mail); return this.view(mail);
   }
   checkAttachments(state, attachments) {
     for (const attachment of attachments) {
@@ -83,12 +95,15 @@ export class MockEmailApi {
     }
   }
   sendEmail(data) { return this.execute((state) => {
+    data = { ...data, labels: validateLabels(data.labels) };
     if (data.id) {
       const draft = this.find(state, data.id);
       if (draft.folderId !== 'drafts') throw new EmailError('CONFLICT', 'Only drafts can be sent again.');
+      this.checkRevision(draft, data); this.preserveLegacyLabels(draft);
       this.checkAttachments(state, data.attachments || []);
-      Object.assign(draft, data, { folderId: 'sent', from: this.identity, sentAt: new Date().toISOString(), updatedAt: new Date().toISOString(), deliveryStatus: 'mock-sent', isRead: true, messageId: `<${draft.id}@mock.adminator>` });
-      return { email: draft, status: 'mock-sent', requestId: globalThis.crypto.randomUUID() };
+      const input = { ...data }; delete input.expectedRevision; delete input.revision;
+      Object.assign(draft, input, { revision: (draft.revision || 1) + 1, folderId: 'sent', from: this.identity, sentAt: new Date().toISOString(), updatedAt: new Date().toISOString(), deliveryStatus: 'mock-sent', isRead: true, messageId: `<${draft.id}@mock.adminator>` });
+      return { email: this.view(draft), status: 'mock-sent', requestId: globalThis.crypto.randomUUID() };
     }
     return { email: this.createMessage(state, data, 'sent'), status: 'mock-sent', requestId: globalThis.crypto.randomUUID() };
   }); }
@@ -96,8 +111,10 @@ export class MockEmailApi {
   updateDraft(id, data) { return this.execute((state) => {
     const draft = this.find(state, id);
     if (draft.folderId !== 'drafts') throw new EmailError('CONFLICT', 'This message is no longer a draft.');
+    this.checkRevision(draft, data); this.preserveLegacyLabels(draft);
     this.checkAttachments(state, data.attachments || []);
-    Object.assign(draft, data, { id, folderId: 'drafts', updatedAt: new Date().toISOString() }); return draft;
+    const input = { ...data }; delete input.expectedRevision; delete input.revision;
+    Object.assign(draft, input, { labels: validateLabels(data.labels), revision: (draft.revision || 1) + 1, id, folderId: 'drafts', updatedAt: new Date().toISOString() }); return this.view(draft);
   }); }
   getAttachments(id) { return this.execute((state) => this.find(state, id).attachments); }
   async uploadAttachment(file) {

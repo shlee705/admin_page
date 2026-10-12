@@ -8,6 +8,22 @@ const result = (data, status = 200) => ({ ok: status >= 200 && status < 300, sta
 const user = { id: 'account-a', username: 'alice', displayName: '<Alice>', emailAddress: 'alice@adminator.test' };
 
 describe('Authentication client', () => {
+  it('preserves HTTP errors from non-JSON proxies and expires sessions on non-JSON 401', async () => {
+    const fetchImpl = vi.fn().mockResolvedValueOnce({ ok: false, status: 502, json: async () => { throw Error('HTML'); } })
+      .mockResolvedValueOnce({ ok: false, status: 401, json: async () => { throw Error('HTML'); } });
+    const lost = vi.fn(); const client = new AuthClient({ fetchImpl, onSessionLost: lost }); client.user = user;
+    await expect(client.request('/api/mail/emails')).rejects.toMatchObject({ status: 502 });
+    expect(client.user).toEqual(user);
+    await expect(client.request('/api/mail/emails')).rejects.toMatchObject({ status: 401 });
+    expect(client.user).toBeNull(); expect(lost).toHaveBeenCalledWith('session');
+  });
+  it('counts Unicode code points and rejects C1 controls consistently with the server', () => {
+    const data = { username: 'alice', password: 'test password!', confirmPassword: 'test password!' };
+    expect(validateRegistration({ ...data, displayName: '😀'.repeat(80) })).toBe('');
+    expect(validateRegistration({ ...data, displayName: '😀'.repeat(81) })).not.toBe('');
+    expect(validateRegistration({ ...data, displayName: 'a\u0085b' })).not.toBe('');
+    expect(validateRegistration({ ...data, displayName: 'é 👩‍💻' })).toBe('');
+  });
   it('sends cookie credentials and an in-memory synchronizer CSRF token for registration/login', async () => {
     const fetchImpl = vi.fn().mockResolvedValueOnce(result({ csrfToken: 'preauth' })).mockResolvedValueOnce(result({ user }, 201))
       .mockResolvedValueOnce(result({ csrfToken: 'preauth' })).mockResolvedValueOnce(result({ user, csrfToken: 'rotated', expiresAt: '2026-10-10T00:00:00Z' }));

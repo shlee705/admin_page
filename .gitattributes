@@ -16,9 +16,10 @@
 
 *.css    text
 *.html   text
-*.js     text
+*.js     text eol=lf
+*.mjs    text eol=lf
 *.json   text
-*.scss   text
+*.scss   text eol=lf
 
 
 

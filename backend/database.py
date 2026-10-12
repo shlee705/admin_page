@@ -14,6 +14,7 @@ def create_database(url):
         def sqlite_pragmas(connection, _):
             connection.execute("PRAGMA foreign_keys=ON")
             connection.execute("PRAGMA busy_timeout=5000")
+            connection.create_function("unicode_lower", 1, lambda value: str(value or "").lower(), deterministic=True)
     return engine, sessionmaker(bind=engine, expire_on_commit=False)
 
 

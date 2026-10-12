@@ -1,5 +1,9 @@
 # Adminator 개발 문서
 
+## 최신 개발 진입점 (2026-10-12 수정 완료)
+
+[06 기술 맥락](06_CODEX_DEVELOPMENT_CONTEXT.md) → [08 작업 인계](08_WORK_SESSION_HANDOFF.md) → [08 QA 수정 결과](08_QA_REMEDIATION_REPORT.md)·[09 수정 후 회귀](09_POST_FIX_REGRESSION_REPORT.md)를 먼저 읽는다. QA14건 수정·프론트171/백엔드100·브라우저13종 통과, 개발 DB head0007·기존 데이터 보존.01~05는 수정 전 QA 역사 기록이다.07은 사람용 요약이며 Codex 개발 맥락을 대체하지 않는다. 아래 이전 문서 목록은 구조·기능 참조이며 최신 계약 변경은 현재06·기능 문서를 따른다.
+
 ## 최종 검수 진입점 (2026-10-12)
 
 후속 Codex 작업은 **[06_CODEX_DEVELOPMENT_CONTEXT.md](06_CODEX_DEVELOPMENT_CONTEXT.md)**를 먼저 읽고 실제 소스·기능별 계약을 대조한다. 아래 기존 문서는 기능 상세와 2026-10-11 시점 기록이며 이번 검수 결과는 다음 문서가 관리한다. 사람용 요약은 주요 개발 맥락을 대신하지 않는다.

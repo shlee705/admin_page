@@ -1,5 +1,5 @@
 import { InternalEmailApi } from './internal-api.js';
-import { ATTACHMENT_TYPES, EmailError, MAX_ATTACHMENT_SIZE, parseAddresses, SELF, validateMessage } from './model.js';
+import { ATTACHMENT_TYPES, EmailError, MAX_ATTACHMENT_SIZE, parseAddresses, SELF, validateLabels, validateMessage } from './model.js';
 import { MockEmailApi } from './mock-api.js';
 import { RestEmailApi } from './rest-api.js';
 
@@ -35,12 +35,13 @@ export class EmailService {
   getThread(id) { return this.api.getThread(id); }
   getFolders() { return this.api.getFolders(); }
   getLabels() { return this.api.getLabels(); }
+  getMailboxSnapshot(query) { return this.api.getMailboxSnapshot ? this.api.getMailboxSnapshot(query) : null; }
   deleteEmail(id) { return this.api.deleteEmail(id); }
   moveEmail(id, folder) { return this.api.moveEmail(id, folder); }
   markAsRead(id) { return this.api.markAsRead(id); }
   markAsUnread(id) { return this.api.markAsUnread(id); }
   toggleStar(id) { return this.api.toggleStar(id); }
-  updateLabels(id, labels) { return this.api.updateLabels(id, labels); }
+  async updateLabels(id, labels) { return this.api.updateLabels(id, validateLabels(labels)); }
   getAttachments(id) { return this.api.getAttachments(id); }
   downloadAttachment(id) { return this.api.downloadAttachment(id); }
   message(input) {
@@ -48,6 +49,7 @@ export class EmailService {
     for (const key of ['id', 'threadId', 'inReplyTo', 'references', 'attachments', 'category', 'labels']) {
       if (input[key] !== undefined) data[key] = input[key];
     }
+    if (input.expectedRevision !== undefined || input.revision !== undefined) data.expectedRevision = input.expectedRevision ?? input.revision;
     for (const key of ['to', 'cc', 'bcc']) data[key] = Array.isArray(input[key]) ? input[key] : parseAddresses(input[key]);
     data.subject = String(input.subject || ''); data.bodyText = String(input.bodyText || ''); data.bodyHtml = '';
     return data;

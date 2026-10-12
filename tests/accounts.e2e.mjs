@@ -80,10 +80,10 @@ try {
     assert.equal((await (await context.request.get(`${server.base}/api/chat/rooms/${room.id}/messages`)).json()).messages[0].senderId, bob.id);
     await choose(alice); await page.getByTestId('chat-message').filter({ hasText: 'Bob after switching' }).waitFor();
     await page.goto(`${server.base}/calendar.html`); await page.getByTestId('calendar-add').click(); await page.getByTestId('event-title').fill(`Account calendar ${suffix}`); await page.getByTestId('event-save').click(); await page.getByTestId('event-dialog').waitFor({ state: 'hidden' });
-    await choose(bob); await page.getByTestId('calendar-event').filter({ hasText: `Account calendar ${suffix}` }).first().click(); await page.getByTestId('event-title').fill(`Bob calendar ${suffix}`); await page.getByTestId('event-save').click(); await page.getByTestId('event-dialog').waitFor({ state: 'hidden' });
+    await choose(bob); await page.locator('[data-calendar-scope]').waitFor(); await page.locator('[data-calendar-scope]').selectOption('all'); await page.getByTestId('calendar-event').filter({ hasText: `Account calendar ${suffix}` }).first().click(); await page.getByTestId('event-title').fill(`Bob calendar ${suffix}`); await page.getByTestId('event-save').click(); await page.getByTestId('event-dialog').waitFor({ state: 'hidden' });
     const event = (await (await context.request.get(`${server.base}/api/calendar/events`)).json()).events.find(item => item.title === `Bob calendar ${suffix}`);
     assert.equal(event.createdBy, alice.id); assert.equal(event.updatedBy, bob.id);
-    await page.goto(`${server.base}/index.html`); await page.getByTestId('dashboard-status').filter({ hasText: 'loaded' }).waitFor(); assert.match(await page.locator('.hero-title').innerText(), /Bob/);
+    await page.goto(`${server.base}/index.html`); await page.getByTestId('dashboard-status').filter({ hasText: 'Updated' }).waitFor(); assert.match(await page.locator('.hero-title').innerText(), /Bob/);
     // Another tab discards its old account view on the broadcast and reloads as Alice.
     const tab = await context.newPage(); await tab.goto(`${server.base}/email.html`); await tab.getByTestId('current-user-name').filter({ hasText: 'Bob' }).waitFor();
     await choose(alice); await tab.getByTestId('current-user-name').filter({ hasText: 'Alice' }).waitFor(); await tab.close();

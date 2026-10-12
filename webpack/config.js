@@ -59,6 +59,9 @@ const optimization = {
     chunks: 'all',
     maxInitialRequests: 25,
     minSize: 20000,
+    // Keep a large optional calendar dependency in several real async files.
+    // This controls emitted payloads rather than relaxing performance budgets.
+    maxAsyncSize: 600000,
     /* No hand-written vendor cacheGroups.
        Chart.js, FullCalendar and jsvectormap are each reached through a single
        dynamic import() carrying a webpackChunkName comment, so webpack already

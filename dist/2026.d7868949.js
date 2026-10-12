@@ -1069,7 +1069,7 @@ class LiveChat {
     // Retain the same retry ID after a network failure or lost acknowledgement.
     if (!this.pending || this.pending.id !== id || this.pending.body !== body) this.pending = { id, body, clientId: crypto.randomUUID() };
     const message = await this.client.request(`/api/chat/rooms/${encodeURIComponent(id)}/messages`, { method: 'POST', body: { body, clientId: this.pending.clientId } });
-    this.pending = null; await this.history(id); return message;
+    await this.history(id); this.pending = null; return message;
   }
   searchUsers(q) { return this.client.request(`/api/users/search?q=${encodeURIComponent(q)}`); }
   createShared(name) { return this.client.request('/api/chat/rooms', { method: 'POST', body: { name } }); }
@@ -1173,7 +1173,8 @@ async function initCalendarPage(service) {
     dialog.querySelector('[data-end-label]').textContent = fields.allDay.checked ? 'Last day (inclusive)' : 'End';
   });
   function open(event = null, start = new Date(), end = null, allDay = false) {
-    editing = event; form.reset(); dialog.querySelector('[data-conflict]').replaceChildren(); dialog.querySelector('[data-sharing-note]').textContent = event ? (event.shared ? 'Shared: all signed-in users can view and edit this event.' : 'Private: only the owner and invited members can view this event.') : 'New events are shared with all signed-in users. Attendee selection does not make an event private.'; dialog.querySelector('[data-event-task]').hidden = !event; window.dispatchEvent(new CustomEvent('adminator-form-saved', {detail:form})); attendees = event?.attendees?.map(a => ({ id: a.userId, displayName: a.displayName, status: a.status })) || []; renderAttendees(); dialog.querySelector('[role="alert"]').textContent = '';
+    if (busy) return;
+    editing = event; attendeeGeneration += 1; results.replaceChildren(); form.reset(); dialog.querySelector('[data-conflict]').replaceChildren(); dialog.querySelector('[data-sharing-note]').textContent = event ? (event.shared ? 'Shared: all signed-in users can view and edit this event.' : 'Private: only the owner and invited members can view this event.') : 'New events are shared with all signed-in users. Attendee selection does not make an event private.'; dialog.querySelector('[data-event-task]').hidden = !event; window.dispatchEvent(new CustomEvent('adminator-form-saved', {detail:form})); attendees = event?.attendees?.map(a => ({ id: a.userId, displayName: a.displayName, status: a.status })) || []; renderAttendees(); dialog.querySelector('[role="alert"]').textContent = '';
     fields.title.value = event?.title || ''; fields.description.value = event?.description || ''; fields.allDay.checked = event?.allDay ?? allDay; fields.category.value = event?.category || 'work';
     fields.timezone.value = event?.timezone || service.timezone; fields.location.value = event?.location || ''; fields.frequency.value = event?.recurrence?.frequency || ''; fields.interval.value = event?.recurrence?.interval || 1; fields.count.value = event?.recurrence?.count || 10;
     const day = dateOnly(start); const from = event?.start || (allDay ? day : end ? localDate(start, false) : `${day}T09:00`); const to = event?.end || (allDay ? dateOnly(end || addDays(start, 1)) : end ? localDate(end, false) : `${day}T10:00`);
@@ -1184,14 +1185,15 @@ async function initCalendarPage(service) {
   function wallTime(value, zone) { if (!/[Z+]|-\d{2}:\d{2}$/.test(value.slice(10))) return value.slice(0,16); const parts = new Intl.DateTimeFormat('sv-SE', { timeZone: zone, year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit', hourCycle:'h23' }).format(new Date(value)); return parts.replace(' ', 'T'); }
   function renderAttendees() { const box = dialog.querySelector('[data-testid="event-attendees"]'); box.innerHTML = attendees.map(a => `<div>${escapeHtml(a.displayName)} · ${escapeHtml(a.status || 'pending')} <button type="button" class="btn" data-remove-attendee="${escapeHtml(a.id)}">Remove</button></div>`).join(''); box.querySelectorAll('button').forEach(button => { button.hidden = editing?.canEdit === false; button.onclick = () => { attendees = attendees.filter(a => a.id !== button.dataset.removeAttendee); renderAttendees(); }; }); }
   const results = document.createElement('div'); fields.attendeeSearch.after(results);
-  fields.attendeeSearch.oninput = async () => { const generation = ++attendeeGeneration; results.innerHTML = ''; if (fields.attendeeSearch.value.trim().length < 2) return; try { const { users } = await service.searchUsers(fields.attendeeSearch.value); if (generation !== attendeeGeneration) return; results.innerHTML = users.filter(u => !attendees.some(a => a.id === u.id)).map(u => `<button type="button" class="btn" data-add-attendee="${escapeHtml(u.id)}">${escapeHtml(u.displayName)} (${escapeHtml(u.username)})</button>`).join(''); results.querySelectorAll('button').forEach(button => { button.onclick = () => { attendees.push(users.find(u => u.id === button.dataset.addAttendee)); renderAttendees(); results.innerHTML = ''; fields.attendeeSearch.value = ''; }; }); } catch(error) { dialog.querySelector('[role="alert"]').textContent = error.message; } };
+  dialog.addEventListener('close', () => { attendeeGeneration += 1; results.replaceChildren(); });
+  fields.attendeeSearch.oninput = async () => { const generation = ++attendeeGeneration; results.innerHTML = ''; if (fields.attendeeSearch.value.trim().length < 2) return; try { const { users } = await service.searchUsers(fields.attendeeSearch.value); if (generation !== attendeeGeneration || !dialog.open) return; results.innerHTML = users.filter(u => !attendees.some(a => a.id === u.id)).map(u => `<button type="button" class="btn" data-add-attendee="${escapeHtml(u.id)}">${escapeHtml(u.displayName)} (${escapeHtml(u.username)})</button>`).join(''); results.querySelectorAll('button').forEach(button => { button.onclick = () => { attendees.push(users.find(u => u.id === button.dataset.addAttendee)); renderAttendees(); results.innerHTML = ''; fields.attendeeSearch.value = ''; }; }); } catch(error) { if (generation === attendeeGeneration && dialog.open) dialog.querySelector('[role="alert"]').textContent = error.message; } };
   dialog.querySelector('[data-event-task]').onclick = () => createTask(service.hub, editing.title, {kind:'calendar',id:editing.id});
   dialog.querySelector('[data-testid="event-cancel"]').onclick = () => dialog.close(); dialog.addEventListener('cancel', event => { if (busy) event.preventDefault(); });
   async function operation(action, message) {
-    if (busy) return; busy = true; status.textContent = 'Saving…'; dialog.querySelectorAll('button, input, select, textarea').forEach(control => { control.disabled = true; });
-    try { await action(); await refresh(); status.textContent = message; window.dispatchEvent(new CustomEvent('adminator-form-saved', {detail:form})); if (dialog.open) dialog.close(); }
+    if (busy) return; busy = true; const controls = [...dialog.querySelectorAll('button, input, select, textarea')].map(control => [control, control.disabled]); status.textContent = 'Saving…'; dialog.querySelectorAll('button, input, select, textarea').forEach(control => { control.disabled = true; });
+    try { await action(); window.dispatchEvent(new CustomEvent('adminator-form-saved', {detail:form})); if (dialog.open) dialog.close(); status.textContent = `${message} Refreshing…`; try { await refresh(); status.textContent = message; } catch (error) { status.textContent = `${message} Refresh failed: ${error.message}`; } }
     catch (error) { status.textContent = error.message; dialog.querySelector('[role="alert"]').textContent = error.message; if (error.status === 409) { await refresh(); if (editing) { const latest = events.find(item => item.id === editing.id); if (latest) { const box = dialog.querySelector('[data-conflict]'); box.innerHTML = `<h3>Another person changed this event</h3><p>Latest: ${escapeHtml(latest.title)} · ${escapeHtml(latest.start)} → ${escapeHtml(latest.end)} · revision ${latest.revision}</p><p>Your unsaved form remains above. Reload the latest version before editing again.</p><button class="btn" type="button">Load latest version</button>`; box.querySelector('button').onclick = () => { dialog.close(); open(latest); }; } else { dialog.querySelector('[role="alert"]').textContent = 'This event was deleted. Your unsaved input remains; close and create a new event if needed.'; } } } }
-    finally { busy = false; dialog.querySelectorAll('button, input, select, textarea').forEach(control => { control.disabled = false; }); }
+    finally { busy = false; controls.forEach(([control, disabled]) => { if (control.isConnected) control.disabled = disabled; }); }
   }
   form.onsubmit = event => { event.preventDefault(); const data = { ...(editing ? { id: editing.id } : {}), title: fields.title.value, description: fields.description.value, allDay: fields.allDay.checked, start: fields.start.value, end: fields.end.value, category: fields.category.value, timezone: fields.timezone.value, location: fields.location.value, attendeeIds: attendees.map(a => a.id), recurrence: fields.frequency.value ? { frequency: fields.frequency.value, interval: Number(fields.interval.value), count: Number(fields.count.value) } : null, ...(editing ? { revision: editing.revision } : {}) }; if (data.allDay && data.end) data.end = dateOnly(addDays(new Date(`${data.end}T12:00`), 1)); operation(() => service.save(data), 'Event saved.'); };
   dialog.querySelector('[data-testid="event-delete"]').onclick = () => operation(() => service.remove(editing.id), 'Event deleted.');
@@ -1203,7 +1205,7 @@ async function initCalendarPage(service) {
     rail.innerHTML = `<button class="cal-quickadd" data-testid="calendar-quick-add">Quick add event</button><div class="cal-rail-card"><div class="cal-rail-head"><span class="cal-rail-title">${escapeHtml(title)}</span><button class="btn" aria-label="Previous mini calendar month" data-mini-prev>‹</button><button class="btn" aria-label="Next mini calendar month" data-mini-next>›</button></div><div class="mini-cal-grid">${['S','M','T','W','T','F','S'].map(day => `<span class="mini-cal-wd">${day}</span>`).join('')}${Array.from({ length: 42 }, (_, index) => { const day = addDays(gridStart, index); return `<button class="mini-cal-day" data-day="${dateOnly(day)}" aria-label="Add event on ${dateOnly(day)}">${day.getDate()}</button>`; }).join('')}</div></div><div class="cal-rail-card"><label>Search events<input type="search" data-testid="calendar-search" value="${escapeHtml(query)}"></label></div><div class="cal-rail-card"><label>Event scope<select data-calendar-scope>${['all','related','owned','invited'].map(value => `<option value="${value}" ${scope === value ? 'selected' : ''}>${value}</option>`).join('')}</select></label><h2 class="cal-rail-title">Calendars</h2><label>Filter category<select data-testid="calendar-filter"><option value="">All categories</option>${CATEGORIES.map(category => `<option value="${category}" ${category === filter ? 'selected' : ''}>${category} (${events.filter(item => item.category === category).length})</option>`).join('')}</select></label></div><div class="cal-rail-card"><h2 class="cal-rail-title">Upcoming</h2>${upcoming.map(item => `<button class="workspace-upcoming" data-event-id="${escapeHtml(item.id)}">${escapeHtml(item.title)}<small>${escapeHtml(item.allDay ? item.start : new Date(item.start).toLocaleString())}</small></button>`).join('') || '<p>No upcoming events.</p>'}<button class="btn" data-agenda>See all events</button></div>`;
     rail.querySelector('[data-calendar-scope]').onchange = e => { scope = e.target.value; renderEvents(); updateRail(); };
     rail.querySelector('[data-testid="calendar-quick-add"]').onclick = () => open(); rail.querySelector('[data-mini-prev]').onclick = () => calendar.prev(); rail.querySelector('[data-mini-next]').onclick = () => calendar.next();
-    rail.querySelectorAll('[data-day]').forEach(button => { button.onclick = () => open(null, new Date(`${button.dataset.day}T12:00`), null, true); }); rail.querySelectorAll('[data-event-id]').forEach(button => { button.onclick = () => open(events.find(item => item.id === button.dataset.eventId)); }); rail.querySelector('[data-agenda]').onclick = () => changeView('Agenda'); rail.querySelector('[data-testid="calendar-search"]').oninput = e => { query = e.target.value; renderEvents(); }; rail.querySelector('select').onchange = event => { filter = event.target.value; renderEvents(); };
+    rail.querySelectorAll('[data-day]').forEach(button => { button.onclick = () => open(null, new Date(`${button.dataset.day}T12:00`), null, true); }); rail.querySelectorAll('[data-event-id]').forEach(button => { button.onclick = () => open(events.find(item => item.id === button.dataset.eventId)); }); rail.querySelector('[data-agenda]').onclick = () => changeView('Agenda'); rail.querySelector('[data-testid="calendar-search"]').oninput = e => { query = e.target.value; renderEvents(); }; rail.querySelector('[data-testid="calendar-filter"]').onchange = event => { filter = event.target.value; renderEvents(); };
   }
   function renderEvents() { calendar.removeAllEvents(); calendar.addEventSource(expanded.filter(related).filter(item => (!filter || item.category === filter) && `${item.title} ${item.description} ${item.location || ''}`.toLowerCase().includes(query.toLowerCase())).map(item => ({ ...item, id: `${item.id}::${item.occurrence}`, editable: item.canEdit && !item.recurrence, className: `fc-cat-${item.category}`, extendedProps: { seriesId: item.id, description: item.description, category: item.category } }))); }
   async function refresh() { events = await service.list(); expanded = await service.occurrences(); renderEvents(); updateRail(); }
@@ -1530,6 +1532,10 @@ class EmailError extends Error {
 const SELF = { name: 'John Doe', address: 'john@adminator.app' };
 const FOLDERS = ['inbox', 'starred', 'snoozed', 'sent', 'drafts', 'spam', 'trash', 'archive'];
 const LABELS = ['Work', 'Team', 'Finance', 'Invoices', 'Travel'];
+/** Owner-scoped totals include every physical folder, including Trash and Spam. */
+function countLabels(emails) {
+  return LABELS.map(id => ({ id, name: id, total: emails.filter(mail => mail.labels?.includes(id)).length }));
+}
 const MAX_ATTACHMENT_SIZE = 2 * 1024 * 1024;
 const ATTACHMENT_TYPES = ['text/plain', 'text/csv', 'application/pdf', 'image/png', 'image/jpeg', 'image/gif'];
 const clone = (value) => JSON.parse(JSON.stringify(value));
@@ -1617,7 +1623,7 @@ class InternalEmailApi {
   toggleStar(id) { return this.request(`/emails/${encodeURIComponent(id)}/star`, { method: 'POST' }); }
   updateLabels(id, labels) { return this.patch(id, { labels }); }
   async getFolders() { const mails = await this.all(); return FOLDERS.map(id => ({ id, name: id[0].toUpperCase() + id.slice(1), total: mails.filter(m => matchesFolder(m,id)).length, unread: mails.filter(m => matchesFolder(m,id) && !m.isRead).length })); }
-  async getLabels() { return LABELS.map(id => ({ id, name: id })); }
+  async getLabels() { return countLabels(await this.all()); }
   async getAttachments() { return []; }
   uploadAttachment() { return Promise.reject(new EmailError('CONFIG', 'Attachments are available in mock mode only. Internal delivery currently supports text.')); }
   downloadAttachment() { return Promise.reject(new EmailError('CONFIG', 'No internal attachment exists.')); }
@@ -1727,7 +1733,7 @@ class MockEmailApi {
     const mails = state.emails.filter((e) => matchesFolder(e, id));
     return { id, name: id[0].toUpperCase() + id.slice(1), virtual: id === 'starred', total: mails.length, unread: mails.filter((e) => !e.isRead).length };
   })); }
-  getLabels() { return this.execute((state) => LABELS.map((name) => ({ id: name, name, total: state.emails.filter((e) => e.labels.includes(name)).length }))); }
+  getLabels() { return this.execute((state) => countLabels(state.emails)); }
   createMessage(state, data, folderId) {
     const id = globalThis.crypto.randomUUID();
     this.checkAttachments(state, data.attachments || []);
@@ -1945,6 +1951,7 @@ function createEmailService(config = {}) {
 
 
 
+
 const ui_escape = (value = '') => String(value ?? '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
 const starIcon = '<svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17.14 14.14 18.18 21.02 12 17.77 5.82 21.02 6.86 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
 const folderIcon = '<svg viewBox="0 0 24 24"><path d="M3 5h6l2 2h10v13H3z"/></svg>';
@@ -1983,7 +1990,9 @@ async function initEmailPage({ service: injectedService, config: accountConfig }
   try { service = injectedService || createEmailService(config); }
   catch (error) { root.textContent = error.message; root.setAttribute('role', 'alert'); return; }
   const state = { folderId: 'inbox', query: '', category: '', sort: 'newest', offset: 0, limit: 25, selected: null, labels: [], folders: [], page: { items: [], total: 0 }, busy: false, compose: null, attachments: [] };
+  state.label = ''; state.read = undefined; state.starred = undefined;
   let disposed = false;
+  let committedQuery;
   root.innerHTML = `<section class="hero mail-hero"><div class="hero-text"><span class="eyebrow">Communications · ${mode === 'mock' ? 'Mock mailbox' : 'Connected mailbox'}</span><h1 class="hero-title" data-mail-title>${standalone ? 'Compose' : 'Inbox'}</h1><p class="hero-sub">${mode === 'mock' ? 'Mock mailbox. Sending saves to your Sent folder; no email is delivered to recipients.' : mode === 'internal' ? 'Internal account mail · Registered @adminator.test recipients only. Text messages are delivered to their database inbox.' : 'Manage your mailbox.'}</p></div><div class="hero-actions"><a class="btn" data-testid="email-mode" href="${standalone ? 'compose' : 'email'}.html${mode === 'internal' ? '?mailMode=mock' : '?mailMode=internal'}">${mode === 'internal' ? 'Preserved mock mailbox' : 'Real internal mailbox'}</a>${standalone ? `<a class="btn btn--ghost" href="email.html${mode === 'internal' ? '?mailMode=internal' : ''}">Back to Email</a>` : ui_button('refresh', 'Refresh') + ui_button('compose', 'Compose')}${mode === 'mock' ? ui_button('reset-mail', 'Reset mock data') + ui_button('fail-next', 'Simulate next error') : ''}</div></section>
     <p role="status" aria-live="polite" data-status data-testid="email-status"></p><p role="alert" data-error data-testid="email-error"></p>
     ${standalone ? `<section class="card email-compose-page">${composeMarkup()}</section>` : `<section class="mail-shell email-app" aria-label="Email" data-testid="mailbox"><aside class="mail-rail"><button class="mail-compose" data-action="compose" data-testid="rail-compose">Compose</button><div data-folders></div><div data-labels></div></aside><section class="mail-list"><div class="mail-list-head"><div class="mail-list-title" data-list-title></div><div class="mail-search"><input type="search" aria-label="Search mail" placeholder="Search sender, recipient, subject, body…" data-testid="search-mail"></div><div class="email-filters">${controlsMarkup}</div></div><div class="mail-tabs" data-testid="categories">${['', 'primary', 'updates', 'promotions'].map((category) => `<button class="mail-tab${!category ? ' is-active' : ''}" data-category="${category}" aria-pressed="${!category}" data-testid="category-${category || 'all'}">${category ? category[0].toUpperCase() + category.slice(1) : 'All'}</button>`).join('')}</div><div class="mail-list-scroll" data-message-list data-testid="email-list"></div><div class="email-pagination">${ui_button('previous-page', 'Previous')}<span data-page-info></span>${ui_button('next-page', 'Next')}</div></section><section class="mail-reader" data-reader data-testid="email-detail"><div class="reader-scroll">Select a message to read it.</div></section></section><dialog class="email-compose-dialog" aria-labelledby="compose-title" data-testid="compose-dialog">${composeMarkup()}</dialog>`}`;
@@ -2002,7 +2011,7 @@ async function initEmailPage({ service: injectedService, config: accountConfig }
     };
   }
   window.addEventListener('adminator-account-changing', () => {
-    disposed = true; form.reset(); if (dialog?.open) dialog.close();
+    disposed = true; clearTimeout(searchTimer); root.replaceChildren(); form.reset(); if (dialog?.open) dialog.close();
     Object.assign(state, { selected: null, compose: null, attachments: [], labels: [], folders: [], page: { items: [], total: 0 } });
   }, { once: true });
   const status = (message) => { if (!disposed) $('[data-status]').textContent = message; };
@@ -2042,15 +2051,28 @@ async function initEmailPage({ service: injectedService, config: accountConfig }
   async function refresh() {
     if (standalone || disposed) return;
     const query = { folderId: state.folderId, query: state.query, category: state.category, sort: state.sort, offset: state.offset, limit: state.limit, label: state.label, starred: state.starred, read: state.read };
-    const [page, folders, labels] = await Promise.all([service.searchEmails(query), service.getFolders(), service.getLabels()]);
+    const results = await Promise.allSettled([service.searchEmails(query), service.getFolders(), service.getLabels()]);
     if (disposed) return;
+    const labels = results[2].status === 'fulfilled' ? results[2].value : LABELS.map(id => ({id, name:id}));
+    if (results[2].status === 'rejected') error('Label counts unavailable. Refresh to retry.');
+    if (results[0].status === 'rejected' || results[1].status === 'rejected') {
+      if (committedQuery) Object.assign(state, committedQuery);
+      renderLabels(labels);
+      root.querySelectorAll('[data-filter]').forEach(el => { el.value = state[el.dataset.filter] === undefined ? '' : String(state[el.dataset.filter]); });
+      $('[data-testid="search-mail"]').value = state.query;
+      root.querySelectorAll('[data-category]').forEach(el => { const active = el.dataset.category === state.category; el.classList.toggle('is-active', active); el.setAttribute('aria-pressed', String(active)); });
+      if (!state.selected) await renderReader();
+      throw (results[0].status === 'rejected' ? results[0].reason : results[1].reason);
+    }
+    const page = results[0].value, folders = results[1].value;
     state.page = page; state.folders = folders; state.labels = labels;
+    committedQuery = { ...query };
     if (page.total && state.offset >= page.total) { state.offset = Math.max(0, Math.floor((page.total - 1) / state.limit) * state.limit); return refresh(); }
     const currentFolder = folders.find((f) => f.id === state.folderId);
     $('[data-mail-title]').textContent = `${currentFolder.name} · ${currentFolder.unread} unread`;
-    $('[data-list-title]').textContent = `${currentFolder.name} · ${page.total} results`;
+    $('[data-list-title]').innerHTML = `${ui_escape(currentFolder.name)} · ${page.total} results${state.label ? ` <span class="mail-tag" data-testid="active-label">Label: ${ui_escape(state.label)} ${ui_button('clear-label', '×', 'aria-label="Clear label filter"')}</span>` : ''}`;
     $('[data-folders]').innerHTML = `<div class="mail-rail-label">Folders · total / unread</div>${  folders.map((folder) => `<button class="mail-folder${state.folderId === folder.id ? ' is-active' : ''}" data-folder="${ui_escape(folder.id)}" data-testid="folder-${ui_escape(folder.id)}" aria-pressed="${state.folderId === folder.id}">${folder.id === 'starred' ? starIcon : folderIcon}<span class="mail-folder-name">${ui_escape(folder.name)}</span><span class="mail-folder-count">${folder.total} / ${folder.unread}</span></button>`).join('')}`;
-    $('[data-labels]').innerHTML = `<div class="mail-rail-label">Labels</div>${  labels.map((label) => `<button class="mail-folder" data-label="${ui_escape(label.id)}" data-testid="label-${ui_escape(label.id)}"><span class="mail-label-dot"></span><span class="mail-folder-name">${ui_escape(label.name)}</span><span class="mail-folder-count">${label.total}</span></button>`).join('')}`;
+    renderLabels(labels);
     $('[data-filter="label"]').innerHTML = `<option value="">All labels</option>${  labels.map((label) => `<option value="${ui_escape(label.id)}">${ui_escape(label.name)}</option>`).join('')}`;
     $('[data-filter="label"]').value = state.label || '';
     $('[data-message-list]').innerHTML = page.items.length ? page.items.map((mail, i) => `<article class="mail-row${!mail.isRead ? ' is-unread' : ''}${mail.id === state.selected?.id ? ' is-active' : ''}" data-email-id="${ui_escape(mail.id)}" data-testid="email-row-${ui_escape(mail.id)}" data-read="${mail.isRead}"><button class="email-row-open" data-open="${ui_escape(mail.id)}" aria-label="Read ${ui_escape(mail.subject)}" aria-pressed="${mail.id === state.selected?.id}"><span class="mail-row-avatar ma-${i % 5 + 1}">${ui_escape((mail.from.name || mail.from.address).slice(0, 2).toUpperCase())}</span><span class="mail-row-body"><span class="mail-row-top"><span class="mail-row-from">${ui_escape(mail.from.name || mail.from.address)}</span><span class="mail-row-time">${ui_escape(date(mail.sentAt || mail.receivedAt))}</span></span><span class="mail-row-subject">${ui_escape(mail.subject || '(No subject)')}</span><span class="mail-row-preview">${ui_escape(mail.bodyText)}</span><span class="mail-row-tags">${tags(mail)}${mail.attachments.length ? `<span class="mail-tag attach">${mail.attachments.length} files</span>` : ''}</span></span></button><button class="mail-star${mail.isStarred ? ' is-on' : ''}" data-star="${ui_escape(mail.id)}" aria-label="${mail.isStarred ? 'Unstar' : 'Star'} ${ui_escape(mail.subject)}" aria-pressed="${mail.isStarred}" data-testid="star-${ui_escape(mail.id)}">${starIcon}</button></article>`).join('') : '<p class="email-empty" data-testid="empty-mailbox">No messages match this view.</p>';
@@ -2105,7 +2127,14 @@ async function initEmailPage({ service: injectedService, config: accountConfig }
     if (clear) state.selected = null;
     await refresh(); await renderReader();
   }
+  function renderLabels(labels) {
+    $('[data-labels]').innerHTML = `<div class="mail-rail-label">Labels · all folders</div>${labels.map(label => `<button class="mail-folder${state.label === label.id ? ' is-active' : ''}" data-label="${ui_escape(label.id)}" data-testid="label-${ui_escape(label.id)}" aria-pressed="${state.label === label.id}"><span class="mail-label-dot"></span><span class="mail-folder-name">${ui_escape(label.name)}</span><span class="mail-folder-count" title="${Number.isSafeInteger(label.total) && label.total >= 0 ? 'All folders, including Trash and Spam' : 'Count unavailable; refresh to retry'}">${Number.isSafeInteger(label.total) && label.total >= 0 ? label.total : '—'}</span></button>`).join('')}`;
+  }
+  function changeLabel(label) {
+    return run(async () => { state.label = label; state.offset = 0; state.selected = null; await refresh(); await renderReader(); });
+  }
   const actions = {
+    'clear-label': () => changeLabel(''),
     'followup-task': () => createTask(hub, state.selected.subject || 'Follow-up mail', {kind:'mail',id:state.selected.id}),
     refresh: () => run(async () => { await refresh(); if (state.selected) await renderReader(); }, 'Mailbox refreshed'),
     compose: () => openCompose(),
@@ -2142,9 +2171,9 @@ async function initEmailPage({ service: injectedService, config: accountConfig }
     if (target.dataset.open) { run(() => select(target.dataset.open), 'Message selected'); return; }
     if (target.dataset.star) { run(async () => { await service.toggleStar(target.dataset.star); await refresh(); }, 'Star updated'); return; }
     if (target.dataset.folder) {
-      run(async () => { state.folderId = target.dataset.folder; state.offset = 0; state.selected = null; await refresh(); await renderReader(); $('.mail-shell').classList.remove('has-selection'); }); return;
+      run(async () => { state.folderId = target.dataset.folder; state.label = ''; state.offset = 0; state.selected = null; await refresh(); await renderReader(); $('.mail-shell').classList.remove('has-selection'); }); return;
     }
-    if (target.dataset.label) { $('[data-filter="label"]').value = target.dataset.label; state.label = target.dataset.label; state.offset = 0; run(refresh); return; }
+    if (target.dataset.label) { changeLabel(state.label === target.dataset.label ? '' : target.dataset.label); return; }
     if (target.hasAttribute('data-category')) {
       state.category = target.dataset.category; state.offset = 0;
       root.querySelectorAll('[data-category]').forEach((el) => { el.classList.toggle('is-active', el === target); el.setAttribute('aria-pressed', String(el === target)); }); run(refresh); return;
@@ -2162,6 +2191,7 @@ async function initEmailPage({ service: injectedService, config: accountConfig }
     if (state.busy) return;
     if (target.dataset.filter) {
       const key = target.dataset.filter;
+      if (key === 'label') { changeLabel(target.value); return; }
       state[key] = ['read', 'starred'].includes(key) ? target.value ? target.value === 'true' : undefined : target.value;
       state.offset = 0; run(refresh);
     }
@@ -2175,6 +2205,7 @@ async function initEmailPage({ service: injectedService, config: accountConfig }
   $('[data-testid="search-mail"]')?.addEventListener('input', (event) => {
     const value = event.target.value; clearTimeout(searchTimer);
     const search = () => {
+      if (disposed) return;
       if (state.busy) { searchTimer = setTimeout(search, 200); return; }
       state.query = value; state.offset = 0; run(refresh);
     };
@@ -2227,7 +2258,10 @@ class AuthClient {
       });
       let data = null;
       if (response.status === 204) await response.arrayBuffer();
-      else data = await response.json();
+      else {
+        try { data = await response.json(); }
+        catch { if (response.ok) throw new AuthError('Account server returned an invalid response. Retry or reload.', 502); }
+      }
       if (!response.ok) {
         if (response.status === 409 && data?.error?.message?.startsWith('Active account changed')) this.loseSession('account-changed');
         if (response.status === 401 && protectedRequest && this.user) this.loseSession();
@@ -2281,7 +2315,7 @@ class AuthClient {
 
 function validateRegistration(data) {
   if (!/^[a-z][a-z0-9_]{2,31}$/i.test(data.username.trim())) return 'Username must start with a letter and use 3–32 letters, numbers or underscores.';
-  if (!data.displayName.trim() || data.displayName.trim().length > 80 || [...data.displayName].some((char) => char.charCodeAt(0) < 32 || char.charCodeAt(0) === 127)) return 'Display Name must contain 1–80 visible characters.';
+  if (!data.displayName.trim() || [...data.displayName].length > 80 || [...data.displayName].some((char) => char.codePointAt(0) < 32 || (char.codePointAt(0) >= 127 && char.codePointAt(0) <= 159))) return 'Display Name must contain 1–80 visible characters.';
   if (data.password.length < 12 || data.password.length > 128) return 'Password must contain 12–128 characters.';
   if (data.password !== data.confirmPassword) return 'Passwords do not match.';
   return '';
@@ -2552,15 +2586,15 @@ async function initChatPage(mockService, liveService) {
   async function run(action, message) {
     if (busy) return; busy = true; errorBox.textContent = ''; status.textContent = 'Saving…'; shell.setAttribute('aria-busy', 'true'); shell.querySelectorAll('button').forEach(button => { button.disabled = true; });
     try { await action(); status.textContent = message; }
-    catch (error) { errorBox.textContent = error.message; status.textContent = 'Not saved. Retry or reload if data changed.'; }
+    catch (error) { errorBox.textContent = error.message; status.textContent = 'Operation interrupted. Reload to check stored changes before retrying.'; }
     finally { busy = false; shell.removeAttribute('aria-busy'); shell.querySelectorAll('button').forEach(button => { button.disabled = false; }); input.disabled = !selected; shell.querySelector('[data-testid="chat-send"]').disabled = !selected; if (live && syncAgain) { syncAgain = false; liveService.onchange(); } }
   }
   function send() {
     const body = input.value; if (!body.trim()) { errorBox.textContent = 'Enter a message before sending.'; return; }
-    run(async () => { await service.send(selected, body); if (live) await service.read(selected); input.value = ''; window.dispatchEvent(new CustomEvent('adminator-form-saved',{detail:input})); await refresh(); input.focus(); }, live ? 'Message stored and sent to conversation participants.' : 'Message saved in mock. No delivery to another user.');
+    run(async () => { await service.send(selected, body); input.value = ''; window.dispatchEvent(new CustomEvent('adminator-form-saved',{detail:input})); if (live) await service.read(selected); await refresh(); input.focus(); }, live ? 'Message stored and sent to conversation participants.' : 'Message saved in mock. No delivery to another user.');
   }
   input.onkeydown = event => { if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) { event.preventDefault(); send(); } }; shell.querySelector('[data-testid="chat-send"]').onclick = send; search.oninput = renderRooms;
-  shell.querySelector('form').onsubmit = event => { event.preventDefault(); const name = shell.querySelector('[data-testid="chat-room-name"]'); run(async () => { const room = await (live ? liveService.createShared(name.value) : service.create(name.value)); selected = room.id; name.value = ''; await refresh(); }, live ? 'Shared room created.' : 'Private mock room created.'); };
+  shell.querySelector('form').onsubmit = event => { event.preventDefault(); const name = shell.querySelector('[data-testid="chat-room-name"]'); run(async () => { const room = await (live ? liveService.createShared(name.value) : service.create(name.value)); selected = room.id; name.value = ''; window.dispatchEvent(new CustomEvent('adminator-form-saved', {detail:shell.querySelector('form')})); await refresh(); }, live ? 'Shared room created.' : 'Private mock room created.'); };
   shell.querySelector('[data-testid="chat-reset"]').onclick = () => run(async () => { await service.reset(); selected = ''; await refresh(); }, 'Chat samples restored for this account.');
   document.querySelectorAll('.hero-actions button').forEach(button => { if (button.textContent.trim() === 'Search') button.onclick = () => search.focus(); else button.onclick = () => (live ? userSearch : shell.querySelector('[data-testid="chat-room-name"]')).focus(); });
   try { if (new URLSearchParams(location.search).get('chatMode') === 'mock') { await refresh(); status.textContent = 'Chat ready · mock mode.'; } else { await mode.onclick(); if (targetRoom) { if (rooms.some(r => r.id === targetRoom)) { selected = targetRoom; await liveService.read(selected); await refresh(); if (targetMessage && !rooms.find(r => r.id === selected)?.messages.some(m => m.id === targetMessage)) errorBox.textContent = 'Message unavailable. This conversation remains available.'; } else errorBox.textContent = 'Conversation unavailable or access changed.'; } status.textContent = 'Shared chat ready.'; } }

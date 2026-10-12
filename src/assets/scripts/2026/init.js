@@ -15,22 +15,29 @@ const STORE_KEY = 'dash26-theme';
 const SUN_ICON  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>';
 const MOON_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
 
-function initThemeToggle() {
-  const root = document.documentElement;
+function updateThemeIcon() {
   const toggle = document.getElementById('themeToggle');
-  if (!toggle) return;
+  if (toggle) toggle.innerHTML = document.documentElement.dataset.theme === 'dark' ? SUN_ICON : MOON_ICON;
+}
 
-  const update = () => {
-    toggle.innerHTML = root.getAttribute('data-theme') === 'dark' ? SUN_ICON : MOON_ICON;
-  };
-  update();
+// All theme actions use this entry point. Programmatic preference recovery must
+// update paint/chart observers without writing temporary defaults to the server.
+export function setTheme(theme, { userInitiated = false } = {}) {
+  const root = document.documentElement;
+  const changed = root.dataset.theme !== theme;
+  root.dataset.theme = theme;
+  try { localStorage.setItem(STORE_KEY, theme); } catch { /* storage may be unavailable */ }
+  updateThemeIcon();
+  if (changed) window.dispatchEvent(new CustomEvent('adminator-theme-changed', { detail: { theme, userInitiated } }));
+}
 
-  toggle.addEventListener('click', () => {
-    const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    root.setAttribute('data-theme', next);
-    try { localStorage.setItem(STORE_KEY, next); } catch { /* localStorage may be unavailable */ }
-    update();
-  });
+export function toggleTheme() {
+  setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark', { userInitiated: true });
+}
+
+function initThemeToggle() {
+  updateThemeIcon();
+  document.getElementById('themeToggle')?.addEventListener('click', toggleTheme);
 }
 
 function initHeroDate() {

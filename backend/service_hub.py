@@ -9,6 +9,7 @@ from sqlalchemy import select, update, or_, func
 from sqlalchemy.exc import IntegrityError
 from backend.models import User, WorkspaceState, InternalMail, ChatMessage, ChatMember, ChatRoom, utcnow
 from backend.security import authenticated, check_csrf, public_user
+from backend.schemas import ProfileInput
 from backend.resources import occurrences, parse_time, get_zone
 
 
@@ -35,11 +36,6 @@ class PreferenceInput(BaseModel):
     model_config = ConfigDict(extra="forbid")
     expectedRevision: int = Field(ge=0)
     preferences: Preferences
-
-
-class ProfileInput(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-    displayName: str = Field(min_length=1, max_length=80)
 
 
 def install_service_hub(app, database, settings, visible_events, event_json, rooms_for, member, message_json):
@@ -87,9 +83,7 @@ def install_service_hub(app, database, settings, visible_events, event_json, roo
     @router.patch("/users/me")
     def profile(data: ProfileInput, request: Request, db=Depends(database)):
         user = identity(request, db, True)
-        if not data.displayName.strip():
-            raise HTTPException(422, "Display name cannot be blank")
-        user.display_name = data.displayName.strip()
+        user.display_name = data.displayName
         db.commit()
         return {"user": public_user(user)}
 
@@ -155,7 +149,7 @@ def install_service_hub(app, database, settings, visible_events, event_json, roo
         for row in visible_events(db, user.id):
             e = event_json(db, row, user.id)
             if any(a["userId"] == user.id and a["status"] == "pending" for a in e["attendees"]):
-                upcoming = any(parse_time(o["end"], o["allDay"], get_zone(o["timezone"])) > datetime.now(timezone.utc) for o in occurrences(e))
+                upcoming = any(parse_time(o["end"], o["allDay"], get_zone(o["timezone"])) > datetime.now(timezone.utc) for o in occurrences(e, datetime.now(timezone.utc)))
                 if upcoming:
                     items.append({"kind": "calendar", "title": e["title"], "detail": "Invitation awaiting response", "href": f'calendar.html?event={e["id"]}'})
         for m in mails_for(db, user.id):

@@ -7,7 +7,7 @@ import { randomBytes } from 'node:crypto';
 
 export const TEST_PASSWORD = 'A strong test password 2026!';
 
-export async function startAuthServer() {
+export async function startAuthServer({ origins = [], staticDir = process.env.AUTH_TEST_DIST } = {}) {
   const portServer = createServer();
   await new Promise((done) => portServer.listen(0, '127.0.0.1', done));
   const port = portServer.address().port;
@@ -17,9 +17,9 @@ export async function startAuthServer() {
   const devToken = randomBytes(32).toString('hex');
   const base = `http://127.0.0.1:${port}`;
   const python = process.env.AUTH_TEST_PYTHON || resolve(process.platform === 'win32' ? '.venv/Scripts/python.exe' : '.venv/bin/python');
-  const server = spawn(python, ['-m', 'uvicorn', 'backend.app:app', '--host', '127.0.0.1', '--port', String(port), '--no-access-log'], {
+  const server = spawn(python, ['-m', 'uvicorn', 'backend.tests.browser_app:app', '--host', '127.0.0.1', '--port', String(port), '--no-access-log'], {
     windowsHide: true,
-    env: { ...process.env, APP_ENV: 'test', DATABASE_URL: `sqlite:///${database.replace(/\\/g, '/')}`, AUTH_ORIGINS: base, AUTH_AUTO_MIGRATE: 'true', AUTH_COOKIE_SECURE: 'false', AUTH_DEV_ADMIN: 'true', AUTH_DEV_TOKEN: devToken, AUTH_SESSION_TTL: '300' },
+    env: { ...process.env, ...(staticDir ? { AUTH_TEST_DIST: resolve(staticDir) } : {}), APP_ENV: 'test', DATABASE_URL: `sqlite:///${database.replace(/\\/g, '/')}`, AUTH_ORIGINS: [base, ...origins].join(','), AUTH_AUTO_MIGRATE: 'true', AUTH_COOKIE_SECURE: 'false', AUTH_DEV_ADMIN: 'true', AUTH_DEV_TOKEN: devToken, AUTH_SESSION_TTL: '300' },
     stdio: ['ignore', 'pipe', 'pipe'],
   });
   let output = ''; let startupError;

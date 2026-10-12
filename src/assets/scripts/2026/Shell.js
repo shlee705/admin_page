@@ -20,6 +20,8 @@
  */
 
 const navIcon = '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 10h10M7 14h7"/>';
+export const PAGE_ALIASES = Object.freeze({ forms: 'settings', charts: 'reports', blank: 'settings', 'basic-table': 'calendar', datatable: 'tasks' });
+export function canonicalPage(key) { return PAGE_ALIASES[key] || key; }
 export const NAV = [
   { label: 'Work', items: [
     { key: 'dashboard', text: 'Home', href: 'index.html', icon: navIcon },
@@ -254,8 +256,9 @@ function renderFooter() {
 
 export function mountShell() {
   const body = document.body;
-  const activeKey = body.getAttribute('data-active') || '';
-  const crumbs = body.getAttribute('data-crumbs') || '';
+  const pageKey = body.getAttribute('data-active') || '';
+  const activeKey = canonicalPage(pageKey);
+  const crumbs = PAGE_ALIASES[pageKey] ? `Work | ${{ settings: 'Profile & preferences', reports: 'Work report', calendar: 'Calendar', tasks: 'My tasks' }[activeKey]}` : body.getAttribute('data-crumbs') || '';
 
   const sidebarHost = document.querySelector('[data-shell-sidebar]');
   const topbarHost  = document.querySelector('[data-shell-topbar]');

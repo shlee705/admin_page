@@ -15,6 +15,7 @@ try {
   await createTestAccount(alice,server.base,`real_alice_${suffix}`,'Alice');
   const bu = await createTestAccount(bob,server.base,bobUsername,'Bob');
   await createTestAccount(eve,server.base,`real_eve_${suffix}`,'Eve');
+  for(const context of [alice,bob]) {await context.route('https://fonts.googleapis.com/**',r=>r.abort());await context.route('https://fonts.gstatic.com/**',r=>r.abort());}
   const a = await alice.newPage(), b = await bob.newPage();
   for (const page of [a,b]) page.on('pageerror', e => report.errors.push(e.message));
   for (const page of [a,b]) {
@@ -52,19 +53,33 @@ try {
   const hooks = await a.locator('[data-testid]').evaluateAll(nodes=>nodes.map(n=>n.dataset.testid));
   report.mailHooks = hooks;
   await a.getByTestId('compose').click(); await a.getByTestId('compose-to').fill(bu.emailAddress); await a.getByTestId('compose-subject').fill('Browser internal mail'); await a.getByTestId('compose-body').fill('Delivered from Alice'); await a.getByTestId('send-email').click(); await a.getByTestId('compose-dialog').waitFor({state:'hidden'}); await waitText(a.getByTestId('email-status'),'delivered-internal');
-  await b.goto(`${server.base}/email.html?mailMode=internal`); await b.getByText('Browser internal mail',{exact:true}).first().waitFor(); await b.getByText('Browser internal mail',{exact:true}).first().click(); await b.getByText('Delivered from Alice',{exact:true}).first().waitFor();
+  await b.goto(`${server.base}/email.html?mailMode=internal`); await b.getByTestId('email-list').getByText('Browser internal mail',{exact:true}).waitFor(); await b.getByTestId('email-list').getByText('Browser internal mail',{exact:true}).click(); await b.getByTestId('email-detail').getByText('Delivered from Alice',{exact:true}).waitFor();
   report.scenarios.push('Internal email browser composition + real delivery + Bob inbox and reader');
-  await a.goto(`${server.base}/index.html`); await waitText(a.getByTestId('dashboard-status'),'loaded'); await a.getByTestId('dashboard-account-summary').waitFor();
+  await a.goto(`${server.base}/index.html`); await waitText(a.getByTestId('dashboard-status'),'Updated'); assert.match(await a.locator('.hero-title').innerText(),/Alice/); assert.equal(await a.locator('[data-home-card]').count(),4);
   await a.screenshot({path:'screenshots/resource-dashboard.png',fullPage:true});
-  for (const name of ['index','email','compose','calendar','chat','charts','forms','buttons','ui','basic-table','datatable','google-maps','vector-maps','blank','404','500','signin','signup']) {
-    await a.goto(`${server.base}/${name}.html`); await a.waitForTimeout(400);
-    report.pages[name] = {title:await a.title(), text:(await a.locator('body').innerText()).slice(0,18000), buttons:await a.locator('main button').allTextContents(), placeholderLinks:await a.locator('main a[href="#"]').allTextContents()};
-    if (name==='datatable') { const before = await a.locator('tbody tr').count(); const search = a.locator('main input[type="search"]'); if (await search.count()) { await search.first().fill('no-matching-row-2026'); report.pages[name].searchEvidence = {before,after:await a.locator('tbody tr:visible').count()}; } }
-    const inactiveAction = {charts:'New chart',datatable:'Invite user','google-maps':'Add location','vector-maps':'Add region',blank:'Add section'}[name];
-    if (inactiveAction) { const before = await a.locator('main').innerText(); await a.getByRole('button',{name:inactiveAction,exact:true}).click(); report.pages[name].actionEvidence = { action:inactiveAction, textChanged:before !== await a.locator('main').innerText(), openDialogs:await a.locator('dialog[open]').count() }; }
-    if (name==='ui') { const accordion = a.getByRole('button',{name:'How does the dark mode work?',exact:true}); await accordion.click(); report.pages[name].accordionOpened = await accordion.evaluate(el=>el.closest('[data-accordion]').classList.contains('is-open')); }
-    if (['basic-table','datatable','charts','vector-maps'].includes(name)) { if(name==='charts') await a.locator('canvas').first().waitFor(); if(name==='vector-maps') await a.locator('[data-vmap] svg').waitFor(); const download = a.waitForEvent('download'); await a.locator('.hero-actions button').first().click(); report.pages[name].download = (await download).suggestedFilename(); }
-    if (name==='forms') { const first = a.locator('main form'); if(await first.count()) report.pages[name].formCount = await first.count(); }
+  const expectedAliases = {'basic-table':'calendar.html',datatable:'tasks.html',charts:'Work report',forms:'Profile & preferences',blank:'Profile & preferences'};
+  for (const [page,width] of [[a,1600],[b,390]]) {
+    for (const name of ['index','email','compose','calendar','chat','tasks','settings','people','search','attention','reports','charts','forms','buttons','ui','basic-table','datatable','google-maps','vector-maps','blank','404','500','signin','signup']) {
+      await page.goto(`${server.base}/${name}.html`);
+      if (['basic-table','datatable'].includes(name)) await page.waitForURL(`**/${expectedAliases[name]}*`);
+      if (['charts','forms','blank'].includes(name)) await page.getByRole('heading',{name:expectedAliases[name],exact:true}).waitFor();
+      if (name==='index') await waitText(page.getByTestId('dashboard-status'),'Updated');
+      if (name==='vector-maps') await page.locator('[data-vmap] svg').waitFor();
+      report.pages[`${name}-${width}`] = {title:await page.title(),url:page.url(),active:await page.locator('body').getAttribute('data-active'),text:(await page.locator('body').innerText()).slice(0,2000)};
+      if (name==='datatable') { await page.locator('[data-task-query]').fill('no-matching-row-2026'); assert.equal(await page.locator('[data-edit-task]').count(),0); }
+      if (name==='charts') { await page.locator('[data-report] tbody tr').last().waitFor(); assert.equal(await page.locator('.nav-link.is-active').innerText(),'Work report'); }
+      if (name==='forms'||name==='blank') assert.equal(await page.locator('[data-profile-form]').count(),1);
+      if (name==='ui') {
+        const accordion=page.getByRole('button',{name:'How does the dark mode work?',exact:true});
+        const initiallyOpen=await accordion.evaluate(el=>el.closest('[data-accordion]').classList.contains('is-open'));
+        await accordion.click(); assert.equal(await accordion.evaluate(el=>el.closest('[data-accordion]').classList.contains('is-open')),!initiallyOpen);
+        await accordion.click(); assert.equal(await accordion.evaluate(el=>el.closest('[data-accordion]').classList.contains('is-open')),initiallyOpen);
+        assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+      }
+      if (name==='basic-table') { await page.waitForFunction(()=>[...document.querySelectorAll('.cal-view-tab')].some(button=>button.textContent.trim()==='Agenda'&&button.getAttribute('aria-pressed')==='true')); assert.equal(await page.getByRole('button',{name:'Agenda',exact:true}).getAttribute('aria-pressed'),'true'); const download=page.waitForEvent('download');await page.getByTestId('calendar-export').click();assert.equal((await download).suggestedFilename(),'calendar.json'); }
+      if (name==='vector-maps') {const download=page.waitForEvent('download');await page.locator('.hero-actions button').first().click();assert.equal((await download).suggestedFilename(),'map-sample.svg');}
+      if (name==='google-maps') assert.ok(await page.locator('iframe').count());
+    }
   }
   assert.deepEqual(report.errors,[]);
   console.log(JSON.stringify({scenarios:report.scenarios,pages:Object.keys(report.pages),errors:report.errors},null,2));

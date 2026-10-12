@@ -1,5 +1,9 @@
 # 테스트 절차와 검증 증거
 
+## 최신 수정 후 검증 (2026-10-12)
+
+프론트171/백엔드100, 브라우저13종, lint와 minified production build(errors/warnings0), dependency check와 clone/live migration 보존 검증 PASS. 실제 명령·결과·첫 실패와 보완·최종 로그는 [09_POST_FIX_REGRESSION_REPORT.md](09_POST_FIX_REGRESSION_REPORT.md)에 있다. 아래2026-10-11과 Label 회귀 수치는 과거 실행 기록이며 현재 통과 개수를 대신하지 않는다.
+
 기준일: 2026-10-11. 현재 품질 개선의 실행 증거와 이전 문서 정리의122/44 결과를 구분한다. 설치는 [RUNNING](RUNNING.md), 개발 현황은 [DEVELOPMENT_STATUS](DEVELOPMENT_STATUS.md)에서 관리한다.
 
 ## 현재 실행 결과

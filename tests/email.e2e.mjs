@@ -32,6 +32,26 @@ try {
     await page.goto(`${base  }/email.html?mailMode=mock`); await ready();
     assert.equal(await byId('email-list').locator('.mail-row').count(), 7);
     assert.match(await byId('folder-inbox').textContent(), /7 \/ 3/);
+    const rowIds = async () => (await byId('email-list').locator('[data-email-id]').evaluateAll(nodes => nodes.map(n=>n.dataset.emailId))).sort();
+    const inboxIds = await rowIds();
+    await click('label-Work');
+    assert.equal(await byId('label-Work').getAttribute('aria-pressed'), 'true');
+    assert.ok((await rowIds()).length < inboxIds.length);
+    assert.equal(await byId('email-list').locator('.mail-row').filter({has:page.locator('.mail-tag.work')}).count(), (await rowIds()).length);
+    await click('label-Work'); assert.deepEqual(await rowIds(), inboxIds);
+    await click('label-Work'); await click('label-Team');
+    assert.equal(await byId('label-Work').getAttribute('aria-pressed'), 'false');
+    assert.equal(await byId('label-filter').inputValue(), 'Team');
+    await click('clear-label'); assert.deepEqual(await rowIds(), inboxIds);
+    await click('label-Work'); await click('folder-sent');
+    assert.equal(await byId('label-filter').inputValue(), '');
+    const sentIds = await rowIds();
+    await click('label-Finance');
+    assert.equal(await byId('email-list').locator('.mail-row').filter({has:page.locator('.mail-tag.finance')}).count(), (await rowIds()).length);
+    await click('label-Finance'); assert.deepEqual(await rowIds(), sentIds);
+    await click('folder-inbox'); assert.deepEqual(await rowIds(), inboxIds);
+    assert.doesNotMatch(await page.locator('[data-labels]').textContent(), /undefined|NaN/);
+
     assert.ok((await byId('email-row-sample-1').locator('.mail-row-body').boundingBox()).width > 100, 'Message text must have visible space');
     await page.locator('[data-open="sample-1"]').click(); await ready();
     assert.match(await byId('email-detail').textContent(), /Q2 launch plan/);
@@ -108,6 +128,7 @@ try {
     await click('refresh'); assert.equal(await byId('email-error').textContent(), '');
     await click('reset-mail'); assert.equal(await byId('email-list').locator('.mail-row').count(), 7);
     assert.match(await byId('folder-inbox').textContent(), /7 \/ 3/);
+
     await page.screenshot({ path: `screenshots/email-interactive-${name}.png`, fullPage: true });
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false, 'Mailbox must not overflow viewport');
     await page.goto(`${base  }/compose.html?mailMode=mock`); await ready();

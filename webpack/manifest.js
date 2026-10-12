@@ -28,7 +28,7 @@ const
   NODE_ENV       = process.env.NODE_ENV || 'development',
   IS_DEVELOPMENT = NODE_ENV === 'development',
   IS_PRODUCTION  = NODE_ENV === 'production',
-  MINIFY         = process.env.MINIFY === 'true';
+  MINIFY         = process.env.MINIFY === undefined ? IS_PRODUCTION : process.env.MINIFY === 'true';
 
 // ------
 // @Utils

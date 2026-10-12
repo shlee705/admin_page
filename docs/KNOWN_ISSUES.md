@@ -1,6 +1,8 @@
 # 알려진 제약과 추가 확인 사항
 
-기준일: 2026-10-11. 품질 개선에서 수정한 항목과 남은 제약을 구분한다. 현재 검증 증거는 [TESTING](TESTING.md), 후속 범위는 [ROADMAP](ROADMAP.md)에 있다.
+QA-001~014는이번 검증 범위에서 모두 해결했다. [08 수정](08_QA_REMEDIATION_REPORT.md), [09 회귀](09_POST_FIX_REGRESSION_REPORT.md). 운영 한계·신규 기능 미구현과 원래 QA 결함을 구별한다.
+
+기준일: 2026-10-12 수정 후. 아래 기존 품질 개선 기록의 최신 QA 수정은08/09를 따른다. 품질 개선에서 수정한 항목과 남은 제약을 구분한다. 현재 검증 증거는 [TESTING](TESTING.md), 후속 범위는 [ROADMAP](ROADMAP.md)에 있다.
 
 ## 이번에 해결한 항목
 
@@ -28,16 +30,16 @@
 |---|---|---|
 | P2·부분 해결 | 직접 메일 ID 누락 | clientId/Idempotency-Key와 보호 상태 header는 지원. 호환을 위해 ID-less 발신 허용; unprotected 요청 재시도는 중복 가능. 차기 계약에서 필수화 여부 결정 |
 | P2·부분 해결 | attribution FK | ORM을 실제 migration의 String(36) 정책에 맞췄고 물리 FK 일치 검증. created_by/updated_by의 강한 FK 추가는 고아 자료/삭제 정책과 백업·명시 migration 필요 |
-| P2·미해결 | 초안 동시 편집 | revision이 없어 같은 계정 다른 탭이 덮어쓰기 가능. CAS 계약·입력 보존·비파괴 이전 후속 |
-| P2·미해결 | Calendar 생성 응답 유실 | 저장 성공 후 조회 실패는 구분했지만 POST 자체 응답 유실의 durable retry ID는 없음. 서버 idempotency 계약 후속 |
+| 해결(QA-001) | 초안 동시 편집 | revision 원자 CAS·409 입력 보존·latest/new draft·0006 보존 migration 검증 |
+| 해결(QA-002) | Calendar 생성 응답 유실 |0007 durable owner/clientId receipt·동결 원본 retry; ID-less legacy는unprotected 유지 |
 | P2·미해결 | 일반 운영 rate/quota | 인증 제한 외 메시지/방/메일·연결 수/보존량 정책 없음. 실제 부하/남용 테스트와 정책 확정 |
-| P2·미해결 | 전체 자료 로딩·검색 최대50 | 내부 메일 전체 조회, Chat 전체 history, Calendar 전체 반복 확장; 서버 paging/기간/index/가상화 필요 |
-| P2·미해결 | 오류 조기 반환 헤더 | Origin/413 middleware 오류는 일반 보안 헤더 후처리를 거치지 않음. 공통 응답 처리 후속 |
-| P2·미해결 | 번들·TestClient 경고 | unminified build의 asset/entrypoint 크기 경고2개, Starlette/httpx 전환 경고1개. 의존성 무리한 일괄 업그레이드 없이 별도 검증 |
+| 기본 조회 해결(QA-009), 운영 성능 후속 | 자료 조회·검색 최대50 | mail page/count, Chat latest/증분/older, Calendar 기간·batch를 적용. JSON scan/visible series/Calendar DOM과Search50 한계는 유지 |
+| 해결(QA-012) | 오류 조기 반환 헤더 | 정상·조기403/413·예외에 공통 헤더, HTTP6개 검사PASS |
+| 번들 해결(QA-014), deprecation 후속 | 번들·TestClient | minified split build warnings0. Starlette/httpx deprecation1건은 남음 |
 | P2·추가 확인 필요 | CI 원격·접근성/실기기 | workflow 추가와 로컬 checks 완료; GitHub 원격 실행, 실제 휴대전화 긴 터치/키보드·screen reader/전체 예제 반응형은 별도 |
 | P3·미해결 | single-worker Chat WS | 프로세스 메모리 connections; worker간 broker/pub-sub·replay·부하 검증 필요 |
 | P3·미해결 | PostgreSQL | 공식 검증은SQLite. POST 공유 멤버 생성은 SQLite insert; 실제 Postgres migration/transaction 검증 없음 |
-| P3·미해결 | Calendar 고급 시간 모델 | 시리즈 전체 편집·유한 반복만; occurrence 예외/RRULE/기간 query/DST offset UI 없음 |
+| P3·미해결 | Calendar 고급 시간 모델 | 시리즈 전체 편집·유한 반복만; occurrence 예외/RRULE/DST offset UI 없음; 기간 query는 구현 |
 | P3·미해결 | legacy 이전·동기화 | 과거 timezone 자동 복구/preview 없음, 명시 import 후 snapshot과 양방향 동기화 안 함 |
 | P3·미해결 | 불변 업무·발신 이력 | 현재 보존 자료 기반 Home/Reports. 삭제 Task·날짜 없는 완료 제외, 이동된Sent 집계 변화; 감사 원장 필요 |
 | P3·미해결 | 혼합 동기화·계정 UX | Calendar3초, mail/상단30초, Home수동; 최대10개·탭 공유 활성·reload·만료 자동 대체 없음 |
@@ -46,7 +48,7 @@
 
 P0로 확정한 보안 취약점은 없었다. 이는 보안 감사나 운영 적합성 인증을 의미하지 않는다. 계정 전환/해제·전체 로그아웃·owner/Bcc/private 접근은 현재 자동화 범위에서 오류가 재현되지 않았다.
 
-기존 개발 DB는 reset/migration하지 않았고 전후 SHA-256이 일치했다. legacy 계정 승계/익명 CSRF 생성은 의도된 상태 변경이므로 모든 GET을 읽기 전용이라고 일반화하지 않는다.
+이전2026-10-11검수에서는 DB 파일을 보존했다. 이번2026-10-12수정은 backup·사본 보존 검증 후0007 명시migration을 적용하고 모든 기존 행/값이 같음을 확인했다. reset은 하지 않았다. legacy 계정 승계/익명 CSRF 생성은 의도된 상태 변경이므로 모든 GET을 읽기 전용이라고 일반화하지 않는다.
 
 ## 해결: Email Label (2026-10-11)
 
@@ -55,4 +57,4 @@ P0로 확정한 보안 취약점은 없었다. 이는 보안 감사나 운영 �
 - 선택 상태 부재: 사이드바 강조·aria-pressed·상단 메일함/Label 표시 동기화.
 - 조회 오류/계정 혼입: 개수 실패는 `—`와 재시도 안내, 목록 실패는 표시한 필터 복원, 계정 변경은 DOM 제거·disposed·검색 타이머 정리.
 
-남는 제한: 내부 데이터 전체 조회를 목록/폴더/Label 계산에 각각 사용한다. 대용량 서버 집계와 단일 snapshot API는 아직 없다. 계정 전환/새로고침으로 갱신하며 외부 수신 push는 없다. 별도 REST 서버는 실제 total 계약을 제공해야 하고 이번 내부 API 테스트의 대상이 아니다. 기존 asset/entrypoint 크기 build 경고2건은 남아 있다.
+남는 제한: 내부 UI는 single page/count snapshot으로 개선됐으나 legacy 전량 API·SQL JSON count scan·Search/Home 계산은 자료량에 비례한다. 계정 전환/새로고침으로 갱신하며 외부 수신 push는 없다. 별도 REST 서버는 실제 total 계약을 제공해야 하고 이번 내부 API 테스트의 대상이 아니다. 최종 minified production build 경고는0이다.

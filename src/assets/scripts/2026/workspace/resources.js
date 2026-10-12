@@ -6,7 +6,12 @@ export class ResourceCalendar {
     this.events = (await this.client.request('/api/calendar/events')).events;
     return this.events;
   }
-  async occurrences() { await this.list(); return (await this.client.request('/api/calendar/events?expand=true')).events; }
+  async occurrences() { return (await this.client.request('/api/calendar/events?expand=true')).events; }
+  async viewSnapshot(start, end) {
+    const result = await this.client.request(`/api/calendar/events?${new URLSearchParams({ expand: 'true', start, end })}`);
+    this.events = result.series;
+    return result;
+  }
   save(data) {
     const valid = validateEvent(data);
     const keys = ['title','description','start','end','allDay','category','timezone','recurrence','location','attendeeIds'];
@@ -14,6 +19,7 @@ export class ResourceCalendar {
     body.timezone ||= this.timezone;
     const old = this.events.find(event => event.id === data.id);
     if (data.id) body.expectedRevision = data.revision ?? old?.revision;
+    else body.clientId = data.clientId || crypto.randomUUID();
     return this.client.request(`/api/calendar/events${data.id ? `/${encodeURIComponent(data.id)}` : ''}`, { method: data.id ? 'PATCH' : 'POST', body });
   }
   remove(id) { const old = this.events.find(event => event.id === id); return this.client.request(`/api/calendar/events/${encodeURIComponent(id)}?revision=${old?.revision}`, { method: 'DELETE' }); }
@@ -23,7 +29,7 @@ export class ResourceCalendar {
 }
 
 export class LiveChat {
-  constructor(client, user) { this.client = client; this.store = { user }; this.rooms = []; this.messages = new Map(); this.pending = null; this.closed = false; this.onchange = () => {}; this.onstatus = () => {}; this.retry = 1000; }
+  constructor(client, user) { this.client = client; this.store = { user }; this.rooms = []; this.messages = new Map(); this.pages = new Map(); this.loading = new Map(); this.pending = null; this.closed = false; this.onchange = () => {}; this.onstatus = () => {}; this.retry = 1000; }
   async list() {
     this.rooms = (await this.client.request('/api/chat/rooms')).rooms;
     for (const room of this.rooms) if (this.messages.has(room.id)) room.messages = this.messages.get(room.id);
@@ -31,16 +37,47 @@ export class LiveChat {
   }
   unread(room) { return room.unread; }
   async history(id) {
-    const messages = []; let after = 0; let more = true;
-    while (more) { const result = await this.client.request(`/api/chat/rooms/${encodeURIComponent(id)}/messages?after=${after}&limit=200`); messages.push(...result.messages); after = result.nextAfter; more = result.hasMore; }
-    this.messages.set(id, messages); return messages;
+    if (this.loading.has(id)) return this.loading.get(id);
+    const load = this.loadHistory(id);
+    this.loading.set(id, load);
+    try { return await load; } finally { this.loading.delete(id); }
+  }
+  async loadHistory(id) {
+    const initial = !this.messages.has(id);
+    const messages = [...(this.messages.get(id) || [])]; let after = messages.at(-1)?.sequence || 0; let more = true;
+    while (more) {
+      const result = await this.client.request(`/api/chat/rooms/${encodeURIComponent(id)}/messages?after=${after}&limit=100${initial && after === 0 ? '&latest=true' : ''}`);
+      messages.push(...result.messages); after = result.nextAfter; more = result.hasMore;
+      if (initial && typeof result.hasOlder === 'boolean') {
+        this.pages.set(id, { hasOlder: result.hasOlder, oldestSequence: result.oldestSequence });
+        break;
+      }
+      if (!result.messages.length) break;
+    }
+    const unique = [...new Map(messages.map(message => [message.sequence, message])).values()].sort((a,b) => a.sequence - b.sequence);
+    this.messages.set(id, unique); return unique;
+  }
+  hasOlder(id) { return this.pages.get(id)?.hasOlder || false; }
+  async older(id) {
+    await this.history(id);
+    const page = this.pages.get(id); if (!page?.hasOlder) return this.messages.get(id);
+    const result = await this.client.request(`/api/chat/rooms/${encodeURIComponent(id)}/messages?before=${page.oldestSequence}&limit=100`);
+    const messages = [...new Map([...result.messages, ...this.messages.get(id)].map(message => [message.sequence, message])).values()].sort((a,b) => a.sequence - b.sequence);
+    this.messages.set(id, messages);
+    this.pages.set(id, { hasOlder: result.hasOlder && result.messages.length > 0, oldestSequence: result.oldestSequence });
+    return messages;
+  }
+  async ensureMessage(id, messageId) {
+    await this.history(id);
+    while (!this.messages.get(id).some(message => message.id === messageId) && this.hasOlder(id)) await this.older(id);
+    return this.messages.get(id).some(message => message.id === messageId);
   }
   async read(id) { const messages = await this.history(id); return this.client.request(`/api/chat/rooms/${encodeURIComponent(id)}/read`, { method: 'POST', body: { sequence: messages.at(-1)?.sequence || 0 } }); }
   async send(id, body) {
     // Retain the same retry ID after a network failure or lost acknowledgement.
     if (!this.pending || this.pending.id !== id || this.pending.body !== body) this.pending = { id, body, clientId: crypto.randomUUID() };
     const message = await this.client.request(`/api/chat/rooms/${encodeURIComponent(id)}/messages`, { method: 'POST', body: { body, clientId: this.pending.clientId } });
-    this.pending = null; await this.history(id); return message;
+    await this.history(id); this.pending = null; return message;
   }
   searchUsers(q) { return this.client.request(`/api/users/search?q=${encodeURIComponent(q)}`); }
   createShared(name) { return this.client.request('/api/chat/rooms', { method: 'POST', body: { name } }); }

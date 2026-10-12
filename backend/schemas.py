@@ -1,8 +1,29 @@
 import re
+import unicodedata
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 
-class RegisterInput(BaseModel):
+def normalize_display_name(value):
+    # Keep format characters used by emoji and Unicode scripts; reject C0/C1 controls.
+    if any(unicodedata.category(char) == "Cc" for char in value):
+        raise ValueError("Display Name must contain 1–80 visible characters")
+    value = value.strip()
+    if not 1 <= len(value) <= 80:
+        raise ValueError("Display Name must contain 1–80 visible characters")
+    return value
+
+
+class ProfileInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    displayName: str = Field(min_length=1, max_length=80)
+
+    @field_validator("displayName")
+    @classmethod
+    def validate_name(cls, value):
+        return normalize_display_name(value)
+
+
+class RegisterInput(ProfileInput):
     model_config = ConfigDict(extra="forbid")
     username: str = Field(min_length=3, max_length=32)
     displayName: str = Field(min_length=1, max_length=80)
@@ -15,14 +36,6 @@ class RegisterInput(BaseModel):
         value = value.strip().lower()
         if not re.fullmatch(r"[a-z][a-z0-9_]{2,31}", value):
             raise ValueError("Username must start with a letter and use 3–32 ASCII letters, numbers or underscores")
-        return value
-
-    @field_validator("displayName")
-    @classmethod
-    def validate_name(cls, value):
-        value = value.strip()
-        if not value or any(ord(char) < 32 or ord(char) == 127 for char in value):
-            raise ValueError("Display Name must contain 1–80 visible characters")
         return value
 
     @model_validator(mode="after")

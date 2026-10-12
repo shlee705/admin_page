@@ -20,7 +20,6 @@ import { initCharts } from './charts.js';
 import { initVectorMaps } from './maps.js';
 import { initCalendarPage } from './calendar.js';
 import { initPalette } from './palette.js';
-import { initEmailPage } from './email/ui.js';
 import { initializeAuthentication, renderCurrentUser } from './auth/ui.js';
 import { accountEmailConfig } from './email/account-persistence.js';
 import { workspaceServices } from './workspace/services.js';
@@ -37,25 +36,45 @@ async function start() {
   renderCurrentUser(auth);
   initShellBehaviors();
   initPalette();
-  if (!['forms', 'charts', 'blank'].includes(document.body.dataset.active)) initTemplatePages();
+  initTemplatePages();
   installDirtyGuard();
   initVectorMaps();
   let services;
   if (auth.user) {
     services = workspaceServices(auth);
     services.preferences = new AccountPreferences(auth.client);
-    try { await services.preferences.load(); applyPreferences(services.preferences.state); }
-    catch (error) { const notice = document.createElement('p'); notice.setAttribute('role', 'alert'); notice.textContent = error.message; document.querySelector('main')?.prepend(notice); return; }
-    document.querySelector('#themeToggle')?.addEventListener('click', async () => {
-      try { await services.preferences.save({theme:document.documentElement.dataset.theme}); }
-      catch (error) { const notice=document.createElement('p'); notice.setAttribute('role','alert'); notice.textContent=`Theme not saved: ${error.message}`; document.querySelector('main')?.prepend(notice); }
-    });
     services.calendar.preferences = services.preferences;
     services.calendar.user = auth.user;
-    services.calendar.timezone = services.preferences.state.timezone;
     services.liveChat.preferences = services.preferences;
     services.calendar.hub = services;
     services.liveChat.hub = services;
+    const notice = document.createElement('div'); notice.className = 'workspace-status'; notice.dataset.testid = 'preferences-status'; notice.hidden = true;
+    notice.innerHTML = '<span></span> <button class="btn" type="button" data-testid="preferences-retry">Retry preferences</button>';
+    document.querySelector('main')?.before(notice);
+    let hadFailure = false;
+    const unsubscribe = services.preferences.subscribe(({ status, state, error }) => {
+      if (status === 'ready') { applyPreferences(state); services.calendar.timezone = state.timezone; }
+      if (status === 'unavailable') hadFailure = true;
+      notice.hidden = status === 'ready' && !hadFailure;
+      notice.setAttribute('role', status === 'unavailable' ? 'alert' : 'status');
+      notice.querySelector('span').textContent = status === 'ready' ? 'Preferences recovered. Your account settings are applied.' : status === 'loading' ? 'Loading account preferences… Core features remain available.' : `Preferences unavailable: ${error?.message || 'Retry to load your account settings.'} Core features use temporary defaults or last-loaded settings; account setting saves are blocked.`;
+      const retry = notice.querySelector('button'); retry.hidden = status === 'ready'; retry.disabled = status === 'loading';
+    });
+    notice.querySelector('button').onclick = () => services.preferences.load().catch(() => { /* feedback is rendered by the subscription */ });
+    const saveTheme = async event => {
+      if (!event.detail.userInitiated || services.preferences.disposed) return;
+      try { await services.preferences.save({ theme: event.detail.theme }); }
+      catch { /* preference status provides the retry action; never save guarded defaults */ }
+    };
+    window.addEventListener('adminator-theme-changed', saveTheme);
+    window.addEventListener('adminator-account-changing', () => { unsubscribe(); notice.remove(); window.removeEventListener('adminator-theme-changed', saveTheme); }, { once: true });
+    applyPreferences(services.preferences.state);
+    services.calendar.timezone = services.preferences.state.timezone;
+    // Preferences are optional for core initialization. Controllers consume the
+    // same guarded state and subscribe to recovery rather than waiting for an
+    // endpoint timeout before mail/calendar/tasks can become usable.
+    services.preferences.load().catch(() => { /* feedback and guarded state remain available */ });
+    if (services.preferences.disposed) return;
     await initServiceHub(services, auth);
     await initCalendarPage(services.calendar);
     await initChatPage(services.chat, services.liveChat);
@@ -63,7 +82,10 @@ async function start() {
     await initWorkspaceMenus(services);
   }
   initCharts();
-  if (auth.user) { await initEmailPage({ config: { ...accountEmailConfig(auth.user, auth.client, globalThis.ADMINATOR_EMAIL_CONFIG || {}), hub: services } }); }
+  if (auth.user && document.querySelector('[data-email-app]')) {
+    const { initEmailPage } = await import(/* webpackChunkName: "email-page" */ './email/ui.js');
+    if (!services.preferences.disposed) await initEmailPage({ config: { ...accountEmailConfig(auth.user, auth.client, globalThis.ADMINATOR_EMAIL_CONFIG || {}), hub: services } });
+  }
 }
 
 if (document.readyState === 'loading') {

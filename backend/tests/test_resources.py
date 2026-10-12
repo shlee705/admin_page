@@ -84,7 +84,7 @@ def test_mail_delivery_bcc_isolation_drafts_search_and_dashboard(client, applica
     try:
         data = {'to':[{'address':'bob@adminator.test'}], 'bcc':[{'address':'eve@adminator.test'}], 'subject':'Internal test','bodyText':'Hello from Alice'}
         draft = client.post('/api/mail/drafts',json=data,headers=csrf(client)).json()
-        sent = client.post('/api/mail/send',json={**data,'id':draft['id']},headers=csrf(client))
+        sent = client.post('/api/mail/send',json={**data,'id':draft['id'],'expectedRevision':draft['revision']},headers=csrf(client))
         assert sent.status_code == 201, sent.text
         assert sent.json()['status'] == 'delivered-internal'
         mail = bob.get('/api/mail/emails').json()['items'][0]

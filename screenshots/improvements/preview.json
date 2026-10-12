@@ -1,0 +1,9 @@
+{
+  "base": "http://127.0.0.1:3001",
+  "checks": [
+    "3001 Origin, cookie session, HTTP proxy, authenticated WS upgrade, shared chat delivery",
+    "Calendar scope/category independence in browser after rail rebuild"
+  ],
+  "errors": [],
+  "checkedAt": "2026-10-11T12:05:46.014Z"
+}

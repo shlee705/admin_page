@@ -1,26 +1,23 @@
-import { escapeHtml } from './workspace/store.js';
-
 /** Template galleries remain explicit examples; useful exports operate on visible content. */
 export function initTemplatePages() {
   const kind = document.body.dataset.active;
-  if (!['charts','forms','buttons','ui','basic-table','datatable','google-maps','vector-maps','blank'].includes(kind)) return;
+  // Business aliases are handled by the entry point/service hub. The old table,
+  // Forms and Charts sample handlers cannot be reached by a shipped page.
+  if (!['buttons','ui','google-maps','vector-maps'].includes(kind)) return;
   const main = document.querySelector('main'); const notice = document.createElement('p'); notice.className = 'workspace-sample'; notice.dataset.testid = 'template-mode'; notice.textContent = 'Template example · Sample data and controls. These examples do not manage real account roles, profiles, sales or locations.'; main.querySelector('.hero').after(notice);
+  if (kind === 'ui') {
+    const clampPopovers = () => main.querySelectorAll('.popover-demo .pop').forEach(pop => {
+      pop.style.removeProperty('translate'); pop.style.removeProperty('--popover-pointer-left');
+      if (window.innerWidth > 720) return;
+      const bounds = pop.getBoundingClientRect();
+      const shift = bounds.left < 16 ? 16 - bounds.left : bounds.right > window.innerWidth - 16 ? window.innerWidth - 16 - bounds.right : 0;
+      pop.style.translate = `${shift}px`;
+      pop.style.setProperty('--popover-pointer-left', `${Math.max(10, Math.min(bounds.width - 10, bounds.width / 2 - shift))}px`);
+    });
+    clampPopovers(); window.addEventListener('resize', clampPopovers);
+    window.addEventListener('pagehide', () => window.removeEventListener('resize', clampPopovers), { once: true });
+    window.addEventListener('pageshow', event => { if (event.persisted) { clampPopovers(); window.addEventListener('resize', clampPopovers); } });
+  }
   function download(name, blob) { const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = url; link.download = name; link.click(); setTimeout(() => URL.revokeObjectURL(url),1000); }
-  function csv(table) { return [...table.querySelectorAll('tr')].filter(row => !row.hidden).map(row => [...row.querySelectorAll('th,td')].map(cell => `"${cell.innerText.trim().replaceAll('"','""')}"`).join(',')).join('\r\n'); }
-  if (['basic-table','datatable'].includes(kind)) {
-    const table = main.querySelector('table');
-    main.querySelector('.hero-actions button').onclick = () => download(`${kind}-samples.csv`,new Blob([csv(table)],{type:'text/csv;charset=utf-8'}));
-    if (kind === 'datatable') {
-      const search = main.querySelector('input[type="search"]'); search.dataset.testid = 'table-search'; search.oninput = () => { table.querySelectorAll('tbody tr').forEach(row => { row.hidden = !row.innerText.toLowerCase().includes(search.value.toLowerCase()); }); notice.textContent = `Template sample · ${[...table.querySelectorAll('tbody tr')].filter(row => !row.hidden).length} matching rows. Export downloads these visible samples.`; };
-      main.querySelectorAll('.data-cell-actions button').forEach(button => { if (button.getAttribute('aria-label') === 'View') button.onclick = () => { const dialog = document.createElement('dialog'); dialog.className = 'workspace-dialog'; dialog.innerHTML = `<h2>Sample row</h2><p>${escapeHtml(button.closest('tr').innerText)}</p><p>Template fixture, not a registered account.</p><button class="btn">Close</button>`; document.body.append(dialog); dialog.querySelector('button').onclick = () => { dialog.close(); dialog.remove(); }; dialog.oncancel = () => dialog.remove(); dialog.showModal(); }; });
-    }
-  }
-  if (kind === 'charts') main.querySelector('.hero-actions button').onclick = () => { const canvas = main.querySelector('canvas'); if (canvas) { const link = document.createElement('a'); link.href = canvas.toDataURL('image/png'); link.download = 'chart-sample.png'; link.click(); } };
   if (kind === 'vector-maps') main.querySelector('.hero-actions button').onclick = () => { const svg = main.querySelector('[data-vmap] svg'); if (svg) download('map-sample.svg',new Blob([new XMLSerializer().serializeToString(svg)],{type:'image/svg+xml'})); else notice.textContent = 'Map is still loading. Retry export.'; };
-  if (kind === 'forms') {
-    const form = main.querySelector('form'); form.removeAttribute('onsubmit');
-    const submit = () => { if(form.reportValidity()) notice.textContent = 'Demo form validated. No account profile or role changes were saved.'; };
-    form.onsubmit = event => { event.preventDefault(); submit(); };
-    main.querySelectorAll('button').forEach(button => { if(button.textContent.trim()==='Save changes') button.onclick=submit; if(button.textContent.trim()==='Cancel') button.onclick=()=>{ form.reset(); notice.textContent='Demo form reset.'; }; });
-  }
 }

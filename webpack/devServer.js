@@ -23,11 +23,11 @@ const devServer = {
   port: manifest.IS_PRODUCTION ? 3001 : 4000,
   compress: manifest.IS_PRODUCTION,
   client: {
-    overlay: true,
+    overlay: { errors: true, warnings: false },
     progress: !manifest.IS_PRODUCTION,
   },
   hot: !manifest.IS_PRODUCTION,
-  proxy: [{ context: ['/api'], target: 'http://127.0.0.1:8000', changeOrigin: false }],
+  proxy: [{ context: ['/api'], target: process.env.ADMINATOR_API_TARGET || 'http://127.0.0.1:8000', changeOrigin: false, ws: true }],
   host: '0.0.0.0',
   allowedHosts: 'all', // [1]
   devMiddleware: {
