@@ -1,48 +1,37 @@
-> 2026-10-10: 기본 실제 공유 모드와 새 권한 정책은 [공유 협업 구현 보고서](SHARED_COLLABORATION_REPORT.md)를 참조한다. 아래 기록은 이전 단계다.
+# Calendar 구현과 시간 모델
 
-> 2026-10-09 최신 통합 상태: [docsForHuman](../docsForHuman/README.md), [새 리소스 구현 보고서](RESOURCE_IMPLEMENTATION_REPORT.md). 아래 내용은 기존 단계의 구현 기록이며 새 실제 모드와 다를 수 있습니다.
+기준일: 2026-10-11. 근거: `calendar.js`, `workspace/resources.js:ResourceCalendar`, `backend/resources.py`. 실제 리소스 API가 현재 화면의 기본이며 legacy snapshot 설명은 [아카이브](archive/README.md)에 보존했다.
 
-# Calendar 구현
+## 화면과 서비스
 
-## UI와 기능
+FullCalendar의 Day/Week/Month/Agenda, Today/월 이동, 날짜·범위 선택, 미니 캘린더, Quick add/New event, CRUD, 검색·카테고리·범위 선택, Upcoming, JSON export, 반복·참석자·RSVP를 연결한다. 수정 dialog는 native dialog, label/alert/status/testid를 쓰고 저장 실패 시 입력을 남긴다. 409에서는 최신 제목/시간/revision과 Load latest version을 제공하며 자동 병합하지 않는다.
 
-기존 Adminator Calendar 레이아웃과 FullCalendar 7을 유지했다. 월간 초기 화면은 오늘이다. 이전/다음/오늘 이동, Day/Week/Month/Agenda, 날짜 클릭·범위 선택, New event·Quick add, 일정 클릭 상세, 수정·삭제, 종일·시작/종료·설명·카테고리 필터를 제공한다. 미니 캘린더 날짜는 접근 가능한 버튼이다. Upcoming은 저장된 일정에서 계산한다. Export는 저장 일정의 JSON 다운로드다.
+`ResourceCalendar.list()`는 전용 이벤트 API를 읽고 `occurrences()`는 expand=true를 별도 조회한다. PATCH/DELETE는 기존 revision을 보낸다. 보이는 화면에서 편집 모달이 닫혀 있고 저장 중이 아닐 때 3초 재조회한다. 계정 변경/pagehide에서 timer를 종료한다. 서버 push가 아니다.
 
-네이티브 `<dialog>`의 `open` 속성, Escape·Cancel 닫기, label, role=alert/status 및 안정적인 data-testid를 사용한다. title 1–200, description 최대 4000, 필수 시작/종료, 종료>시작, 허용 카테고리를 UI 서비스와 서버에서 검증한다. 저장 중에는 폼을 비활성화하고 성공 후 모달을 닫는다. 실패하면 오류를 표시하고 입력을 보존한다.
+UI editable은 `canEdit && !recurrence`다. 비반복 shared 이벤트도 canEdit=true라 편집·drag/resize할 수 있다. 이동은 브라우저 local 시간과 timezone을 전달하고 실패 시 FullCalendar revert를 호출한다. 반복 발생일을 클릭해도 전체 시리즈를 수정/삭제하며 개별 occurrence drag는 비활성이다.
 
-드래그/크기 조절도 같은 save()를 사용한다. 실패 시 FullCalendar의 revert()를 호출해 화면을 되돌린다. 성공은 DB 저장 이후 확정한다.
+범위와 카테고리는 각각 `[data-calendar-scope]`, `[data-testid="calendar-filter"]`에 연결한다. rail 재생성 후에도 두 필터가 독립적으로 유지되며 DOM 회귀 테스트로 검증했다. 저장 commit이 확인되면 모달을 닫고 dirty 상태를 해제한다. 후속 조회 실패는 저장 성공과 분리해 안내한다. RSVP 실패 후 기존 read-only 제어를 복원하고, 이전 모달의 지연 참석자 검색 결과는 폐기한다.
 
-## 모델과 날짜
+## 권한과 범위
 
-```ts
-type CalendarEvent = {
-  id: string; title: string; description: string;
-  start: string; end: string; allDay: boolean;
-  category: 'personal'|'work'|'team'|'travel'|'finance'|'birthday'|'holiday';
-};
-// 날짜: 종일 YYYY-MM-DD, 시간 일정 YYYY-MM-DDTHH:mm (브라우저 local wall time)
-// end는 exclusive. UI 종일 'Last day'는 inclusive이며 저장 시 하루를 더한다.
-```
+신규 POST는 `is_shared=true`, owner_id/updated_by는 세션 사용자다. 전체 인증 사용자가 shared를 조회·수정·삭제한다. 기존 private는 소유자 또는 참석자가 조회하고 소유자만 본문 수정/삭제한다. 참석자만 본인 RSVP를 바꾼다. attendeeIds는 최대 50, 중복/없는/비활성 계정 및 소유자 초대는 거절한다.
 
-종일 경계를 UTC가 아닌 local midnight로 계산한다. [FullCalendar select 문서](https://fullcalendar.io/docs/select-callback)의 exclusive end와 일치한다. 현재 시간대 식별자/UTC 변환, DST 충돌 처리는 지원하지 않으므로 추후 서버 API에서 IANA timezone과 UTC 저장 모델을 설계해야 한다.
+`all`은 접근 가능 전체, `owned`는 생성자, `invited`는 본인 참석자 포함(거절 포함), `related`는 생성자 또는 거절하지 않은 참석자다. preferences 기본은 related다. Dashboard는 서버에서 scope를 적용한 후 upcoming을 최대 10개로 잘라 조회 누락을 줄인다. Calendar 화면은 전체 접근 결과에 범위와 카테고리를 함께 적용한다. 범위는 권한 모델이 아니다.
 
-초기 시드 5개: 오늘 10–11시 회의, 오늘 10:30–11:30 중첩, 내일 종일, 오늘+2일부터 3일 워크숍, 내일 긴 제목 일정. Sample 표시가 있으며 초기화 시만 현재 날짜 기준으로 다시 생성한다. 기존 April 고정 일정과 정적 rail를 제거했다.
+## 데이터·시간대·반복
 
-## 계층과 API
+EventInput은 title(1–200), description(4000), start/end(40), allDay, category, timezone(80), location(300), recurrence?, attendeeIds, expectedRevision?다. category는 personal/work/team/travel/finance/birthday/holiday다. 정확한 응답 메타데이터와 경로는 [API](API_REFERENCE.md)에 있다.
 
-`calendar.js → CalendarService → WorkspaceStore → AuthClient → FastAPI/SQLite`.
+종일은 YYYY-MM-DD이고 end exclusive다. UI Last day는 inclusive라 저장 시 하루를 더한다. timed 입력은 IANA zone에서 해석하고 UTC로 저장한다. 명시 offset이 있는 입력은 해당 instant를 zone으로 변환한다. offset 없는 ambiguous/nonexistent DST wall time은 거절한다. 모달은 이벤트 timezone, FullCalendar 격자/Calendar Upcoming은 브라우저 timezone, Home 표시와 보고서 날짜는 계정 timezone이다. 모두 동일한 시간대 표시라고 설명하지 않는다.
 
-- CalendarService: list(), save(event), remove(id), reset(). 기존 ID가 사라진 수정은 오류.
-- GET `/api/workspace/calendar` → `{ownerId, revision, state:null|{version:1,ownerId,events}}`.
-- PUT 동일 경로 → `{expectedRevision, state}`; 성공 `{revision}`.
-- 미인증 401, CSRF/Origin 403, DTO/날짜 422, 변경 충돌 409, 크기 초과 413.
-- 소유자는 세션에서 결정한다. 임의 userId로 다른 일정을 조회/수정할 수 없다.
-- 스냅샷 최대 500건, 256 KiB. reset은 현재 계정 일정만 시드로 덮어쓰며 다른 계정·Email에는 영향이 없다. API는 범용 삭제/관리자 초기화를 제공하지 않는다.
+recurrence는 daily/weekly/monthly, interval 1–30, count 1–366의 유한 반복이다. 월 반복에 없는 날짜는 월말로 보정한다. 지역 wall time을 유지하며 발생일을 계산하고 존재하지 않는 DST 시각/음수 duration 시리즈는 거절한다. expand 응답은 시리즈 ID와 occurrence 순번을 반환한다. 표준 RRULE 전체, 예외일, 단일 발생일 편집, 기간(from/to) paging은 없다.
 
-추후 CalendarService 메서드를 유지하고 CalendarApi 어댑터를 사용자 소유 리소스 기반 GET/POST/PATCH/DELETE로 교체할 수 있다. 반복 일정, 참석자, 공유 권한, 기간 쿼리/페이지 처리, 감사 로그는 추가 구현 대상이다.
+## legacy import와 샘플 복원
 
-## 테스트
+첫 방문 자동 import는 없다. 명시적 `POST /api/calendar/import {timezone}`는 계정별 한 번만 snapshot을 복사하고 원본을 남긴다. timezone 정보 없는 과거 자료의 실제 지역은 자동 복구할 수 없다. 실패는 원자적으로 rollback한다.
 
-`npm run test:workspace:e2e`, `npm run test:run`, `.venv/Scripts/python.exe -m pytest backend/tests -q`.
+프론트 Reset은 **legacy snapshot을 시드로 reset → 명시 import → samples/reset** 순서다. 서버 samples/reset은 `sample-` legacy ID만 대상으로 하고 shared 또는 참석자 행이 있는 샘플은 건너뛴다. 공유/초대 샘플의 본문과 revision을 그대로 보존하는 격리 DB 회귀가 있다. 일반 신규 이벤트는 legacy_id가 없어 대상이 아니다.
 
-실제 Chrome 데스크톱·모바일 CRUD/재로딩/종일/카테고리/오류/뷰/다운로드/초기화, 데스크톱 마우스 드래그와 종료 핸들 크기 조절 후 DB 변경 확인. API 계정 격리, revision 충돌, 날짜 범위 및 존재하지 않는 날짜 검증. 주요 hooks: calendar-add, calendar-hero-add, calendar-quick-add, calendar-day, calendar-event, calendar-filter, calendar-status, calendar-reset, calendar-export; event-dialog/title/description/all-day/start/end/category/save/delete/cancel/error.
+샘플은 오늘 회의·겹친 시간·내일 종일·다일 워크숍·긴 제목 5개다. 자동 공유 시드가 아니며 명시 Reset/import 시 개인 자료로 만든다. Reset은 기존 legacy snapshot의 사용자 수정도 덮을 수 있으므로 import와 복원을 일반 조회처럼 취급하지 않는다.
+
+테스트 위치와 PC 마우스/모바일 검증의 차이는 [TESTING](TESTING.md)에 있다. DST offset 선택 UI, 실제 기기 터치, 기간 쿼리는 남은 과제다.

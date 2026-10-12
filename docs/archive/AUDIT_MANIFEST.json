@@ -1,0 +1,573 @@
+{
+  "checkedAt": "2026-10-11 (Asia/Seoul)",
+  "before": [
+    {
+      "path": "docs/_config.yml",
+      "bytes": 2358,
+      "sha256": "7a76330857d417ae07a46c8cb11394b7e016cddd4f7632697f16242499d4e933",
+      "redirect": false
+    },
+    {
+      "path": "docs/_sass/custom.scss",
+      "bytes": 3401,
+      "sha256": "cb1f560f242b2b9e8f4001ce9ee3ec1846ab16ad2a7f0c740fd6bf3c3a8a1635",
+      "redirect": false
+    },
+    {
+      "path": "docs/adding-a-page.md",
+      "bytes": 543,
+      "sha256": "beef14cb6e298dca95329926ae1fad1434fa0f04b81f7bea6b285aa4f2463c26",
+      "redirect": true
+    },
+    {
+      "path": "docs/api/theme-api.md",
+      "bytes": 524,
+      "sha256": "efe8b37a0303637b4a0c5e93696eebcf3dd90664b25edfd7d9d5611fdcaaf966",
+      "redirect": true
+    },
+    {
+      "path": "docs/api.md",
+      "bytes": 523,
+      "sha256": "b955bfea16f142404d3ca7619a56a57166f938dfb9e1b7fd72c18d325035a3d2",
+      "redirect": true
+    },
+    {
+      "path": "docs/architecture.md",
+      "bytes": 541,
+      "sha256": "09a94c17dffa06f56daa46527b6dca43a56ab2a9b8c8e3e1993a03b2401c7adb",
+      "redirect": true
+    },
+    {
+      "path": "docs/assets/images/adminator-dark-mode.avif",
+      "bytes": 716871,
+      "sha256": "029ccefb374a9e845a5ed9fd58bab26e9cbfc554eda6a5eb84b38396962ce25a",
+      "redirect": false
+    },
+    {
+      "path": "docs/assets/images/adminator-light-mode.avif",
+      "bytes": 734932,
+      "sha256": "b6d2125680999c1f1b9a74a9d751f8259a0a071d3806c6daf6b3864a130b1c40",
+      "redirect": false
+    },
+    {
+      "path": "docs/AUTH_API.md",
+      "bytes": 6272,
+      "sha256": "263e78e25592f7b9cc6f66d9b3ad4557dbcef8204cf481b387bc2668432bb522",
+      "redirect": false
+    },
+    {
+      "path": "docs/AUTH_ARCHITECTURE.md",
+      "bytes": 14480,
+      "sha256": "fed2fe1b4a2a7acb36e3e98e3388555988ae52b2d6d5c001bef662284f7a4966",
+      "redirect": false
+    },
+    {
+      "path": "docs/CALENDAR_IMPLEMENTATION.md",
+      "bytes": 4350,
+      "sha256": "39da3d28ec36b20d5da9a4cb330029c52798c6bcb919ae216a081565cd303696",
+      "redirect": false
+    },
+    {
+      "path": "docs/CHAT_IMPLEMENTATION.md",
+      "bytes": 5482,
+      "sha256": "d45bfe2ebc98925ca3946f9ee2931239671d9699a7d804ed8c04e8368f078e23",
+      "redirect": false
+    },
+    {
+      "path": "docs/COMPONENT_GUIDE.md",
+      "bytes": 518,
+      "sha256": "95b7ec7f57257f13c2628ae7c08e15c56baf2b25e40005537dd523db86fbcbc7",
+      "redirect": true
+    },
+    {
+      "path": "docs/customization/components.md",
+      "bytes": 551,
+      "sha256": "f0e62e93ab1b782e6b08146111a07158c27e37d420135d1e936b5c1807e44364",
+      "redirect": true
+    },
+    {
+      "path": "docs/customization/library-integrations.md",
+      "bytes": 553,
+      "sha256": "fa4294aeab3c600fe211f5004da7842f002cb46d1d2ff4735d9e99c2295e66cf",
+      "redirect": true
+    },
+    {
+      "path": "docs/customization/theme-system.md",
+      "bytes": 540,
+      "sha256": "39081952b88144f7100408a86e00ef9fd62f25a39794b24e6b9c0fd34a6400e6",
+      "redirect": true
+    },
+    {
+      "path": "docs/customization.md",
+      "bytes": 528,
+      "sha256": "e64aecd7612f196bbdc0d9ced36d23a3b3049c78acde61949be32b20cf4cd39f",
+      "redirect": true
+    },
+    {
+      "path": "docs/EMAIL_ARCHITECTURE.md",
+      "bytes": 16108,
+      "sha256": "20324d34864fcce8da6e88909fae93d429116242b9c905221d1fecfd9967e0e3",
+      "redirect": false
+    },
+    {
+      "path": "docs/EMAIL_SERVER_INTEGRATION_PLAN.md",
+      "bytes": 6233,
+      "sha256": "7e5bd6accc51a64801b0cbabc2cf8bd1515794c28a76c79802703fe43f736c08",
+      "redirect": false
+    },
+    {
+      "path": "docs/examples/theme-integration.md",
+      "bytes": 545,
+      "sha256": "4de396f8743b7a473db26204adec659f9f14f2525a2cfc3f9fb470dfc331dbd9",
+      "redirect": true
+    },
+    {
+      "path": "docs/examples.md",
+      "bytes": 542,
+      "sha256": "60520272917b722683b94858a4f6ad3cc483ed5ed5fd03f31928397a5133cad7",
+      "redirect": true
+    },
+    {
+      "path": "docs/getting-started/build-deployment.md",
+      "bytes": 561,
+      "sha256": "837fa39b951a0ab19248b8d4436939825fc8f6632be37eb2c06afe5f49222302",
+      "redirect": true
+    },
+    {
+      "path": "docs/getting-started/development.md",
+      "bytes": 573,
+      "sha256": "fd52e183426369e2120a0c32a4b96de69600b0f5d6f3ac2c50c58f06c135e528",
+      "redirect": true
+    },
+    {
+      "path": "docs/getting-started/installation.md",
+      "bytes": 566,
+      "sha256": "f34a5e7ebf82e3841fdf8e6d7d45f21edf4f22c19d60324182094db80df5ece4",
+      "redirect": true
+    },
+    {
+      "path": "docs/getting-started/project-structure.md",
+      "bytes": 567,
+      "sha256": "10c2c8da832c4609463de39993d8b0276256d17a63e05abcaf2b7dc60bd9e217",
+      "redirect": true
+    },
+    {
+      "path": "docs/getting-started.md",
+      "bytes": 556,
+      "sha256": "205fb75afc0b8ba9c5df29b4ca46ce5dc1275556404362240b3a1f5377c4a18b",
+      "redirect": true
+    },
+    {
+      "path": "docs/index.md",
+      "bytes": 899,
+      "sha256": "fff9cc8049e6db02492348f4798a013c48f757d6f9900149cee7c28fa838c8b6",
+      "redirect": true
+    },
+    {
+      "path": "docs/migration.md",
+      "bytes": 558,
+      "sha256": "1f202d35f41c7e86b0e70fb72f794e578352f11602d40dc88c7224e1c33bf70e",
+      "redirect": true
+    },
+    {
+      "path": "docs/MULTI_ACCOUNT_SESSION_IMPLEMENTATION.md",
+      "bytes": 13925,
+      "sha256": "23d1e4d7f56e04bfe6bf25ae37d9304aa008801f083c90dd4f6762069ea75e2f",
+      "redirect": false
+    },
+    {
+      "path": "docs/pages.md",
+      "bytes": 527,
+      "sha256": "fd21930d8ca495ed58b240cc90fcae4c389a8038d3322751edba9f90e1e35567",
+      "redirect": true
+    },
+    {
+      "path": "docs/PROPOSAL_WORK_CONTEXT.md",
+      "bytes": 11664,
+      "sha256": "da6c02705a2760d5a5db04b29a5fdf6399f52ddb662bced690094a9c1d772a2b",
+      "redirect": false
+    },
+    {
+      "path": "docs/proposals/01_SITE_EXPLORATION.md",
+      "bytes": 16544,
+      "sha256": "64966a37ec14adb038931bbe55e5839ac0015d2e2156fe503f8c8a77386a9351",
+      "redirect": false
+    },
+    {
+      "path": "docs/proposals/02_DASHBOARD_PROPOSAL.md",
+      "bytes": 20256,
+      "sha256": "1b9d6058eb65d232d4b4d805ec0bac88ed17294dc5f57b2b3ccb41320223cc6e",
+      "redirect": false
+    },
+    {
+      "path": "docs/proposals/03_COMPONENTS_PROPOSAL.md",
+      "bytes": 27494,
+      "sha256": "9958a2302220424e4dbdcb874f22eaae2a7bec108fe2fc1bab924f6f162c39c9",
+      "redirect": false
+    },
+    {
+      "path": "docs/proposals/04_FEATURE_PRIORITY_MATRIX.md",
+      "bytes": 14438,
+      "sha256": "45735c3fa152527c23aa0d9724d6ad11f2a85df462a83053c3a6d240c8778622",
+      "redirect": false
+    },
+    {
+      "path": "docs/proposals/05_RECOMMENDED_ROADMAP.md",
+      "bytes": 7569,
+      "sha256": "f5ef3761293f956596de8d9e57ce37a265acb03dadf5f8ed53ce5b442ac996a1",
+      "redirect": false
+    },
+    {
+      "path": "docs/proposals/06_FINAL_RECOMMENDATIONS.md",
+      "bytes": 8250,
+      "sha256": "4be0d8d4863994a595d1066b698c6dd2608f576fe19ad85e70e29069f0ae4d1f",
+      "redirect": false
+    },
+    {
+      "path": "docs/proposals/07_SERVICE_INTEGRATION.md",
+      "bytes": 7867,
+      "sha256": "e96fe7cace647e06ef55de79cbe06541b85912f5945fc321b7355a045c7e6429",
+      "redirect": false
+    },
+    {
+      "path": "docs/proposals/08_REVIEW_VALIDATION.md",
+      "bytes": 3340,
+      "sha256": "2e5cf4d45976e4fd91a351ea4670773ee9cea44944106a95160b2dd2aa43c610",
+      "redirect": false
+    },
+    {
+      "path": "docs/proposals/ARCHIVED_TEST_ORIENTED_PLANNING.md",
+      "bytes": 145245,
+      "sha256": "2ffabe86797b001681d6fb9c523660712e91c9824c2169b48489274e4b8d31c8",
+      "redirect": false
+    },
+    {
+      "path": "docs/README.md",
+      "bytes": 1953,
+      "sha256": "aafdc2106a087ac91a039d712775f9e374412eea0ac8d607997022fde959448f",
+      "redirect": false
+    },
+    {
+      "path": "docs/RESOURCE_IMPLEMENTATION_REPORT.md",
+      "bytes": 7031,
+      "sha256": "e7af4e170ec878932d5bb61366924a0414dd23cc8025d16537a977ca6baf57a9",
+      "redirect": false
+    },
+    {
+      "path": "docs/SERVICE_IMPLEMENTATION_REPORT.md",
+      "bytes": 8698,
+      "sha256": "419a8eb512373b5bfd81a11ede5b9566f461c26cbd8bd7fac98d52c60b60eb10",
+      "redirect": false
+    },
+    {
+      "path": "docs/SHARED_COLLABORATION_REPORT.md",
+      "bytes": 6922,
+      "sha256": "2e0d8393e410ef3c99badab21e319b95c56ea68882c16edb1748f0022b8065ea",
+      "redirect": false
+    },
+    {
+      "path": "docs/SITE_EXPLORATION_REPORT.md",
+      "bytes": 10548,
+      "sha256": "1d7b8dc42e7ec2596ece06b579bb70d50cf85558f0a668922bda6b751432ac8e",
+      "redirect": false
+    },
+    {
+      "path": "docsForHuman/00_PROJECT_OVERVIEW.md",
+      "bytes": 3220,
+      "sha256": "482ee13ffcc18cd1a857d9dd567ccbd8b10cb68fedbf223eea7ccb454b05cde7",
+      "redirect": false
+    },
+    {
+      "path": "docsForHuman/01_IMPLEMENTATION_STATUS.md",
+      "bytes": 7904,
+      "sha256": "bd85c612bff8dded61def3407a2a554258de70a7effa7ab3bc3601c809e40df4",
+      "redirect": false
+    },
+    {
+      "path": "docsForHuman/02_FRONTEND_STRUCTURE.md",
+      "bytes": 5160,
+      "sha256": "fd37656a5deb70068016cd6f7c55b284827961c3e324b3134d96e4183755cb57",
+      "redirect": false
+    },
+    {
+      "path": "docsForHuman/03_BACKEND_STRUCTURE.md",
+      "bytes": 7030,
+      "sha256": "9cc987272841a473336bcd6a704e101c92b11d062db6aa91ea6503e38a4119d2",
+      "redirect": false
+    },
+    {
+      "path": "docsForHuman/04_DATABASE_STRUCTURE.md",
+      "bytes": 7316,
+      "sha256": "30086b3b0c5e6d89c341d88afee7c587aedc46487c60c3c421fdca11e296b4e6",
+      "redirect": false
+    },
+    {
+      "path": "docsForHuman/05_FEATURE_GUIDE.md",
+      "bytes": 7993,
+      "sha256": "ce37f131ac4512c66424e1e22813977f20aaf80ba41af18434fc616059adce82",
+      "redirect": false
+    },
+    {
+      "path": "docsForHuman/06_API_REFERENCE.md",
+      "bytes": 11828,
+      "sha256": "99cea75737d0c2658c5a69d68ff958b1557feb6ba79af5ee356ed7382114b021",
+      "redirect": false
+    },
+    {
+      "path": "docsForHuman/07_TESTING_GUIDE.md",
+      "bytes": 8272,
+      "sha256": "81ec45bca45405d09aef752f669b242e5fb48087edf2c67141ee3346783f1fdf",
+      "redirect": false
+    },
+    {
+      "path": "docsForHuman/08_KNOWN_ISSUES.md",
+      "bytes": 6442,
+      "sha256": "c98b716c0772627a476122c64eb32eafd3c714201f7232edbf683a30ba88a662",
+      "redirect": false
+    },
+    {
+      "path": "docsForHuman/09_DEVELOPMENT_ROADMAP.md",
+      "bytes": 3794,
+      "sha256": "ee8fd70e0c94063115cdeb611a0a5390fdd612043a40e9e41b5450051158b7cb",
+      "redirect": false
+    },
+    {
+      "path": "docsForHuman/10_MULTI_ACCOUNT_SWITCHING.md",
+      "bytes": 3536,
+      "sha256": "eed9e8e1b8ee15dc4874c8ac7c82fc706250497eff2cfccf1d1e0b4733a44296",
+      "redirect": false
+    },
+    {
+      "path": "docsForHuman/11_FEATURE_PLANNING_SUMMARY.md",
+      "bytes": 3090,
+      "sha256": "62344eb8093e2dfa340020b2567d9066515ae59edafbe69c4dcdcd3f30502a31",
+      "redirect": false
+    },
+    {
+      "path": "docsForHuman/README.md",
+      "bytes": 2326,
+      "sha256": "ba79726fdc772a3275dbc30d7fb835cdbd6087fef52f5bb651618f3cc4eb928b",
+      "redirect": false
+    }
+  ],
+  "protectedBefore": {
+    "src": {
+      "count": 101,
+      "sha256": "f2adf77b4879ae511b5a501150cfc8ea39e72e9e2ceed07beef867522d60011c"
+    },
+    "backend": {
+      "count": 1853,
+      "sha256": "1127f1fa6164eaab0608de468b8f877304cedcdd688a7a9a86b646904de0c32c"
+    },
+    "tests": {
+      "count": 19,
+      "sha256": "3b25d9898b7557c489243747fb4c9aae1d99fdeeac642d0c23902a0e929b649e"
+    },
+    "scripts": {
+      "count": 6,
+      "sha256": "c51e77a73b424fb619fec599aa282fe61c83178d8381e6ba2edfc7ecaf608e98"
+    },
+    "webpack": {
+      "count": 15,
+      "sha256": "4d1c5e543f65a36badaf40bb4532e473d1b3dc0d227aa4f325442a9be346281d"
+    },
+    "dist": {
+      "count": 56,
+      "sha256": "24ddad5ff44cd6082f754a43e0198ce825606c1daa0e8571a45f435bd901b39d"
+    },
+    ".github": {
+      "count": 3,
+      "sha256": "98a0f62e17714b544a25bb4430a2cfa8d409f7f549a62e998564efcd6c63138c"
+    },
+    "ci": {
+      "count": 2,
+      "sha256": "efb6a391315691b1bf5a6e18e08b40776ec1868cc3104a1c69b068450365d628"
+    },
+    "root": {
+      "count": 22,
+      "sha256": "da3384e554666d847f00082589f14ca5156248b89a3a9f29d1092e48d54c2b8c"
+    }
+  },
+  "archiveMapping": {
+    "docs/AUTH_API.md": "docs/archive/2026-10-10/docs/AUTH_API.md",
+    "docs/AUTH_ARCHITECTURE.md": "docs/archive/2026-10-10/docs/AUTH_ARCHITECTURE.md",
+    "docs/CALENDAR_IMPLEMENTATION.md": "docs/archive/2026-10-10/docs/CALENDAR_IMPLEMENTATION.md",
+    "docs/CHAT_IMPLEMENTATION.md": "docs/archive/2026-10-10/docs/CHAT_IMPLEMENTATION.md",
+    "docs/EMAIL_ARCHITECTURE.md": "docs/archive/2026-10-10/docs/EMAIL_ARCHITECTURE.md",
+    "docs/EMAIL_SERVER_INTEGRATION_PLAN.md": "docs/archive/2026-10-10/docs/EMAIL_SERVER_INTEGRATION_PLAN.md",
+    "docs/MULTI_ACCOUNT_SESSION_IMPLEMENTATION.md": "docs/archive/2026-10-10/docs/MULTI_ACCOUNT_SESSION_IMPLEMENTATION.md",
+    "docs/PROPOSAL_WORK_CONTEXT.md": "docs/archive/2026-10-10/docs/PROPOSAL_WORK_CONTEXT.md",
+    "docs/proposals/01_SITE_EXPLORATION.md": "docs/archive/2026-10-10/docs/proposals/01_SITE_EXPLORATION.md",
+    "docs/proposals/02_DASHBOARD_PROPOSAL.md": "docs/archive/2026-10-10/docs/proposals/02_DASHBOARD_PROPOSAL.md",
+    "docs/proposals/03_COMPONENTS_PROPOSAL.md": "docs/archive/2026-10-10/docs/proposals/03_COMPONENTS_PROPOSAL.md",
+    "docs/proposals/04_FEATURE_PRIORITY_MATRIX.md": "docs/archive/2026-10-10/docs/proposals/04_FEATURE_PRIORITY_MATRIX.md",
+    "docs/proposals/05_RECOMMENDED_ROADMAP.md": "docs/archive/2026-10-10/docs/proposals/05_RECOMMENDED_ROADMAP.md",
+    "docs/proposals/06_FINAL_RECOMMENDATIONS.md": "docs/archive/2026-10-10/docs/proposals/06_FINAL_RECOMMENDATIONS.md",
+    "docs/proposals/07_SERVICE_INTEGRATION.md": "docs/archive/2026-10-10/docs/proposals/07_SERVICE_INTEGRATION.md",
+    "docs/proposals/08_REVIEW_VALIDATION.md": "docs/archive/2026-10-10/docs/proposals/08_REVIEW_VALIDATION.md",
+    "docs/proposals/ARCHIVED_TEST_ORIENTED_PLANNING.md": "docs/archive/2026-10-10/docs/proposals/ARCHIVED_TEST_ORIENTED_PLANNING.md",
+    "docs/RESOURCE_IMPLEMENTATION_REPORT.md": "docs/archive/2026-10-10/docs/RESOURCE_IMPLEMENTATION_REPORT.md",
+    "docs/SERVICE_IMPLEMENTATION_REPORT.md": "docs/archive/2026-10-10/docs/SERVICE_IMPLEMENTATION_REPORT.md",
+    "docs/SHARED_COLLABORATION_REPORT.md": "docs/archive/2026-10-10/docs/SHARED_COLLABORATION_REPORT.md",
+    "docs/SITE_EXPLORATION_REPORT.md": "docs/archive/2026-10-10/docs/SITE_EXPLORATION_REPORT.md",
+    "docsForHuman/00_PROJECT_OVERVIEW.md": "docs/archive/2026-10-10/docsForHuman/00_PROJECT_OVERVIEW.md",
+    "docsForHuman/01_IMPLEMENTATION_STATUS.md": "docs/archive/2026-10-10/docsForHuman/01_IMPLEMENTATION_STATUS.md",
+    "docsForHuman/02_FRONTEND_STRUCTURE.md": "docs/archive/2026-10-10/docsForHuman/02_FRONTEND_STRUCTURE.md",
+    "docsForHuman/03_BACKEND_STRUCTURE.md": "docs/archive/2026-10-10/docsForHuman/03_BACKEND_STRUCTURE.md",
+    "docsForHuman/04_DATABASE_STRUCTURE.md": "docs/archive/2026-10-10/docsForHuman/04_DATABASE_STRUCTURE.md",
+    "docsForHuman/05_FEATURE_GUIDE.md": "docs/archive/2026-10-10/docsForHuman/05_FEATURE_GUIDE.md",
+    "docsForHuman/06_API_REFERENCE.md": "docs/archive/2026-10-10/docsForHuman/06_API_REFERENCE.md",
+    "docsForHuman/07_TESTING_GUIDE.md": "docs/archive/2026-10-10/docsForHuman/07_TESTING_GUIDE.md",
+    "docsForHuman/08_KNOWN_ISSUES.md": "docs/archive/2026-10-10/docsForHuman/08_KNOWN_ISSUES.md",
+    "docsForHuman/09_DEVELOPMENT_ROADMAP.md": "docs/archive/2026-10-10/docsForHuman/09_DEVELOPMENT_ROADMAP.md",
+    "docsForHuman/10_MULTI_ACCOUNT_SWITCHING.md": "docs/archive/2026-10-10/docsForHuman/10_MULTI_ACCOUNT_SWITCHING.md",
+    "docsForHuman/11_FEATURE_PLANNING_SUMMARY.md": "docs/archive/2026-10-10/docsForHuman/11_FEATURE_PLANNING_SUMMARY.md",
+    "docsForHuman/README.md": "docs/archive/2026-10-10/docsForHuman/README.md",
+    "docs/README.md": "docs/archive/2026-10-10/docs/README.md"
+  },
+  "validation": {
+    "markdownFiles": 79,
+    "archiveFiles": 35,
+    "relativeFileLinksChecked": 334,
+    "brokenLinks": [],
+    "archiveProseDifferences": [],
+    "explicitApiOperations": 50,
+    "undocumentedOperations": [],
+    "protectedFiles": 2077,
+    "protectedUnchanged": true,
+    "redirectAndSupportUnchanged": true,
+    "frontendTests": {
+      "suites": 9,
+      "passed": 122
+    },
+    "backendTests": {
+      "passed": 44,
+      "warnings": 1
+    },
+    "buildLintBrowserRerun": false
+  },
+  "protectedAfter": {
+    "src": {
+      "count": 101,
+      "sha256": "f2adf77b4879ae511b5a501150cfc8ea39e72e9e2ceed07beef867522d60011c"
+    },
+    "backend": {
+      "count": 1853,
+      "sha256": "1127f1fa6164eaab0608de468b8f877304cedcdd688a7a9a86b646904de0c32c"
+    },
+    "tests": {
+      "count": 19,
+      "sha256": "3b25d9898b7557c489243747fb4c9aae1d99fdeeac642d0c23902a0e929b649e"
+    },
+    "scripts": {
+      "count": 6,
+      "sha256": "c51e77a73b424fb619fec599aa282fe61c83178d8381e6ba2edfc7ecaf608e98"
+    },
+    "webpack": {
+      "count": 15,
+      "sha256": "4d1c5e543f65a36badaf40bb4532e473d1b3dc0d227aa4f325442a9be346281d"
+    },
+    "dist": {
+      "count": 56,
+      "sha256": "24ddad5ff44cd6082f754a43e0198ce825606c1daa0e8571a45f435bd901b39d"
+    },
+    ".github": {
+      "count": 3,
+      "sha256": "98a0f62e17714b544a25bb4430a2cfa8d409f7f549a62e998564efcd6c63138c"
+    },
+    "ci": {
+      "count": 2,
+      "sha256": "efb6a391315691b1bf5a6e18e08b40776ec1868cc3104a1c69b068450365d628"
+    },
+    "root": {
+      "count": 22,
+      "sha256": "da3384e554666d847f00082589f14ca5156248b89a3a9f29d1092e48d54c2b8c"
+    }
+  },
+  "afterFiles": [
+    "docs/API_REFERENCE.md",
+    "docs/AUTH_ARCHITECTURE.md",
+    "docs/BACKEND_STRUCTURE.md",
+    "docs/CALENDAR_IMPLEMENTATION.md",
+    "docs/CHAT_IMPLEMENTATION.md",
+    "docs/COMPONENT_GUIDE.md",
+    "docs/DATABASE_STRUCTURE.md",
+    "docs/DEVELOPMENT_STATUS.md",
+    "docs/EMAIL_ARCHITECTURE.md",
+    "docs/EMAIL_SERVER_INTEGRATION_PLAN.md",
+    "docs/FRONTEND_STRUCTURE.md",
+    "docs/KNOWN_ISSUES.md",
+    "docs/MULTI_ACCOUNT_SESSION_IMPLEMENTATION.md",
+    "docs/README.md",
+    "docs/ROADMAP.md",
+    "docs/RUNNING.md",
+    "docs/SYSTEM_ARCHITECTURE.md",
+    "docs/TESTING.md",
+    "docs/_config.yml",
+    "docs/_sass/custom.scss",
+    "docs/adding-a-page.md",
+    "docs/api.md",
+    "docs/api/theme-api.md",
+    "docs/architecture.md",
+    "docs/archive/2026-10-10/docs/AUTH_API.md",
+    "docs/archive/2026-10-10/docs/AUTH_ARCHITECTURE.md",
+    "docs/archive/2026-10-10/docs/CALENDAR_IMPLEMENTATION.md",
+    "docs/archive/2026-10-10/docs/CHAT_IMPLEMENTATION.md",
+    "docs/archive/2026-10-10/docs/EMAIL_ARCHITECTURE.md",
+    "docs/archive/2026-10-10/docs/EMAIL_SERVER_INTEGRATION_PLAN.md",
+    "docs/archive/2026-10-10/docs/MULTI_ACCOUNT_SESSION_IMPLEMENTATION.md",
+    "docs/archive/2026-10-10/docs/PROPOSAL_WORK_CONTEXT.md",
+    "docs/archive/2026-10-10/docs/README.md",
+    "docs/archive/2026-10-10/docs/RESOURCE_IMPLEMENTATION_REPORT.md",
+    "docs/archive/2026-10-10/docs/SERVICE_IMPLEMENTATION_REPORT.md",
+    "docs/archive/2026-10-10/docs/SHARED_COLLABORATION_REPORT.md",
+    "docs/archive/2026-10-10/docs/SITE_EXPLORATION_REPORT.md",
+    "docs/archive/2026-10-10/docs/proposals/01_SITE_EXPLORATION.md",
+    "docs/archive/2026-10-10/docs/proposals/02_DASHBOARD_PROPOSAL.md",
+    "docs/archive/2026-10-10/docs/proposals/03_COMPONENTS_PROPOSAL.md",
+    "docs/archive/2026-10-10/docs/proposals/04_FEATURE_PRIORITY_MATRIX.md",
+    "docs/archive/2026-10-10/docs/proposals/05_RECOMMENDED_ROADMAP.md",
+    "docs/archive/2026-10-10/docs/proposals/06_FINAL_RECOMMENDATIONS.md",
+    "docs/archive/2026-10-10/docs/proposals/07_SERVICE_INTEGRATION.md",
+    "docs/archive/2026-10-10/docs/proposals/08_REVIEW_VALIDATION.md",
+    "docs/archive/2026-10-10/docs/proposals/ARCHIVED_TEST_ORIENTED_PLANNING.md",
+    "docs/archive/2026-10-10/docsForHuman/00_PROJECT_OVERVIEW.md",
+    "docs/archive/2026-10-10/docsForHuman/01_IMPLEMENTATION_STATUS.md",
+    "docs/archive/2026-10-10/docsForHuman/02_FRONTEND_STRUCTURE.md",
+    "docs/archive/2026-10-10/docsForHuman/03_BACKEND_STRUCTURE.md",
+    "docs/archive/2026-10-10/docsForHuman/04_DATABASE_STRUCTURE.md",
+    "docs/archive/2026-10-10/docsForHuman/05_FEATURE_GUIDE.md",
+    "docs/archive/2026-10-10/docsForHuman/06_API_REFERENCE.md",
+    "docs/archive/2026-10-10/docsForHuman/07_TESTING_GUIDE.md",
+    "docs/archive/2026-10-10/docsForHuman/08_KNOWN_ISSUES.md",
+    "docs/archive/2026-10-10/docsForHuman/09_DEVELOPMENT_ROADMAP.md",
+    "docs/archive/2026-10-10/docsForHuman/10_MULTI_ACCOUNT_SWITCHING.md",
+    "docs/archive/2026-10-10/docsForHuman/11_FEATURE_PLANNING_SUMMARY.md",
+    "docs/archive/2026-10-10/docsForHuman/README.md",
+    "docs/archive/AUDIT_MANIFEST.json",
+    "docs/archive/README.md",
+    "docs/assets/images/adminator-dark-mode.avif",
+    "docs/assets/images/adminator-light-mode.avif",
+    "docs/customization.md",
+    "docs/customization/components.md",
+    "docs/customization/library-integrations.md",
+    "docs/customization/theme-system.md",
+    "docs/examples.md",
+    "docs/examples/theme-integration.md",
+    "docs/getting-started.md",
+    "docs/getting-started/build-deployment.md",
+    "docs/getting-started/development.md",
+    "docs/getting-started/installation.md",
+    "docs/getting-started/project-structure.md",
+    "docs/index.md",
+    "docs/migration.md",
+    "docs/pages.md",
+    "docsForHuman/00_PROJECT_OVERVIEW.md",
+    "docsForHuman/01_IMPLEMENTATION_STATUS.md",
+    "docsForHuman/05_FEATURE_GUIDE.md",
+    "docsForHuman/07_TESTING_GUIDE.md",
+    "docsForHuman/09_DEVELOPMENT_ROADMAP.md",
+    "docsForHuman/DOCUMENT_CLEANUP_REPORT.md",
+    "docsForHuman/README.md"
+  ]
+}

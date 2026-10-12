@@ -1,93 +1,34 @@
-> 2026-10-09 최신 통합 상태: [docsForHuman](../docsForHuman/README.md), [새 리소스 구현 보고서](RESOURCE_IMPLEMENTATION_REPORT.md). 아래 내용은 기존 단계의 구현 기록이며 새 실제 모드와 다를 수 있습니다.
+# 메일 저장·배달 확장 계획
 
-# Internal email server integration plan
+기준일: 2026-10-11. **이 문서는 미래 설계다.** 현재 등록 계정의 내부 전달·독립 사본·Bcc 보호·clientId 재시도는 이미 구현되었다. 현재 구현은 [EMAIL_ARCHITECTURE](EMAIL_ARCHITECTURE.md)가 관리한다. 여기의 테이블·작업자·첨부 저장은 아직 없다.
 
-## Account foundation implemented now
+## 정규화가 필요한 이유와 모델 후보
 
-Each active user has a stable UUID, canonical username and unique
-`username@adminator.test` address. FastAPI authenticates an opaque cookie session,
-and user DTOs omit password hashes. The existing Email UI/Service/Adapter interface
-remains usable, with the authenticated identity passed to composition/seed data.
-Mock state is stored server-side per (authenticated user_id, namespace), and every
-read/write/reset enforces this ownership. Sending a mock email still adds only a
-record to the sender's Sent fixture: it is not routed to Bob or externally.
+지금 internal_mail은 사용자별 JSON 전체 사본이라 대용량 조회·검색·동시 draft·공통 본문/파일 관리가 어렵다. Mock snapshot은 테스트 자료이며 실제 메시지 원장으로 승격하지 않는다.
 
-## Proposed normalized model (not implemented tables)
+| 후보 | 책임 |
+|---|---|
+| mail_messages | Message-ID/thread/from/subject/text/html/생성·제출·배달 상태 |
+| mail_recipients | To/Cc/Bcc 종류·정규 주소·수신자·개별 배달 상태 |
+| mailbox_entries | 사용자별 폴더/read/star/deleted/snooze/version/received |
+| mail_threads/membership | References/In-Reply-To 및 권한 내 thread 관계 |
+| mail_folders/labels/entry_labels | 사용자 소유 분류; Starred는 조회 조건 유지 |
+| mail_attachments | owner/draft/message·blob key·크기/MIME/checksum/scan |
+| mail_drafts/draft_recipients | editable 초안과 revision |
+| delivery_jobs/outbox | idempotency key, queued/sent/failed, retry/error |
 
-Do not grow `mock_mailboxes.state_json` into the real email store. Introduce an
-Alembic migration for separate content and per-user mailbox state:
+공통 본문을 공유하더라도 읽음/삭제/폴더는 각 entry에 남겨 Alice 삭제가 Bob 메일을 지우지 않게 한다. Bcc는 수신자에게 숨기고 thread/attachment는 소유 entry/draft 또는 명시 권한을 통해서만 읽는다. blob GC는 살아 있는 참조가 없을 때만 수행한다.
 
-| Entity | Proposed fields / responsibility |
-| --- | --- |
-| mail_messages | id, Message-ID, thread_id, from_user_id, subject, body_text/body_html, created_at, submitted_at, delivery status |
-| mail_recipients | message_id, user_id, address snapshot, To/Cc/Bcc kind, delivery status; multiple recipients per message |
-| mailbox_entries | id, user_id, message_id, folder_id, is_read, is_starred, deleted_at, received_at, snoozed_until, version |
-| mail_threads / membership | thread id, References/In-Reply-To relationships and user-visible membership |
-| mail_folders | user_id, kind/name; physical folders; Starred remains a query |
-| mail_labels / mailbox_entry_labels | User-owned labels and entry-label associations |
-| mail_attachments | message/draft ownership, blob key, name, MIME type, size, checksum, scan status |
-| mail_drafts / draft_recipients | Editable user-owned composition state before submission |
-| delivery_jobs | message_id, request/idempotency key, queued/sent/failed state, retry and error metadata |
+## 권장 전환 순서
 
-One message body may be shared among authorized recipients, but read/deleted/folder
-state must live on each user's entry. Alice deleting her Sent entry must not erase
-Bob's Inbox or the shared message body. A user can access message content/thread
-attachments only through an owned entry/draft or explicit authorized membership.
-Garbage collection removes content/blobs only when no retained authorized entry
-references them. Bcc recipients must not be exposed to other recipients.
+1. 현재 owner와 내부 주소 정책을 유지하며 DB·사본·clientId 이력을 비파괴 이전한다. 이전/원본 보존·실패 rollback을 검증한다.
+2. entry revision으로 초안/읽음/이동의 충돌을 보호하고 server paging/search/counts를 추가한다.
+3. 첨부는 서버 크기·MIME·소유권·검사·보관 정책과 권한 있는 short-lived download descriptor를 설계한다. 프론트 data URL snapshot만으로 실제 파일 권한을 대신하지 않는다.
+4. 작업자가 필요해지면 transaction outbox/job 상태와 재시도 원자성을 만들고 queued와 delivered를 구분한다.
+5. 외부 SMTP/IMAP 공급자·인증정보·운영 수요가 확정된 뒤 backend adapter를 연결한다. 비밀 키를 브라우저 bundle에 넣지 않는다.
 
-## Internal delivery sequence
+현재 API 경로를 유지하는 새 adapter 또는 명시한 새 계약으로 EmailService/UI를 전환한다. RestEmailApi의 accounts prefix는 예시 계약이며 기존 내부 서버가 구현했다고 가정하지 않는다. sender는 세션, recipient는 활성 계정 directory가 기준이다. 외부/unknown/inactive 주소·부분 배달 정책은 제품 결정이 필요하다. HTML이 필요하면 sanitize/isolate 정책을 먼저 정한다.
 
-1. Authenticate the session and CSRF; derive sender from the server's current user.
-2. Validate To/Cc/Bcc, attachment ownership and request idempotency.
-3. Resolve canonical internal addresses to active users via a backend query; do not
-   trust from_user_id or supplied accountId. Define an explicit policy for unknown,
-   inactive, external or duplicate addresses. No external SMTP delivery by default.
-4. In a transaction, create message/recipient records and sender Sent / recipient
-   Inbox entries with independent read/deletion state.
-5. Return a request/job status distinct from final delivery status; make retries
-   idempotent. Handle partial recipient failures explicitly.
-6. Search/list APIs query only authenticated mailbox entries, with stable paging,
-   counts, filters and labels. Return mapped DTOs expected by EmailService.
+## 검증과 운영 결정
 
-The browser must not select an arbitrary account by changing `/accounts/{id}` or
-userId parameters. Prefer `/api/mail/me/...`; if account-scoped routes are retained,
-the backend must verify the path owner against the session on every operation.
-Recipient lookup should return minimal active-address metadata, not private user
-profiles/password hashes. Add request/rate limits and deliberate directory lookup
-privacy rules before exposing recipient auto-complete.
-
-## Frontend adapter transition
-
-`accountEmailConfig` supplies current user.id and `{name,address}`; UI never reads
-auth cookies or mock persistence directly. Current MockEmailApi delegates snapshot
-storage through its persistence interface. A backend email API can replace it with
-RestEmailApi or another adapter, keeping EmailService and UI methods intact.
-RestEmailApi already supports a boundary mapper, CSRF header from the authenticated
-client and session-loss handling on 401. It remains dormant without explicit REST
-configuration, and this account backend does not implement its proposed mail routes.
-
-Decide actual endpoint paths in a backend contract, implement pagination/search,
-then configure the real baseUrl rather than assuming example endpoints exist.
-The existing envelope `{items,total,offset,limit}` can be translated at the adapter
-boundary. Ensure send results keep `{email,status,requestId}` semantics for queued
-vs sent/failed. Replace data-URL attachment snapshots with authorized upload and
-short-lived download/preview descriptors, size/type checks, scanning and blob storage.
-If rich HTML mail is added, sanitize/isolate it before rendering. Plain text is the
-current safe display path.
-
-## Rollout and tests
-
-Keep mock fixtures available under an explicit test mode; do not silently import
-unknown pre-auth localStorage data or treat synthetic Message-IDs as real mail.
-If migration of account-owned snapshots is desired, perform an explicit validated
-fixture migration and preserve ownership. Preserve all existing accessibility/test
-IDs and error/loading/expiry behavior. Future fault injection should wrap separate
-test adapters/jobs, not weaken baseline session or authorization checks.
-
-Add backend and Playwright tests for Alice→Bob delivery, Cc/Bcc isolation, multiple
-recipients, unknown/inactive users, sender spoofing, independent read/delete state,
-foreign message/thread/attachment access, atomicity, stale updates, idempotent
-retries, job failure/recovery, server-side search/paging and per-account reset.
-Run migrations against PostgreSQL in CI before deployment. SMTP/IMAP integration
-and credentials belong to future backend workers, never frontend config.
+Alice→Bob/Cc/Bcc, 중복·unknown·inactive·sender spoof, 독립 read/delete, foreign thread/blob 차단, stale draft, atomicity, lost ack, job 실패 복구, server paging 및 데이터 이전을 테스트한다. PostgreSQL은 실제 migration/SQLite 전용 경로를 검증한 뒤 도입한다. quota/rate limit/보관·개인정보 정책, 외부 공급자 비용·운영 책임을 먼저 결정한다. 기존 testid·loading/error/expiry 및 명시 Mock 모드를 유지한다.

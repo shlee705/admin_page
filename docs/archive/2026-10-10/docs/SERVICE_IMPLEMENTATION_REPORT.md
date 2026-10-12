@@ -1,3 +1,5 @@
+> 이력 보관본: 2026-10-11 문서 정리 전 원문입니다. 당시 구현·계획·검증 기록이며 현재 상태나 작업 승인으로 사용하지 않습니다. 현행 기준은 [개발 문서 진입점](../../../README.md)입니다. 본문의 코드 경로는 저장소 루트 기준입니다.
+
 # 서비스 기능 구현 보고서
 완료 기록: 2026-10-10 · 제안서 기반 1–3단계 기본 기능
 
@@ -52,7 +54,7 @@ src/{tasks,settings,people,search,attention,reports}.html과 _service-hub.scss, 
 | 브라우저 화면 검사 | 대상 서비스 화면 가로 overflow 없음, page JavaScript error0, desktop/mobile screenshot 확인 |
 | 로컬 서버 | health200, 미인증 preferences401 |
 
-브라우저 증거: [validation.json](../screenshots/service-hub/validation.json), [Home desktop](../screenshots/service-hub/home-desktop.png), [Tasks mobile](../screenshots/service-hub/tasks-mobile.png). source 접근/CSRF/private 자료 검색 차단/설정 revision/잘못된 날짜/rename 이력 보존/관련 일정 필터는 백엔드 회귀로 확인했다.
+브라우저 증거: [validation.json](../../../../screenshots/service-hub/validation.json), [Home desktop](../../../../screenshots/service-hub/home-desktop.png), [Tasks mobile](../../../../screenshots/service-hub/tasks-mobile.png). source 접근/CSRF/private 자료 검색 차단/설정 revision/잘못된 날짜/rename 이력 보존/관련 일정 필터는 백엔드 회귀로 확인했다.
 
 초기 샌드박스 테스트 실행은 temp cache rename/디렉터리·소켓 권한 제한으로 실행되지 않아 격리 테스트에 필요한 실행만 승인된 환경에서 재시도했다. 자동 승인 거절은 없었다. 프런트엔드 테스트의 기존 Dashboard/Tables 메뉴 기대값 두 곳은 실제 서비스 메뉴 변경에 맞춰 수정했다. 브라우저 테스트의 모호한 dialog/member 선택자는 정확한 대상으로 수정했다.
 

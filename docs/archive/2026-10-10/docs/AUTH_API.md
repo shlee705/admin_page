@@ -1,3 +1,5 @@
+> 이력 보관본: 2026-10-11 문서 정리 전 원문입니다. 당시 구현·계획·검증 기록이며 현재 상태나 작업 승인으로 사용하지 않습니다. 현행 기준은 [개발 문서 진입점](../../../README.md)입니다. 본문의 코드 경로는 저장소 루트 기준입니다.
+
 # Account API contract
 
 All paths are same-origin. JSON request/response keys use camelCase. SQLAlchemy
