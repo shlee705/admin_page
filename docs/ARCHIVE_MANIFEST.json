@@ -1,0 +1,511 @@
+{
+  "date": "2026-10-13",
+  "policy": "Original bytes preserved; archive history is not current runtime truth.",
+  "files": [
+    {
+      "original": "docs/01_FINAL_QA_REPORT.md",
+      "current": "docs/arxive/01_FINAL_QA_REPORT.md",
+      "sha256": "b85267671cb3b7a80507607d0ce7c89ab2ff13ef278539dc04098e96c344e575"
+    },
+    {
+      "original": "docs/02_ISSUE_REGISTER.md",
+      "current": "docs/arxive/02_ISSUE_REGISTER.md",
+      "sha256": "cdd2d3175300199de25b97ca72951d2f1cb70113e873a54864a6b4d2d074af91"
+    },
+    {
+      "original": "docs/03_REGRESSION_TEST_REPORT.md",
+      "current": "docs/arxive/03_REGRESSION_TEST_REPORT.md",
+      "sha256": "0e98fc94d4937174d15df76ec5cc225fea8b3d8b95065dc848b4b14d812b08ad"
+    },
+    {
+      "original": "docs/04_ARCHITECTURE_REVIEW.md",
+      "current": "docs/arxive/04_ARCHITECTURE_REVIEW.md",
+      "sha256": "536e4a05fb39011fa56a6a50967fe5b67a7f1da4a847cf9c44fb087ea3f48dfd"
+    },
+    {
+      "original": "docs/05_IMPROVEMENT_PRIORITY.md",
+      "current": "docs/arxive/05_IMPROVEMENT_PRIORITY.md",
+      "sha256": "6638d776576a662d0b77eb299049c2532598251d2b1a278dc5494f9a879627ba"
+    },
+    {
+      "original": "docs/06_CODEX_DEVELOPMENT_CONTEXT.md",
+      "current": "docs/arxive/06_CODEX_DEVELOPMENT_CONTEXT.md",
+      "sha256": "0de6507dfa9a429331d539afe075aaaef6d8264b80b201e63a2e532f433ef784"
+    },
+    {
+      "original": "docs/07_PROJECT_OVERVIEW_FOR_HUMANS.md",
+      "current": "docs/arxive/07_PROJECT_OVERVIEW_FOR_HUMANS.md",
+      "sha256": "43db4acff98dd879811477bf254fc1125c6b1e9308a8ca776b4a35526a972ebc"
+    },
+    {
+      "original": "docs/08_QA_REMEDIATION_REPORT.md",
+      "current": "docs/arxive/08_QA_REMEDIATION_REPORT.md",
+      "sha256": "f022582f63a067f576987ae6decbc796b85b6faf4b8568b46bd6d3588a51955c"
+    },
+    {
+      "original": "docs/08_WORK_SESSION_HANDOFF.md",
+      "current": "docs/arxive/08_WORK_SESSION_HANDOFF.md",
+      "sha256": "dfd65c45e57abe7da5aa0995f3fdabeb7d93d16a0eebe979f7a7a5916caf337e"
+    },
+    {
+      "original": "docs/09_POST_FIX_REGRESSION_REPORT.md",
+      "current": "docs/arxive/09_POST_FIX_REGRESSION_REPORT.md",
+      "sha256": "2a15392ffa065cd41eb5a67b73dd89a49b0545dd2c182a331f3ba674f2c534cd"
+    },
+    {
+      "original": "docs/adding-a-page.md",
+      "current": "docs/arxive/adding-a-page.md",
+      "sha256": "beef14cb6e298dca95329926ae1fad1434fa0f04b81f7bea6b285aa4f2463c26"
+    },
+    {
+      "original": "docs/api.md",
+      "current": "docs/arxive/api.md",
+      "sha256": "b955bfea16f142404d3ca7619a56a57166f938dfb9e1b7fd72c18d325035a3d2"
+    },
+    {
+      "original": "docs/API_REFERENCE.md",
+      "current": "docs/arxive/API_REFERENCE.md",
+      "sha256": "3b2c01c43f3f61fea2cd882874f9de4c45fcf28a00fe702fc24427b9f84dae84"
+    },
+    {
+      "original": "docs/architecture.md",
+      "current": "docs/arxive/architecture.md",
+      "sha256": "09a94c17dffa06f56daa46527b6dca43a56ab2a9b8c8e3e1993a03b2401c7adb"
+    },
+    {
+      "original": "docs/AUTH_ARCHITECTURE.md",
+      "current": "docs/arxive/AUTH_ARCHITECTURE.md",
+      "sha256": "10d8b578b63d988a0bd016538b656462fa06af075308854f89622c45ecfa6cec"
+    },
+    {
+      "original": "docs/BACKEND_STRUCTURE.md",
+      "current": "docs/arxive/BACKEND_STRUCTURE.md",
+      "sha256": "4c04a41aee81a3615ee3620d8c9cc1c93d2d44c5d7a403a86e22ca8543c7d030"
+    },
+    {
+      "original": "docs/CALENDAR_IMPLEMENTATION.md",
+      "current": "docs/arxive/CALENDAR_IMPLEMENTATION.md",
+      "sha256": "9fd2341f6a5078f8546e379f1240af3141dc4b107f6bb4d1074ecf302c5af000"
+    },
+    {
+      "original": "docs/CHAT_IMPLEMENTATION.md",
+      "current": "docs/arxive/CHAT_IMPLEMENTATION.md",
+      "sha256": "41b5f69d399751e256a9fa31afac7ffa82bb4218a2593f8c792f5414a86d2b88"
+    },
+    {
+      "original": "docs/COMPONENT_GUIDE.md",
+      "current": "docs/arxive/COMPONENT_GUIDE.md",
+      "sha256": "95b7ec7f57257f13c2628ae7c08e15c56baf2b25e40005537dd523db86fbcbc7"
+    },
+    {
+      "original": "docs/customization.md",
+      "current": "docs/arxive/customization.md",
+      "sha256": "e64aecd7612f196bbdc0d9ced36d23a3b3049c78acde61949be32b20cf4cd39f"
+    },
+    {
+      "original": "docs/DATABASE_STRUCTURE.md",
+      "current": "docs/arxive/DATABASE_STRUCTURE.md",
+      "sha256": "e44fa898a86c139c912bfd16d8b4c1db16cedf47d5e0333a3f7ee1fc4077a4b7"
+    },
+    {
+      "original": "docs/DEVELOPMENT_STATUS.md",
+      "current": "docs/arxive/DEVELOPMENT_STATUS.md",
+      "sha256": "672b39b7bb19e18bcf6e634a512c3cdbd7cfb2cb914079ecca09353e50295938"
+    },
+    {
+      "original": "docs/EMAIL_ARCHITECTURE.md",
+      "current": "docs/arxive/EMAIL_ARCHITECTURE.md",
+      "sha256": "0ae5681184e6a60ff772d7e428ff726cea11fb6970437dd42819121fba6ddccb"
+    },
+    {
+      "original": "docs/EMAIL_SERVER_INTEGRATION_PLAN.md",
+      "current": "docs/arxive/EMAIL_SERVER_INTEGRATION_PLAN.md",
+      "sha256": "27f84ca7f52d06d0a9a627861800d3f0756e3f2e19043dfc738190dce90608f1"
+    },
+    {
+      "original": "docs/examples.md",
+      "current": "docs/arxive/examples.md",
+      "sha256": "60520272917b722683b94858a4f6ad3cc483ed5ed5fd03f31928397a5133cad7"
+    },
+    {
+      "original": "docs/FRONTEND_STRUCTURE.md",
+      "current": "docs/arxive/FRONTEND_STRUCTURE.md",
+      "sha256": "0eb174985cbf355f0d8a85dba7f3dc32df31500032604bbd6f5baf4a659824cf"
+    },
+    {
+      "original": "docs/getting-started.md",
+      "current": "docs/arxive/getting-started.md",
+      "sha256": "205fb75afc0b8ba9c5df29b4ca46ce5dc1275556404362240b3a1f5377c4a18b"
+    },
+    {
+      "original": "docs/index.md",
+      "current": "docs/arxive/index.md",
+      "sha256": "fff9cc8049e6db02492348f4798a013c48f757d6f9900149cee7c28fa838c8b6"
+    },
+    {
+      "original": "docs/KNOWN_ISSUES.md",
+      "current": "docs/arxive/KNOWN_ISSUES.md",
+      "sha256": "009c59103d0b35bad255e6aea9f1dd03d173409e71ac3d246f7c7edac00c2006"
+    },
+    {
+      "original": "docs/migration.md",
+      "current": "docs/arxive/migration.md",
+      "sha256": "1f202d35f41c7e86b0e70fb72f794e578352f11602d40dc88c7224e1c33bf70e"
+    },
+    {
+      "original": "docs/MULTI_ACCOUNT_SESSION_IMPLEMENTATION.md",
+      "current": "docs/arxive/MULTI_ACCOUNT_SESSION_IMPLEMENTATION.md",
+      "sha256": "c8d0307a987fad88cdbf37ecdedf28097639c548d62e2487943801956c1d5212"
+    },
+    {
+      "original": "docs/pages.md",
+      "current": "docs/arxive/pages.md",
+      "sha256": "fd21930d8ca495ed58b240cc90fcae4c389a8038d3322751edba9f90e1e35567"
+    },
+    {
+      "original": "docs/README.md",
+      "current": "docs/arxive/README.md",
+      "sha256": "81f8ff9e62567bbc0b230f8e285cf5c48f516229d95fd314d02e0c6d5423608e"
+    },
+    {
+      "original": "docs/ROADMAP.md",
+      "current": "docs/arxive/ROADMAP.md",
+      "sha256": "5398e8a4d6b99fbb9ca9fa063019dde00a8380eb1014a831b1b242bc597112ad"
+    },
+    {
+      "original": "docs/RUNNING.md",
+      "current": "docs/arxive/RUNNING.md",
+      "sha256": "f61efd43a744d0d212b7d265613074b3a27218b065d078fad48b29cf2379f7bf"
+    },
+    {
+      "original": "docs/SYSTEM_ARCHITECTURE.md",
+      "current": "docs/arxive/SYSTEM_ARCHITECTURE.md",
+      "sha256": "991f063e7bdeaaa70ba9c28e1b76ba44e669784efa3da6c0abf1123a7f0e011e"
+    },
+    {
+      "original": "docs/TESTING.md",
+      "current": "docs/arxive/TESTING.md",
+      "sha256": "dcb2d40e23fd1735ff119695664cbe38436142b0e1199109934f6daa2f51ee26"
+    },
+    {
+      "original": "docs/_config.yml",
+      "current": "docs/arxive/_config.yml",
+      "sha256": "7a76330857d417ae07a46c8cb11394b7e016cddd4f7632697f16242499d4e933"
+    },
+    {
+      "original": "docs/api/theme-api.md",
+      "current": "docs/arxive/api/theme-api.md",
+      "sha256": "efe8b37a0303637b4a0c5e93696eebcf3dd90664b25edfd7d9d5611fdcaaf966"
+    },
+    {
+      "original": "docs/archive/AUDIT_MANIFEST.json",
+      "current": "docs/arxive/archive/AUDIT_MANIFEST.json",
+      "sha256": "277eee9d9d1525b108ac6d5112042ac7650eb7067b4138b6051e2d829748f000"
+    },
+    {
+      "original": "docs/archive/README.md",
+      "current": "docs/arxive/archive/README.md",
+      "sha256": "13439ae17914f5eff6ebaacc48d779ab7b3155c0d60d6003cb0ef7d49c370cb8"
+    },
+    {
+      "original": "docs/customization/components.md",
+      "current": "docs/arxive/customization/components.md",
+      "sha256": "f0e62e93ab1b782e6b08146111a07158c27e37d420135d1e936b5c1807e44364"
+    },
+    {
+      "original": "docs/customization/library-integrations.md",
+      "current": "docs/arxive/customization/library-integrations.md",
+      "sha256": "fa4294aeab3c600fe211f5004da7842f002cb46d1d2ff4735d9e99c2295e66cf"
+    },
+    {
+      "original": "docs/customization/theme-system.md",
+      "current": "docs/arxive/customization/theme-system.md",
+      "sha256": "39081952b88144f7100408a86e00ef9fd62f25a39794b24e6b9c0fd34a6400e6"
+    },
+    {
+      "original": "docs/examples/theme-integration.md",
+      "current": "docs/arxive/examples/theme-integration.md",
+      "sha256": "4de396f8743b7a473db26204adec659f9f14f2525a2cfc3f9fb470dfc331dbd9"
+    },
+    {
+      "original": "docs/getting-started/build-deployment.md",
+      "current": "docs/arxive/getting-started/build-deployment.md",
+      "sha256": "837fa39b951a0ab19248b8d4436939825fc8f6632be37eb2c06afe5f49222302"
+    },
+    {
+      "original": "docs/getting-started/development.md",
+      "current": "docs/arxive/getting-started/development.md",
+      "sha256": "fd52e183426369e2120a0c32a4b96de69600b0f5d6f3ac2c50c58f06c135e528"
+    },
+    {
+      "original": "docs/getting-started/installation.md",
+      "current": "docs/arxive/getting-started/installation.md",
+      "sha256": "f34a5e7ebf82e3841fdf8e6d7d45f21edf4f22c19d60324182094db80df5ece4"
+    },
+    {
+      "original": "docs/getting-started/project-structure.md",
+      "current": "docs/arxive/getting-started/project-structure.md",
+      "sha256": "10c2c8da832c4609463de39993d8b0276256d17a63e05abcaf2b7dc60bd9e217"
+    },
+    {
+      "original": "docs/_sass/custom.scss",
+      "current": "docs/arxive/_sass/custom.scss",
+      "sha256": "cb1f560f242b2b9e8f4001ce9ee3ec1846ab16ad2a7f0c740fd6bf3c3a8a1635"
+    },
+    {
+      "original": "docs/archive/2026-10-10/docs/AUTH_API.md",
+      "current": "docs/arxive/archive/2026-10-10/docs/AUTH_API.md",
+      "sha256": "1e9a29e4f43679cc0a1c0fbd1cff5f97dcbef31cee72b848947d88e3f68b4306"
+    },
+    {
+      "original": "docs/archive/2026-10-10/docs/AUTH_ARCHITECTURE.md",
+      "current": "docs/arxive/archive/2026-10-10/docs/AUTH_ARCHITECTURE.md",
+      "sha256": "35c53799a48e0a9bde2690d126b803bd8bf61bd5bd75e5d41c6766c1d80697e2"
+    },
+    {
+      "original": "docs/archive/2026-10-10/docs/CALENDAR_IMPLEMENTATION.md",
+      "current": "docs/arxive/archive/2026-10-10/docs/CALENDAR_IMPLEMENTATION.md",
+      "sha256": "12d163bf7761ecee07ee56248168a38cc230296ce0c02b456e7a835c11521259"
+    },
+    {
+      "original": "docs/archive/2026-10-10/docs/CHAT_IMPLEMENTATION.md",
+      "current": "docs/arxive/archive/2026-10-10/docs/CHAT_IMPLEMENTATION.md",
+      "sha256": "20380b1deb58483cb3d55b77d87465bca4ecce5ea8e62524eac88f36824c165b"
+    },
+    {
+      "original": "docs/archive/2026-10-10/docs/EMAIL_ARCHITECTURE.md",
+      "current": "docs/arxive/archive/2026-10-10/docs/EMAIL_ARCHITECTURE.md",
+      "sha256": "d5b6ce1764f19093a2502c94342bcdb362ea5da009d2663e10284c84babb2188"
+    },
+    {
+      "original": "docs/archive/2026-10-10/docs/EMAIL_SERVER_INTEGRATION_PLAN.md",
+      "current": "docs/arxive/archive/2026-10-10/docs/EMAIL_SERVER_INTEGRATION_PLAN.md",
+      "sha256": "c11a47ef06af3a1a82728e21528548ba61d3d2cd80f98060ac321acd3d9fb045"
+    },
+    {
+      "original": "docs/archive/2026-10-10/docs/MULTI_ACCOUNT_SESSION_IMPLEMENTATION.md",
+      "current": "docs/arxive/archive/2026-10-10/docs/MULTI_ACCOUNT_SESSION_IMPLEMENTATION.md",
+      "sha256": "e8aaae3896e7de2aee07371bd0fe7c7ec38cc8a96e5a73146c79b57d09f33cd0"
+    },
+    {
+      "original": "docs/archive/2026-10-10/docs/PROPOSAL_WORK_CONTEXT.md",
+      "current": "docs/arxive/archive/2026-10-10/docs/PROPOSAL_WORK_CONTEXT.md",
+      "sha256": "9b095bb69b0e92cccd63018f502bc250ae10fa4f8554c0709cbe6772eab921ac"
+    },
+    {
+      "original": "docs/archive/2026-10-10/docs/README.md",
+      "current": "docs/arxive/archive/2026-10-10/docs/README.md",
+      "sha256": "6485a416349ef62eab50b2c971c49f0dbc99d6bac05a38520fdc37f6bd7ceaab"
+    },
+    {
+      "original": "docs/archive/2026-10-10/docs/RESOURCE_IMPLEMENTATION_REPORT.md",
+      "current": "docs/arxive/archive/2026-10-10/docs/RESOURCE_IMPLEMENTATION_REPORT.md",
+      "sha256": "5c67bfa36fbc0da50439a2507727724da466ad801f1d800d532149125576bc8c"
+    },
+    {
+      "original": "docs/archive/2026-10-10/docs/SERVICE_IMPLEMENTATION_REPORT.md",
+      "current": "docs/arxive/archive/2026-10-10/docs/SERVICE_IMPLEMENTATION_REPORT.md",
+      "sha256": "e19a5dd0705e11ef433f8acbef6652b68211758055f297fa0070db52db38ef52"
+    },
+    {
+      "original": "docs/archive/2026-10-10/docs/SHARED_COLLABORATION_REPORT.md",
+      "current": "docs/arxive/archive/2026-10-10/docs/SHARED_COLLABORATION_REPORT.md",
+      "sha256": "ab36f85d6d106b04e3554f83cf282cca81a89f3ddb10b84a1f1ac6e4aee35860"
+    },
+    {
+      "original": "docs/archive/2026-10-10/docs/SITE_EXPLORATION_REPORT.md",
+      "current": "docs/arxive/archive/2026-10-10/docs/SITE_EXPLORATION_REPORT.md",
+      "sha256": "0630430fc9d9bd79171e6379a141642e8c2e7b29fd2d35b293b722ef717911f7"
+    },
+    {
+      "original": "docs/archive/2026-10-10/docsForHuman/00_PROJECT_OVERVIEW.md",
+      "current": "docs/arxive/archive/2026-10-10/docsForHuman/00_PROJECT_OVERVIEW.md",
+      "sha256": "85c9b5a986d48983c1cd411e21b13c0c45501c4457812726510e32e2a287b876"
+    },
+    {
+      "original": "docs/archive/2026-10-10/docsForHuman/01_IMPLEMENTATION_STATUS.md",
+      "current": "docs/arxive/archive/2026-10-10/docsForHuman/01_IMPLEMENTATION_STATUS.md",
+      "sha256": "f2484f55b3a030f49558ae111ca465696e6f3d168dc176845d8df1649d1508a0"
+    },
+    {
+      "original": "docs/archive/2026-10-10/docsForHuman/02_FRONTEND_STRUCTURE.md",
+      "current": "docs/arxive/archive/2026-10-10/docsForHuman/02_FRONTEND_STRUCTURE.md",
+      "sha256": "08e5d99356d552d82d07785ad66f24631cffa1d9dd1b3eddc6d7fd5db4acfc68"
+    },
+    {
+      "original": "docs/archive/2026-10-10/docsForHuman/03_BACKEND_STRUCTURE.md",
+      "current": "docs/arxive/archive/2026-10-10/docsForHuman/03_BACKEND_STRUCTURE.md",
+      "sha256": "fae12d3dd18951b1957a1164f3861c67115074c62a379560b57864eb3ee7d273"
+    },
+    {
+      "original": "docs/archive/2026-10-10/docsForHuman/04_DATABASE_STRUCTURE.md",
+      "current": "docs/arxive/archive/2026-10-10/docsForHuman/04_DATABASE_STRUCTURE.md",
+      "sha256": "8ff9778bf6eb08e80be5adca5acb622a4b20ebca5630ff8a2f401776661d0aa6"
+    },
+    {
+      "original": "docs/archive/2026-10-10/docsForHuman/05_FEATURE_GUIDE.md",
+      "current": "docs/arxive/archive/2026-10-10/docsForHuman/05_FEATURE_GUIDE.md",
+      "sha256": "301fc4689a0ac5d01fe3e0748754328d8d1f66794100196141086acc33560d27"
+    },
+    {
+      "original": "docs/archive/2026-10-10/docsForHuman/06_API_REFERENCE.md",
+      "current": "docs/arxive/archive/2026-10-10/docsForHuman/06_API_REFERENCE.md",
+      "sha256": "bd55b0bce98aa35fed3c4f1accf3e340893a04b874b299ec575563786ade262c"
+    },
+    {
+      "original": "docs/archive/2026-10-10/docsForHuman/07_TESTING_GUIDE.md",
+      "current": "docs/arxive/archive/2026-10-10/docsForHuman/07_TESTING_GUIDE.md",
+      "sha256": "cbc25727a30d3485d4e9527ffe8684dce1b1bcae3b7cf478fb27905f64781878"
+    },
+    {
+      "original": "docs/archive/2026-10-10/docsForHuman/08_KNOWN_ISSUES.md",
+      "current": "docs/arxive/archive/2026-10-10/docsForHuman/08_KNOWN_ISSUES.md",
+      "sha256": "3808423b1114d5c43640c8bda6af6bc6860bc93ce322fc39ecb347149260c83a"
+    },
+    {
+      "original": "docs/archive/2026-10-10/docsForHuman/09_DEVELOPMENT_ROADMAP.md",
+      "current": "docs/arxive/archive/2026-10-10/docsForHuman/09_DEVELOPMENT_ROADMAP.md",
+      "sha256": "f359585e183a0ebba8062aeec7e4478e3dcda25909887cfe6b486bd3acfb2e18"
+    },
+    {
+      "original": "docs/archive/2026-10-10/docsForHuman/10_MULTI_ACCOUNT_SWITCHING.md",
+      "current": "docs/arxive/archive/2026-10-10/docsForHuman/10_MULTI_ACCOUNT_SWITCHING.md",
+      "sha256": "5d632afd7a62aa2de51837a1344df6c95a8c3137706df990aff9ff26cf432cc0"
+    },
+    {
+      "original": "docs/archive/2026-10-10/docsForHuman/11_FEATURE_PLANNING_SUMMARY.md",
+      "current": "docs/arxive/archive/2026-10-10/docsForHuman/11_FEATURE_PLANNING_SUMMARY.md",
+      "sha256": "6762cb34d6e294a88e83615c45030be403c87471cb43e2c985153333f24b977a"
+    },
+    {
+      "original": "docs/archive/2026-10-10/docsForHuman/README.md",
+      "current": "docs/arxive/archive/2026-10-10/docsForHuman/README.md",
+      "sha256": "0f544122e0d189a094f549b99a2dc74cdc50ff7917c29c625575e24d4eb84494"
+    },
+    {
+      "original": "docs/archive/2026-10-10/docs/proposals/01_SITE_EXPLORATION.md",
+      "current": "docs/arxive/archive/2026-10-10/docs/proposals/01_SITE_EXPLORATION.md",
+      "sha256": "1285aa3d60c85ad93934b8849d2d5c4ec51c61313f81402e960a485232ba5b3d"
+    },
+    {
+      "original": "docs/archive/2026-10-10/docs/proposals/02_DASHBOARD_PROPOSAL.md",
+      "current": "docs/arxive/archive/2026-10-10/docs/proposals/02_DASHBOARD_PROPOSAL.md",
+      "sha256": "45f244d3596c722f651e468ef2b12a518d828c7597e449a4c3799806d954f434"
+    },
+    {
+      "original": "docs/archive/2026-10-10/docs/proposals/03_COMPONENTS_PROPOSAL.md",
+      "current": "docs/arxive/archive/2026-10-10/docs/proposals/03_COMPONENTS_PROPOSAL.md",
+      "sha256": "5bfabe59620a63bca3f8c7721c3d357800ce233160409cbc9c2b7d8a71b5899e"
+    },
+    {
+      "original": "docs/archive/2026-10-10/docs/proposals/04_FEATURE_PRIORITY_MATRIX.md",
+      "current": "docs/arxive/archive/2026-10-10/docs/proposals/04_FEATURE_PRIORITY_MATRIX.md",
+      "sha256": "7f59bc34686f996544cafc8519aa451298d1f5b1cae3272f28b67c26da979b73"
+    },
+    {
+      "original": "docs/archive/2026-10-10/docs/proposals/05_RECOMMENDED_ROADMAP.md",
+      "current": "docs/arxive/archive/2026-10-10/docs/proposals/05_RECOMMENDED_ROADMAP.md",
+      "sha256": "61b1a7deb6b6a9d07a7761a17de033594c0a1d200d5f8e5f58d038f26e9081a5"
+    },
+    {
+      "original": "docs/archive/2026-10-10/docs/proposals/06_FINAL_RECOMMENDATIONS.md",
+      "current": "docs/arxive/archive/2026-10-10/docs/proposals/06_FINAL_RECOMMENDATIONS.md",
+      "sha256": "3e44cfbb2181abf2308bfa7858d88cc062cc56af5d55284e273c4d70d4f2ae7f"
+    },
+    {
+      "original": "docs/archive/2026-10-10/docs/proposals/07_SERVICE_INTEGRATION.md",
+      "current": "docs/arxive/archive/2026-10-10/docs/proposals/07_SERVICE_INTEGRATION.md",
+      "sha256": "4a2bb1fb5701de224db34a5b4df92bddca220c7f2ec3947ade6e44a649ab5ed1"
+    },
+    {
+      "original": "docs/archive/2026-10-10/docs/proposals/08_REVIEW_VALIDATION.md",
+      "current": "docs/arxive/archive/2026-10-10/docs/proposals/08_REVIEW_VALIDATION.md",
+      "sha256": "4ac42fec31833106e098a99875dfbd27db94a007114e440f8a388cfa279aa230"
+    },
+    {
+      "original": "docs/archive/2026-10-10/docs/proposals/ARCHIVED_TEST_ORIENTED_PLANNING.md",
+      "current": "docs/arxive/archive/2026-10-10/docs/proposals/ARCHIVED_TEST_ORIENTED_PLANNING.md",
+      "sha256": "4e89379279aa5d9353e3f9673bd425a9d58d485a09ea229a6cf033da9ef55f35"
+    },
+    {
+      "original": "docs/assets/images/adminator-dark-mode.avif",
+      "current": "docs/arxive/assets/images/adminator-dark-mode.avif",
+      "sha256": "029ccefb374a9e845a5ed9fd58bab26e9cbfc554eda6a5eb84b38396962ce25a"
+    },
+    {
+      "original": "docs/assets/images/adminator-light-mode.avif",
+      "current": "docs/arxive/assets/images/adminator-light-mode.avif",
+      "sha256": "b6d2125680999c1f1b9a74a9d751f8259a0a071d3806c6daf6b3864a130b1c40"
+    },
+    {
+      "original": "docsForHuman/00_PROJECT_OVERVIEW.md",
+      "current": "docs/archiveForHuman/00_PROJECT_OVERVIEW.md",
+      "sha256": "3f5a6e03f0e2c2a3bbb02ea63a1db464acb68f6b6812b0118be5a479aabe974d"
+    },
+    {
+      "original": "docsForHuman/01_IMPLEMENTATION_STATUS.md",
+      "current": "docs/archiveForHuman/01_IMPLEMENTATION_STATUS.md",
+      "sha256": "92da22d662c1ed15a50b9cfc6bc1ee32679b84807c26d98c95dacea2ff4675c3"
+    },
+    {
+      "original": "docsForHuman/05_FEATURE_GUIDE.md",
+      "current": "docs/archiveForHuman/05_FEATURE_GUIDE.md",
+      "sha256": "7e1c83c5d3a3070284a487ff62608b5851be5e5008cd1b7b0f1f31161abb6ff2"
+    },
+    {
+      "original": "docsForHuman/07_TESTING_GUIDE.md",
+      "current": "docs/archiveForHuman/07_TESTING_GUIDE.md",
+      "sha256": "6c7948de6696822d8c30feb34c21e1cc66abb4ba39ddd2db282f0842f0452f0e"
+    },
+    {
+      "original": "docsForHuman/09_DEVELOPMENT_ROADMAP.md",
+      "current": "docs/archiveForHuman/09_DEVELOPMENT_ROADMAP.md",
+      "sha256": "61d8d13aa4e9eebcde546d354fd3241ab55c87260970d5f5f427dc4c52d9b9c8"
+    },
+    {
+      "original": "docsForHuman/DOCUMENT_CLEANUP_REPORT.md",
+      "current": "docs/archiveForHuman/DOCUMENT_CLEANUP_REPORT.md",
+      "sha256": "81e00d9c4f36965bdfed970b3514633c50c3e50cbf956d3ba6b4ae9386794c16"
+    },
+    {
+      "original": "docsForHuman/EMAIL_LABEL_IMPROVEMENT_REPORT.md",
+      "current": "docs/archiveForHuman/EMAIL_LABEL_IMPROVEMENT_REPORT.md",
+      "sha256": "7cc22124eb1a1ac64992f13064802d804dbd69230eedb5e0e026b00902650826"
+    },
+    {
+      "original": "docsForHuman/PROJECT_IMPROVEMENT_REPORT.md",
+      "current": "docs/archiveForHuman/PROJECT_IMPROVEMENT_REPORT.md",
+      "sha256": "9bff5ce5692857fec957b7d186f11cd20d03d03a71e42146044374998d0355f4"
+    },
+    {
+      "original": "docsForHuman/README.md",
+      "current": "docs/archiveForHuman/README.md",
+      "sha256": "52d7cb9c6bb672fc2a613d2ac975cb997ec8d3a241b0dfa42a38e5eda56073e5"
+    },
+    {
+      "original": "bugDocs/bugs.md",
+      "current": "docs/bugs/bugs.md",
+      "sha256": "e3b1456043395c792d540b1b7b4ae022d5067ab224dcea2ce6d22d8b1d88d66c"
+    },
+    {
+      "original": "bugDocs/functional.md",
+      "current": "docs/bugs/functional.md",
+      "sha256": "d283423296a53f149a3604881f80167bc3798d9e7c9ab6a8c5771f2ef0750bff"
+    },
+    {
+      "original": "bugDocs/routing.md",
+      "current": "docs/bugs/routing.md",
+      "sha256": "be3a1a3d272c3c28b80610c711af79e25172b78c30863c66e2784091b74b5c5b"
+    },
+    {
+      "original": "bugDocs/ui.md",
+      "current": "docs/bugs/ui.md",
+      "sha256": "c8a7148a505bc017f28b593e902c53272efd5154f4e641c6037db7fd17c3928b"
+    },
+    {
+      "original": "bugDocs/validation.md",
+      "current": "docs/bugs/validation.md",
+      "sha256": "19957df022685a424b5dc1946deafdc73f4e0945f3d9a087e640639246b7595a"
+    }
+  ]
+}
