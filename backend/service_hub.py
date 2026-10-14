@@ -124,7 +124,14 @@ def install_service_hub(app, database, settings, visible_events, event_json, roo
                 add("calendar", e["id"], e["title"], e.get("description", "") + " " + e.get("location", ""), f'calendar.html?event={e["id"]}')
         if kind in {"all", "mail"}:
             for m in mails_for(db, user.id):
-                add("mail", m["id"], m["subject"], m["bodyText"], f'email.html?mailMode=internal&mail={m["id"]}')
+                # F5: 검색 조건에서 본문이 빠졌다. 제목만 LIKE 로 거르므로
+                # 본문에만 있는 단어로는 찾지 못한다. 결과 목록과 발췌는
+                # 정상이라 다른 종류와 구분되지 않고, 빠진 항목이 있다는
+                # 사실은 본문 내용을 알아야 안다.
+                if term in m["subject"].lower():
+                    results.append({"kind": "mail", "id": m["id"], "title": m["subject"],
+                                    "text": m["bodyText"][:240],
+                                    "href": f'email.html?mailMode=internal&mail={m["id"]}'})
         if kind in {"all", "chat"}:
             visible = select(ChatRoom.id).where(or_(ChatRoom.is_shared.is_(True), ChatRoom.id.in_(select(ChatMember.room_id).where(ChatMember.user_id == user.id))))
             escaped = term.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")

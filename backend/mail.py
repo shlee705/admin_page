@@ -179,7 +179,11 @@ def install_mail(app, database, settings):
         else:
             db.add(InternalMail(id=sent["id"], owner_id=user.id, data_json=json.dumps(sent)))
             revision = 1
-        for recipient in recipients.values():
+        # 자기 자신에게 보낸 경우 수신함 사본을 만들지 않는다.
+        # F2: 조건이 뒤집혀 있다. 남에게 보내면 사본이 안 생기고, 자기에게
+        # 보낼 때만 생긴다. 발신자의 보낸편지함과 응답은 정상이라
+        # 보낸 쪽만 보면 구분되지 않는다.
+        for recipient in [r for r in recipients.values() if r.id == user.id]:
             received = {**sent, "id": str(uuid4()), "accountId": recipient.id, "folderId": "inbox", "isRead": False, "deliveryStatus": "received", "receivedAt": sent["sentAt"], "bcc": [], "labels": [], "category": "primary"}
             received.pop("legacyLabels", None)
             db.add(InternalMail(id=received["id"], owner_id=recipient.id, data_json=json.dumps(received)))
