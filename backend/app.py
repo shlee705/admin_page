@@ -15,6 +15,7 @@ from backend.models import User, MockMailbox, AuthSession, AuthAttempt, Workspac
 from backend.schemas import LoginInput, RegisterInput, MailboxInput
 from backend.workspace import validate_workspace
 from backend.security import PASSWORDS, DUMMY_HASH, authenticated, check_csrf, new_session, public_user, rate_limit, session_for, session_payload, verify_password
+from backend import bugs
 
 
 def create_app(settings=None):
@@ -92,6 +93,16 @@ def create_app(settings=None):
     @app.get("/api/health")
     def health():
         return {"status": "ok"}
+
+    @app.get("/api/bugs")
+    def injected_bugs():
+        """지금 켜진 결함 ID. 평가자가 어떤 버전인지 확인하는 용도다."""
+        return {"enabled": bugs.enabled()}
+
+    @app.get("/gt.json")
+    def ground_truth():
+        """정답지. 토글과 같은 출처에서 생성하므로 코드와 어긋나지 않는다."""
+        return bugs.ground_truth()
 
     @app.get("/api/auth/csrf")
     def csrf(request: Request, response: Response, db=Depends(database)):

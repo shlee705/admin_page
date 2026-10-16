@@ -26,7 +26,9 @@ export const NAV = [
   { label: 'Work', items: [
     { key: 'dashboard', text: 'Home', href: 'index.html', icon: navIcon },
     { key: 'tasks', text: 'My tasks', href: 'tasks.html', icon: navIcon },
-    { key: 'calendar', text: 'Calendar', href: 'calendar.html', icon: navIcon },
+    // N2: 메뉴 글자는 Calendar 인데 Chat 으로 보낸다. 이동은 정상적으로
+    // 일어나고 오류도 없어서, 누르기 전 글자와 도착한 화면을 맞춰봐야 한다.
+    { key: 'calendar', text: 'Calendar', href: 'chat.html', icon: navIcon },
     { key: 'reports', text: 'Work report', href: 'reports.html', icon: navIcon },
   ] },
   { label: 'Collaboration', items: [
