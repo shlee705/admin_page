@@ -14,6 +14,7 @@ from sqlalchemy import select, func, or_, and_
 from sqlalchemy.exc import IntegrityError
 from backend.models import User, ChatRoom, ChatMember, ChatMessage, CalendarEvent, CalendarAttendee, CalendarImport, CalendarSubmission, WorkspaceState, MockMailbox, InternalMail, utcnow
 from backend.security import authenticated, check_csrf, public_user
+from backend import bugs
 
 
 def iso(value):
@@ -275,6 +276,9 @@ def install_resources(app, database, settings):
         user = identity(request, db); member(db, room_id, user.id)
         recent = latest or before is not None
         query = select(ChatMessage).where(ChatMessage.room_id == room_id)
+        # F3: 자기가 보낸 것만 돌려준다. 보낸 쪽 화면은 멀쩡하고 받는 쪽만
+        # 비어 보인다. 전송 응답은 201 이라 오류도 남지 않는다.
+        query = query.where(ChatMessage.sender_id == user.id)
         query = query.where(ChatMessage.sequence < before) if before is not None else query.where(ChatMessage.sequence > after)
         query = query.order_by(ChatMessage.sequence.desc() if recent else ChatMessage.sequence)
         rows = db.scalars(query.limit(limit + 1)).all()
@@ -559,7 +563,10 @@ def install_resources(app, database, settings):
             zone = get_zone(timezoneName)
         except ValueError as error:
             raise HTTPException(422, str(error))
-        now = datetime.now(zone); today = now.replace(hour=0, minute=0, second=0, microsecond=0)
+        # F4: 요청한 시간대(timezoneName)로 zone 을 구해놓고 "오늘" 의 경계는
+        # UTC 로 계산한다. Asia/Seoul 기준 00:00~09:00 일정이 오늘에서 빠지고,
+        # 다음 날 00:00~09:00 일정이 오늘로 들어온다. 개수는 맞고 분류만 틀리다.
+        now = datetime.now(timezone.utc); today = now.replace(hour=0, minute=0, second=0, microsecond=0)
         tomorrow = today + timedelta(days=1)
         rows = visible_events(db, user.id)
         events = events_json(db, rows, user.id)
