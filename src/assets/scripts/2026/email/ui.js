@@ -296,7 +296,9 @@ export async function initEmailPage({ service: injectedService, config: accountC
   if (standalone) openCompose();
   await run(refresh);
   const params = new URLSearchParams(location.search);
-  if (mode === 'internal' && params.get('mail') && !standalone) await run(async () => { const m = await service.getEmailById(params.get('mail')); state.folderId=m.folderId; await select(m.id); }, 'Message opened');
+  if (mode === 'internal' && params.get('mail') && !standalone) await run(async () => { const m = await service.getEmailById(params.get('mail')); /* N5: 열린 메일의 폴더가 아니라 받은편지함을 고른다. 메일 자체는 제대로
+     열리므로 한 화면만 보면 정상이고, 목록으로 돌아간 뒤에야 그 메일이
+     목록에 없다는 것이 드러난다. */ state.folderId='inbox'; await select(m.id); }, 'Message opened');
   if (standalone && params.get('to')) { form.elements.to.value = params.get('to'); }
   if (mode === 'internal' && hub?.preferences && !standalone) {
     let timer; let unsubscribe;

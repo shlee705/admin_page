@@ -1,29 +1,24 @@
-"""이 브랜치에 주입한 기능 결함.
+"""이 브랜치에 주입한 결함 (funtional + routing 을 합친 로컬 확인용).
 
-결함은 브랜치에 직접 구현한다. 환경변수로 켜고 끄지 않는다. 이 브랜치가
-배포되면 아래 목록이 항상 켜져 있다. Baseline 은 main 브랜치다.
+결함은 브랜치에 직접 구현한다. 환경변수로 켜고 끄지 않는다. Baseline 은 main 브랜치다.
+ID 는 docs/bugs/bugs.md 의 중앙 대장을 따른다. F1 · N1 은 작성 예시로 예약돼 있다.
 
-ID 는 docs/bugs/bugs.md 의 중앙 대장을 따른다. F1 은 작성 예시로 예약돼
-있어 F2 부터 쓴다. 상세 명세(기대 동작·재현 절차·탐지 방법)는
-docs/bugs/functional.md 에 있고, 여기에는 ID·분류·증상·탐지 단계만 둔다.
-같은 내용을 두 곳에 쓰면 한쪽이 낡는다.
+  F2~F5  기능 결함. 백엔드(backend/*.py)에 있다. 명세는 docs/bugs/functional.md
+  N2~N5  이동·라우팅 결함. 프론트엔드에 있어 webpack 빌드 결과물(dist/)에 들어간다.
+         명세는 docs/bugs/routing.md
 
-평가자가 "지금 어느 버전이 떠 있는가" 를 확인하는 용도로만 공개한다.
-검사 대상 모델에는 주지 않는다.
+평가자가 "지금 어느 버전이 떠 있는가" 를 확인하는 용도로만 공개한다. 검사 대상 모델에는 주지 않는다.
 
     GET /api/bugs    켜진 결함 ID
     GET /gt.json     정답지 요약
+
+CATALOG 의 값은 (분류, 증상, 제목, detectable, needs) 다.
+detectable 은 "그 화면의 정답을 적어 넣지 않은 범용 규칙으로 잡히는가" 이고,
+needs 에는 판정에 필요한 수단(또는 실제로 쓴 규칙)을 적는다.
 """
 
-ACTIVE = ["F2", "F3", "F4", "F5"]
+ACTIVE = ["F2", "F3", "F4", "F5", "N2", "N3", "N4", "N5"]
 
-# (분야, 증상, 제목, 규칙만으로 판정되는가, 필요한 수단)
-#
-# detectable 은 "이렇게 될 것이다" 라는 선언이고 실제 결과와 대조한다.
-# F4 만 true 다. 대시보드 응답이 기준 시간대와 일정 시각을 함께 싣기 때문에
-# 응답 하나만 봐도 모순이 드러난다. 이 사이트는 모든 화면이 로그인 뒤라
-# 1단계 결함을 만들 수 없어, F4 가 "거기까지 가면 누구나 잡는" 자리로서
-# 도달 능력만 따로 재는 역할을 한다.
 CATALOG = {
     "F2": ("functional", "partial", "보낸 메일이 수신자에게 전달되지 않음",
            False, ["two_sessions", "ai"]),
@@ -34,6 +29,18 @@ CATALOG = {
            True, ["timezone_boundary"]),
     "F5": ("functional", "partial", "메일 검색이 제목만 보고 본문을 보지 않음",
            False, ["content_knowledge", "ai"]),
+    "N2": ("routing", "wrong_target",
+           "Calendar 메뉴가 Chat 화면을 엶",
+           True, ["active_nav_matches_clicked", "duplicate_nav_destination"]),
+    "N3": ("routing", "wrong_target",
+           "일정 링크가 다른 일정을 엶",
+           True, ["link_name_in_opened_view"]),
+    "N4": ("routing", "partial",
+           "사람 목록의 Email 버튼이 받는사람을 채우지 않음",
+           True, ["per_item_links_identical"]),
+    "N5": ("routing", "wrong_target",
+           "링크로 연 메일이 받은편지함에 있는 것처럼 표시됨",
+           True, ["opened_item_selected_in_list", "multi_step"]),
 }
 
 
@@ -42,9 +49,11 @@ def enabled() -> list[str]:
 
 
 def ground_truth() -> dict:
-    defects = [{"id": b, "area": CATALOG[b][0], "symptom": CATALOG[b][1],
-                "title": CATALOG[b][2], "detectable": CATALOG[b][3],
-                "needs": CATALOG[b][4]} for b in ACTIVE]
-    return {"branch": "bugs/functional", "total": len(defects),
+    defects = []
+    for bug in ACTIVE:
+        area, symptom, title, detectable, needs = CATALOG[bug]
+        defects.append({"id": bug, "area": area, "symptom": symptom,
+                        "title": title, "detectable": detectable, "needs": needs})
+    return {"branch": "funtional+routing", "total": len(defects),
             "detectable": sum(1 for d in defects if d["detectable"]),
             "defects": defects}
