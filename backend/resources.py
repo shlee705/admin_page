@@ -9,7 +9,7 @@ from datetime import datetime, timedelta, timezone
 from uuid import uuid4
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response, WebSocket, WebSocketDisconnect
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 from sqlalchemy import select, func, or_, and_
 from sqlalchemy.exc import IntegrityError
 from backend.models import User, ChatRoom, ChatMember, ChatMessage, CalendarEvent, CalendarAttendee, CalendarImport, CalendarSubmission, WorkspaceState, MockMailbox, InternalMail, utcnow
@@ -40,8 +40,15 @@ class ReadInput(DTO):
 
 class Recurrence(DTO):
     frequency: str = Field(pattern="^(daily|weekly|monthly)$")
-    interval: int = Field(default=1, ge=1, le=30)
+    interval: int = 1
     count: int = Field(default=10, ge=1, le=366)
+
+    @field_validator("interval")
+    @classmethod
+    def interval_magnitude(cls, value):
+        if not 1 <= abs(value) <= 30:
+            raise ValueError("Repeat interval must be between 1 and 30")
+        return value
 
 
 class EventInput(DTO):
@@ -127,7 +134,9 @@ def occurrences(data, start_at=None, end_at=None):
     start, end = parse_time(data["start"], data["allDay"], zone), parse_time(data["end"], data["allDay"], zone)
     rule = data.get("recurrence")
     first, stop = 0, rule["count"] if rule else 1
-    if rule and rule["frequency"] in {"daily", "weekly"}:
+    # The forward-range shortcut applies only to ascending series. Descending
+    # series still expand a bounded count, then use the same overlap filters.
+    if rule and rule["interval"] > 0 and rule["frequency"] in {"daily", "weekly"}:
         days = rule["interval"] * (7 if rule["frequency"] == "weekly" else 1)
         if start_at:
             first = max(0, (start_at.astimezone(zone).date() - end.date()).days // days - 1)
@@ -274,7 +283,7 @@ def install_resources(app, database, settings):
                  latest: bool = False, db=Depends(database)):
         user = identity(request, db); member(db, room_id, user.id)
         recent = latest or before is not None
-        query = select(ChatMessage).where(ChatMessage.room_id == room_id)
+        query = select(ChatMessage).where(ChatMessage.room_id == room_id, ChatMessage.sender_id == user.id)
         query = query.where(ChatMessage.sequence < before) if before is not None else query.where(ChatMessage.sequence > after)
         query = query.order_by(ChatMessage.sequence.desc() if recent else ChatMessage.sequence)
         rows = db.scalars(query.limit(limit + 1)).all()
@@ -560,13 +569,14 @@ def install_resources(app, database, settings):
         except ValueError as error:
             raise HTTPException(422, str(error))
         now = datetime.now(zone); today = now.replace(hour=0, minute=0, second=0, microsecond=0)
-        tomorrow = today + timedelta(days=1)
+        calendar_today = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+        tomorrow = calendar_today + timedelta(days=1)
         rows = visible_events(db, user.id)
         events = events_json(db, rows, user.id)
         if scope != "all":
             events = [e for e in events if (e["ownerId"] == user.id if scope == "owned" else any(a["userId"] == user.id for a in e["attendees"]) if scope == "invited" else e["ownerId"] == user.id or any(a["userId"] == user.id and a["status"] != "declined" for a in e["attendees"]))]
-        expanded = [occ for item in events for occ in occurrences(item, today) if not any(a["userId"] == user.id and a["status"] == "declined" for a in item["attendees"])]
-        today_events = [e for e in expanded if parse_time(e["start"], e["allDay"], get_zone(e["timezone"])) < tomorrow and parse_time(e["end"], e["allDay"], get_zone(e["timezone"])) > today]
+        expanded = [occ for item in events for occ in occurrences(item, min(today, calendar_today)) if not any(a["userId"] == user.id and a["status"] == "declined" for a in item["attendees"])]
+        today_events = [e for e in expanded if parse_time(e["start"], e["allDay"], get_zone(e["timezone"])) < tomorrow and parse_time(e["end"], e["allDay"], get_zone(e["timezone"])) > calendar_today]
         upcoming = sorted([e for e in expanded if parse_time(e["end"], e["allDay"], get_zone(e["timezone"])) > now], key=lambda e: parse_time(e["start"], e["allDay"], get_zone(e["timezone"])))[:10]
         rooms = rooms_for(db, user.id)
         task_row = db.scalar(select(WorkspaceState).where(WorkspaceState.user_id == user.id, WorkspaceState.kind == "tasks"))

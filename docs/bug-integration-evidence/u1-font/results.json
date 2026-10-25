@@ -1,0 +1,891 @@
+{
+  "browser": "155.0.8059.86",
+  "checkedAt": "2026-10-25T16:44:34.160Z",
+  "results": [
+    {
+      "mode": "external-static-weights",
+      "phase": "initial",
+      "passed": true,
+      "externalStylesheets": [
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap",
+          "status": 200
+        }
+      ],
+      "readings": [
+        {
+          "family": "Inter",
+          "weight": 400,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter",
+          "weight": 500,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter",
+          "weight": 600,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter",
+          "weight": 700,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 400,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 500,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 600,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 700,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 400,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 500,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 600,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 700,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        }
+      ],
+      "inputValue": "한국어 테스트 ABC 123",
+      "inputFont": "Inter, system-ui, \"Segoe UI\", Ubuntu, Cantarell, \"Noto Sans\", -apple-system, Roboto, sans-serif"
+    },
+    {
+      "mode": "external-static-weights",
+      "phase": "late-css",
+      "passed": true,
+      "externalStylesheets": [
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap",
+          "status": 200
+        }
+      ],
+      "readings": [
+        {
+          "family": "Inter",
+          "weight": 400,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter",
+          "weight": 500,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter",
+          "weight": 600,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter",
+          "weight": 700,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 400,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 500,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 600,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 700,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 400,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 500,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 600,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 700,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        }
+      ],
+      "inputValue": "한국어 테스트 ABC 123",
+      "inputFont": "Inter, system-ui, \"Segoe UI\", Ubuntu, Cantarell, \"Noto Sans\", -apple-system, Roboto, sans-serif"
+    },
+    {
+      "mode": "external-static-weights",
+      "phase": "reload",
+      "passed": true,
+      "externalStylesheets": [
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap",
+          "status": 200
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap",
+          "status": 200
+        }
+      ],
+      "readings": [
+        {
+          "family": "Inter",
+          "weight": 400,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter",
+          "weight": 500,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter",
+          "weight": 600,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter",
+          "weight": 700,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 400,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 500,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 600,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 700,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 400,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 500,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 600,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 700,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        }
+      ],
+      "inputValue": "한국어 테스트 ABC 123",
+      "inputFont": "Inter, system-ui, \"Segoe UI\", Ubuntu, Cantarell, \"Noto Sans\", -apple-system, Roboto, sans-serif"
+    },
+    {
+      "mode": "network",
+      "phase": "initial",
+      "passed": true,
+      "externalStylesheets": [
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap",
+          "status": 200
+        }
+      ],
+      "readings": [
+        {
+          "family": "Inter",
+          "weight": 400,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter",
+          "weight": 500,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter",
+          "weight": 600,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter",
+          "weight": 700,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 400,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 500,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 600,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 700,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 400,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 500,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 600,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 700,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        }
+      ],
+      "inputValue": "한국어 테스트 ABC 123",
+      "inputFont": "Inter, system-ui, \"Segoe UI\", Ubuntu, Cantarell, \"Noto Sans\", -apple-system, Roboto, sans-serif"
+    },
+    {
+      "mode": "network",
+      "phase": "late-css",
+      "passed": true,
+      "externalStylesheets": [
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap",
+          "status": 200
+        }
+      ],
+      "readings": [
+        {
+          "family": "Inter",
+          "weight": 400,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter",
+          "weight": 500,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter",
+          "weight": 600,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter",
+          "weight": 700,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 400,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 500,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 600,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 700,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 400,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 500,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 600,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 700,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        }
+      ],
+      "inputValue": "한국어 테스트 ABC 123",
+      "inputFont": "Inter, system-ui, \"Segoe UI\", Ubuntu, Cantarell, \"Noto Sans\", -apple-system, Roboto, sans-serif"
+    },
+    {
+      "mode": "network",
+      "phase": "reload",
+      "passed": true,
+      "externalStylesheets": [
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap",
+          "status": 200
+        },
+        {
+          "url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap",
+          "status": 200
+        }
+      ],
+      "readings": [
+        {
+          "family": "Inter",
+          "weight": 400,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter",
+          "weight": 500,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter",
+          "weight": 600,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter",
+          "weight": 700,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 400,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 500,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 600,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 700,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 400,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 500,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 600,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 700,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        }
+      ],
+      "inputValue": "한국어 테스트 ABC 123",
+      "inputFont": "Inter, system-ui, \"Segoe UI\", Ubuntu, Cantarell, \"Noto Sans\", -apple-system, Roboto, sans-serif"
+    },
+    {
+      "mode": "blocked",
+      "phase": "initial",
+      "passed": true,
+      "externalStylesheets": [],
+      "readings": [
+        {
+          "family": "Inter",
+          "weight": 400,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter",
+          "weight": 500,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter",
+          "weight": 600,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter",
+          "weight": 700,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 400,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 500,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 600,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 700,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 400,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 500,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 600,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 700,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        }
+      ],
+      "inputValue": "한국어 테스트 ABC 123",
+      "inputFont": "Inter, system-ui, \"Segoe UI\", Ubuntu, Cantarell, \"Noto Sans\", -apple-system, Roboto, sans-serif"
+    },
+    {
+      "mode": "blocked",
+      "phase": "late-css",
+      "passed": true,
+      "externalStylesheets": [],
+      "readings": [
+        {
+          "family": "Inter",
+          "weight": 400,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter",
+          "weight": 500,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter",
+          "weight": 600,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter",
+          "weight": 700,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 400,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 500,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 600,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 700,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 400,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 500,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 600,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 700,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        }
+      ],
+      "inputValue": "한국어 테스트 ABC 123",
+      "inputFont": "Inter, system-ui, \"Segoe UI\", Ubuntu, Cantarell, \"Noto Sans\", -apple-system, Roboto, sans-serif"
+    },
+    {
+      "mode": "blocked",
+      "phase": "reload",
+      "passed": true,
+      "externalStylesheets": [],
+      "readings": [
+        {
+          "family": "Inter",
+          "weight": 400,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter",
+          "weight": 500,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter",
+          "weight": 600,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter",
+          "weight": 700,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 400,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 500,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 600,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "Inter Tight",
+          "weight": 700,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 400,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 500,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 600,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        },
+        {
+          "family": "JetBrains Mono",
+          "weight": 700,
+          "hangulSame": true,
+          "asciiDifferent": true,
+          "nonempty": true
+        }
+      ],
+      "inputValue": "한국어 테스트 ABC 123",
+      "inputFont": "Inter, system-ui, \"Segoe UI\", Ubuntu, Cantarell, \"Noto Sans\", -apple-system, Roboto, sans-serif"
+    }
+  ],
+  "errors": []
+}

@@ -1,5 +1,6 @@
 """Internal account mailbox. Does not impersonate SMTP or IMAP delivery."""
 import json
+import re
 from uuid import uuid4
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
 from pydantic import Field, field_validator
@@ -35,6 +36,13 @@ def mail_view(mail, revision):
 class Address(DTO):
     name: str = Field(default="", max_length=80)
     address: str = Field(max_length=255)
+
+    @field_validator("address")
+    @classmethod
+    def valid_address(cls, value):
+        if not re.fullmatch(r"[^\s@<>]+@[^\s@<>]*", value):
+            raise ValueError("Invalid email address")
+        return value
 
 
 class MailInput(DTO):
@@ -180,6 +188,8 @@ def install_mail(app, database, settings):
             db.add(InternalMail(id=sent["id"], owner_id=user.id, data_json=json.dumps(sent)))
             revision = 1
         for recipient in recipients.values():
+            if recipient.id != user.id:
+                continue
             received = {**sent, "id": str(uuid4()), "accountId": recipient.id, "folderId": "inbox", "isRead": False, "deliveryStatus": "received", "receivedAt": sent["sentAt"], "bcc": [], "labels": [], "category": "primary"}
             received.pop("legacyLabels", None)
             db.add(InternalMail(id=received["id"], owner_id=recipient.id, data_json=json.dumps(received)))

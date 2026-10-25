@@ -1,0 +1,36 @@
+[
+  {
+    "surface": "Search work",
+    "kind": "mail",
+    "query": "f5bodymarker",
+    "mailResults": 0,
+    "status": 200
+  },
+  {
+    "surface": "Search work",
+    "kind": "mail",
+    "query": "f5titlemarker",
+    "mailResults": 2,
+    "status": 200
+  },
+  {
+    "surface": "Search work",
+    "kind": "all",
+    "query": "f5bodymarker",
+    "mailResults": 0,
+    "status": 200
+  },
+  {
+    "surface": "Search work",
+    "kind": "all",
+    "query": "f5titlemarker",
+    "mailResults": 2,
+    "status": 200
+  },
+  {
+    "surface": "Email Search mail",
+    "query": "f5bodymarker",
+    "mailResults": 1,
+    "status": 200
+  }
+]

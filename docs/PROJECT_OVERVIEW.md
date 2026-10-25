@@ -1,5 +1,7 @@
 # 프로젝트 개요
 
+> 2026-10-26 현재 버전에는 평가용 의도적 결함 14건이 구현되어 있다. [사람용 통합 요약](BUG_INTEGRATION_SUMMARY.md)과 [검증 결과](BUG_INTEGRATION_TECHNICAL_REPORT.md)가 최신 상태다. 아래 정상 Baseline 설명은 2026-10-13의 보존 기록이다.
+
 기준일: 2026-10-13 (Asia/Seoul). 현재 저장소의 코드를 조사해 작성했다.
 
 ## 목적과 현재 단계

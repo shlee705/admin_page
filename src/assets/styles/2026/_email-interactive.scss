@@ -23,6 +23,7 @@
 .email-body-text { white-space: pre-wrap; overflow-wrap: anywhere; }
 .email-label-editor { padding: 12px; margin: 16px 0; border: 1px solid var(--border-soft); border-radius: 8px; font-size: 12px; }
 .email-label-editor legend { padding: 0 6px; }
+.email-label-editor input[type="checkbox"] { appearance: none; width: 14px; height: 14px; border: 1px solid var(--border); border-radius: 3px; background: var(--bg-card); vertical-align: middle; }
 .email-compose-dialog { width: min(720px, calc(100vw - 32px)); max-height: 90vh; overflow-y: auto; border: 1px solid var(--border); border-radius: 14px; padding: 24px; background: var(--bg-card); color: var(--t-base); box-shadow: var(--shadow-card); }
 .email-compose-dialog::backdrop { background: rgb(0 0 0 / 50%); }
 .email-compose-page { padding: 24px; max-width: 960px; margin: auto; }

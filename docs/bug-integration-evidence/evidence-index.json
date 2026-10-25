@@ -1,0 +1,124 @@
+{
+  "checkedAtKST": "2026-10-26T02:29:52.206040+09:00",
+  "scope": {
+    "ui": [
+      "U1",
+      "U2",
+      "U3"
+    ],
+    "validation": [
+      "V1",
+      "V2",
+      "V3"
+    ],
+    "routing": [
+      "N2",
+      "N3",
+      "N4",
+      "N5"
+    ],
+    "functional": [
+      "F2",
+      "F3",
+      "F4",
+      "F5"
+    ]
+  },
+  "implementation": {
+    "fullyExisting": 0,
+    "new": 13,
+    "correctedPartial": [
+      "V2"
+    ]
+  },
+  "baseline": {
+    "vitestPassed": 171,
+    "pytestPassed": 100,
+    "workspaceGestureFailureReproduced": true
+  },
+  "tests": {
+    "vitest": {
+      "passed": 179,
+      "failed": 0,
+      "log": "vitest.txt"
+    },
+    "pytest": {
+      "total": 132,
+      "failures": 5,
+      "errors": 0,
+      "skipped": 0,
+      "log": "pytest.txt",
+      "junit": "pytest.xml"
+    },
+    "browser": {
+      "passed": 30,
+      "failed": 0,
+      "pageErrors": [],
+      "results": "u3-undersize/integration-browser/results.json",
+      "note": "30 scenarios rerun with current undersized U3; create/edit/save/close, V1 and other dialogs verified."
+    },
+    "existingE2E": {
+      "suites": 13,
+      "passed": 7,
+      "failed": 6,
+      "results": "regression/results.json"
+    },
+    "lint": "u3-undersize/lint.txt",
+    "build": "u3-undersize/build.txt",
+    "u1Font": {
+      "scenariosPassed": 9,
+      "glyphChecksPassed": 108,
+      "results": "u1-font/results.json",
+      "beforeFixFailure": "u1-font/before-fix.txt",
+      "beforeNetworkDiagnosis": "u1-font/before-network-diagnosis.json",
+      "externalCssHttp200Verified": true
+    },
+    "u3Undersize": {
+      "viewportsPassed": 2,
+      "widthPx": 220,
+      "heightPx": 160,
+      "titlePx": 12,
+      "labelPx": 9,
+      "inputFontPx": 10,
+      "inputHeightPx": 20,
+      "descriptionHeightPx": 32,
+      "results": "u3-undersize/results.json"
+    },
+    "f5Search": {
+      "comparisonsPassed": 5,
+      "pageErrors": 0,
+      "results": "f5-search/results.json",
+      "scope": "Search work: body0/title2; Email Search mail: body1; no backend changes"
+    },
+    "f4EarlyMorning": {
+      "passed": 1,
+      "results": "f4-screenshot/results.json",
+      "log": "f4-screenshot/pytest.txt"
+    }
+  },
+  "originalSpecifications": "u3-undersize/spec-revision.json",
+  "sourceAndBuildHashes": "f4-screenshot/source-build-manifest.json",
+  "baselineHashes": "baseline-manifest.json",
+  "initialIntegratedRun": {
+    "checkedAtKST": "2026-10-26T01:36:32.664839+09:00",
+    "sourceAndBuildHashes": "source-build-manifest.json",
+    "browserResults": "browser/results.json"
+  },
+  "supersededEvidence": [
+    {
+      "scope": "U3 oversized version",
+      "manifest": "u3-oversize/source-build-manifest.json",
+      "geometry": {
+        "viewportsPassed": 2,
+        "dialogWidthVW": 98,
+        "dialogHeightDVH": 98,
+        "titlePx": 40,
+        "controlFontPx": 22,
+        "minimumControlHeightPx": 72,
+        "minimumDescriptionHeightPx": 180,
+        "results": "u3-oversize/results.json"
+      },
+      "status": "superseded_by_undersize"
+    }
+  ]
+}

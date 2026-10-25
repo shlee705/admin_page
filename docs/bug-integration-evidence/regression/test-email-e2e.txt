@@ -1,0 +1,2 @@
+desktop: selection, read/star, folders, labels, replies, compose, drafts, attachments, persistence, search/filter/sort, failure/retry, reset and standalone compose passed
+mobile: selection, read/star, folders, labels, replies, compose, drafts, attachments, persistence, search/filter/sort, failure/retry, reset and standalone compose passed

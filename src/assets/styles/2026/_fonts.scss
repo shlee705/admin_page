@@ -1,0 +1,14 @@
+@each $family in ('Inter', 'Inter Tight', 'JetBrains Mono') {
+  // Match the discrete weights in the external font stylesheet. A single
+  // 100–900 face loses to its exact-weight faces before Unicode fallback.
+  @each $weight in (100, 200, 300, 400, 500, 600, 700, 800, 900) {
+    @font-face {
+      font-family: $family;
+      src: url('../../fonts/workspace-sans.woff') format('woff');
+      font-style: normal;
+      font-weight: $weight;
+      font-display: swap;
+      unicode-range: U+1100-11FF, U+3130-318F, U+A960-A97F, U+AC00-D7FF;
+    }
+  }
+}

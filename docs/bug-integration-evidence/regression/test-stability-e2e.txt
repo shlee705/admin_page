@@ -1,0 +1,113 @@
+{
+  "results": [
+    {
+      "id": "desktop: QA-005 palette/topbar single toggle, event, persisted account theme",
+      "status": "PASS"
+    },
+    {
+      "id": "desktop: QA-005 accountA/accountB switch restores isolated themes/settings",
+      "status": "PASS"
+    },
+    {
+      "id": "desktop: QA-006 Email mounts during503, safe save block, explicit retry recovery",
+      "status": "PASS"
+    },
+    {
+      "id": "desktop: QA-006 Settings blocks temporary defaults, recovery updates mounted fields",
+      "status": "PASS"
+    },
+    {
+      "id": "desktop: QA-006 Home defaults then recovered timezone/cards",
+      "status": "PASS"
+    },
+    {
+      "id": "QA-006 actual15second request timeout still permits Email initialization/retry",
+      "status": "PASS"
+    },
+    {
+      "id": "desktop: QA-010/013 charts alias Reports active/history and table aliases retained",
+      "status": "PASS"
+    },
+    {
+      "id": "desktop: QA-011 UI gallery viewport/popover bounds",
+      "status": "PASS",
+      "detail": {
+        "width": 1440,
+        "scrollWidth": 1440,
+        "popovers": [
+          {
+            "left": 283.734375,
+            "right": 412.546875,
+            "height": 29.8125,
+            "text": "Last sync 3 min ago"
+          },
+          {
+            "left": 437.2421875,
+            "right": 529.4140625,
+            "height": 29.8125,
+            "text": "⌘ + Shift + P"
+          },
+          {
+            "left": 515.875,
+            "right": 678.5625,
+            "height": 29.8125,
+            "text": "Connected · Postgres 16.2"
+          }
+        ]
+      }
+    },
+    {
+      "id": "mobile: QA-005 palette/topbar single toggle, event, persisted account theme",
+      "status": "PASS"
+    },
+    {
+      "id": "mobile: QA-005 accountA/accountB switch restores isolated themes/settings",
+      "status": "PASS"
+    },
+    {
+      "id": "mobile: QA-006 Email mounts during503, safe save block, explicit retry recovery",
+      "status": "PASS"
+    },
+    {
+      "id": "mobile: QA-006 Settings blocks temporary defaults, recovery updates mounted fields",
+      "status": "PASS"
+    },
+    {
+      "id": "mobile: QA-006 Home defaults then recovered timezone/cards",
+      "status": "PASS"
+    },
+    {
+      "id": "mobile: QA-010/013 charts alias Reports active/history and table aliases retained",
+      "status": "PASS"
+    },
+    {
+      "id": "mobile: QA-011 UI gallery viewport/popover bounds",
+      "status": "PASS",
+      "detail": {
+        "width": 390,
+        "scrollWidth": 390,
+        "popovers": [
+          {
+            "left": 16,
+            "right": 144.8125,
+            "height": 29.8125,
+            "text": "Last sync 3 min ago"
+          },
+          {
+            "left": 169.2421875,
+            "right": 261.4140625,
+            "height": 29.8125,
+            "text": "⌘ + Shift + P"
+          },
+          {
+            "left": 211.3125,
+            "right": 374,
+            "height": 29.8125,
+            "text": "Connected · Postgres 16.2"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": []
+}

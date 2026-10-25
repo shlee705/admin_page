@@ -1,0 +1,106 @@
+[
+  {
+    "name": "test:email:e2e",
+    "code": 0,
+    "seconds": 41,
+    "log": "test-email-e2e.txt",
+    "classification": "pass",
+    "reason": "Existing expectations satisfied"
+  },
+  {
+    "name": "test:email:labels:e2e",
+    "code": 0,
+    "seconds": 14,
+    "log": "test-email-labels-e2e.txt",
+    "classification": "pass",
+    "reason": "Existing expectations satisfied"
+  },
+  {
+    "name": "test:auth:e2e",
+    "code": 0,
+    "seconds": 28,
+    "log": "test-auth-e2e.txt",
+    "classification": "pass",
+    "reason": "Existing expectations satisfied"
+  },
+  {
+    "name": "test:accounts:e2e",
+    "code": 0,
+    "seconds": 53,
+    "log": "test-accounts-e2e.txt",
+    "classification": "pass",
+    "reason": "Existing expectations satisfied"
+  },
+  {
+    "name": "test:workspace:e2e",
+    "code": 1,
+    "seconds": 40,
+    "log": "test-workspace-e2e.txt",
+    "classification": "existing_test_failure",
+    "reason": "Calendar drag timeout also reproduced on the untouched baseline"
+  },
+  {
+    "name": "test:resources:e2e",
+    "code": 1,
+    "seconds": 39,
+    "log": "test-resources-e2e.txt",
+    "classification": "intentional_F3",
+    "reason": "Peer message absent from conversation history"
+  },
+  {
+    "name": "test:shared:e2e",
+    "code": 1,
+    "seconds": 37,
+    "log": "test-shared-e2e.txt",
+    "classification": "intentional_F3",
+    "reason": "Peer shared-room message absent from conversation history"
+  },
+  {
+    "name": "test:service-hub:e2e",
+    "code": 1,
+    "seconds": 9,
+    "log": "test-service-hub-e2e.txt",
+    "classification": "intentional_N4",
+    "reason": "People Email link leaves To empty"
+  },
+  {
+    "name": "test:preview:e2e",
+    "code": 1,
+    "seconds": 48,
+    "log": "test-preview-e2e.txt",
+    "classification": "intentional_F3",
+    "reason": "Peer history stays empty through the preview proxy"
+  },
+  {
+    "name": "test:mail:integrity:e2e",
+    "code": 0,
+    "seconds": 37,
+    "log": "test-mail-integrity-e2e.txt",
+    "classification": "pass",
+    "reason": "Existing expectations satisfied"
+  },
+  {
+    "name": "test:calendar:integrity:e2e",
+    "code": 1,
+    "seconds": 39,
+    "log": "test-calendar-integrity-e2e.txt",
+    "classification": "intentional_N3",
+    "reason": "Event deep link opens the first series instead of the requested DST series"
+  },
+  {
+    "name": "test:stability:e2e",
+    "code": 0,
+    "seconds": 36,
+    "log": "test-stability-e2e.txt",
+    "classification": "pass",
+    "reason": "Existing expectations satisfied"
+  },
+  {
+    "name": "test:queries:e2e",
+    "code": 0,
+    "seconds": 18,
+    "log": "test-queries-e2e.txt",
+    "classification": "pass",
+    "reason": "Existing expectations satisfied"
+  }
+]

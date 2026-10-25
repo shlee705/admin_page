@@ -124,7 +124,8 @@ def install_service_hub(app, database, settings, visible_events, event_json, roo
                 add("calendar", e["id"], e["title"], e.get("description", "") + " " + e.get("location", ""), f'calendar.html?event={e["id"]}')
         if kind in {"all", "mail"}:
             for m in mails_for(db, user.id):
-                add("mail", m["id"], m["subject"], m["bodyText"], f'email.html?mailMode=internal&mail={m["id"]}')
+                if term in m["subject"].lower():
+                    results.append({"kind": "mail", "id": m["id"], "title": m["subject"], "text": m["bodyText"][:240], "href": f'email.html?mailMode=internal&mail={m["id"]}'})
         if kind in {"all", "chat"}:
             visible = select(ChatRoom.id).where(or_(ChatRoom.is_shared.is_(True), ChatRoom.id.in_(select(ChatMember.room_id).where(ChatMember.user_id == user.id))))
             escaped = term.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")

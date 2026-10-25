@@ -1,0 +1,62 @@
+{
+  "reason": "User explicitly replaced oversized U3 with undersized U3 and requested all related documents updated",
+  "revision": "integrated-u3-undersize-20261026",
+  "files": [
+    {
+      "file": "docs/bugs/bugs.md",
+      "before": "3ad6c945f2520a9b1c809d0b485179f2fdc265589d59a11392228ab62b3fd05a",
+      "current": "fa1007cfddd4d3e9fa9eb113923b82618c262654be0d6b8b236f58c895c092c1",
+      "status": "authorized_revision",
+      "archivedOriginal": "spec-history/bugs-before-u3-undersize.md"
+    },
+    {
+      "file": "docs/bugs/functional.md",
+      "before": "60087df82487a4ecb05e614fdd115c8ef6881cf6beafa9f21f0b7311574ecc27",
+      "current": "60087df82487a4ecb05e614fdd115c8ef6881cf6beafa9f21f0b7311574ecc27",
+      "status": "unchanged",
+      "archivedOriginal": null
+    },
+    {
+      "file": "docs/bugs/routing.md",
+      "before": "1d43b1baa92f67e6e98001dff4954c90f6b7b4206d9c9a2d1601b1b8745fb026",
+      "current": "1d43b1baa92f67e6e98001dff4954c90f6b7b4206d9c9a2d1601b1b8745fb026",
+      "status": "unchanged",
+      "archivedOriginal": null
+    },
+    {
+      "file": "docs/bugs/ui.md",
+      "before": "0c0aa3d85be2bbd64dca3d212d7fbc9c44369e3c75703bfed823f0909c1c5702",
+      "current": "5664d5a7007da197e744ac3a967ca4ad4ab339df51d25432eb0f808b89b7d790",
+      "status": "authorized_revision",
+      "archivedOriginal": "spec-history/ui-before-u3-undersize.md"
+    },
+    {
+      "file": "docs/bugs/validation.md",
+      "before": "6099afa267d8b971eebea91657dab5105d78a1c2fa5233f44a10f2384232aa11",
+      "current": "6099afa267d8b971eebea91657dab5105d78a1c2fa5233f44a10f2384232aa11",
+      "status": "unchanged",
+      "archivedOriginal": null
+    },
+    {
+      "file": "docs/bugs/funcRoutBugDocs/bugs.md",
+      "before": "39433f7da20c671acb14e8857691369a6a3cf4c5b430628f8db97fb7ecda682f",
+      "current": "39433f7da20c671acb14e8857691369a6a3cf4c5b430628f8db97fb7ecda682f",
+      "status": "unchanged",
+      "archivedOriginal": null
+    },
+    {
+      "file": "docs/bugs/funcRoutBugDocs/functional.md",
+      "before": "b599545f81bb82720e0b95fa609ff59ef2ccbe21492472c00b6ade7c020c87ff",
+      "current": "b599545f81bb82720e0b95fa609ff59ef2ccbe21492472c00b6ade7c020c87ff",
+      "status": "unchanged",
+      "archivedOriginal": null
+    },
+    {
+      "file": "docs/bugs/funcRoutBugDocs/routing.md",
+      "before": "63054998774cdeff93a982570dae120d90965fe23bfc4e5f6fa8910595bd0ccf",
+      "current": "63054998774cdeff93a982570dae120d90965fe23bfc4e5f6fa8910595bd0ccf",
+      "status": "unchanged",
+      "archivedOriginal": null
+    }
+  ]
+}

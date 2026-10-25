@@ -1,0 +1,461 @@
+{
+  "checkedAt": "2026-10-25T16:57:08.293Z",
+  "browser": "155.0.8059.86",
+  "results": [
+    {
+      "id": "N2",
+      "width": 1920,
+      "passed": true,
+      "detail": {
+        "destination": "chat.html",
+        "reload": "chat",
+        "back": "index",
+        "directCalendar": "checked by U3/V1/N3"
+      }
+    },
+    {
+      "id": "N4",
+      "width": 1920,
+      "passed": true
+    },
+    {
+      "id": "U3",
+      "width": 1920,
+      "passed": true,
+      "detail": {
+        "x": 19.203125,
+        "y": 10.796875,
+        "width": 1881.59375,
+        "height": 1058.390625
+      }
+    },
+    {
+      "id": "V1",
+      "width": 1920,
+      "passed": true,
+      "detail": {
+        "interval": -2,
+        "starts": [
+          "2026-10-26T09:00:00+09:00",
+          "2026-10-24T09:00:00+09:00",
+          "2026-10-22T09:00:00+09:00"
+        ]
+      }
+    },
+    {
+      "id": "N3",
+      "width": 1920,
+      "passed": true,
+      "detail": {
+        "requested": "Second event ABC",
+        "opened": "First event ABC"
+      }
+    },
+    {
+      "id": "U2",
+      "width": 1920,
+      "passed": true
+    },
+    {
+      "id": "N5",
+      "width": 1920,
+      "passed": true
+    },
+    {
+      "id": "V2",
+      "width": 1920,
+      "passed": true
+    },
+    {
+      "id": "V3",
+      "width": 1920,
+      "passed": true
+    },
+    {
+      "id": "F2",
+      "width": 1920,
+      "passed": true
+    },
+    {
+      "id": "F3",
+      "width": 1920,
+      "passed": true
+    },
+    {
+      "id": "F4",
+      "width": 1920,
+      "passed": true,
+      "detail": {
+        "currentLocalDay": "2026-10-26",
+        "eventLocalDay": "2026-10-25",
+        "requestedTimezone": "Asia/Seoul",
+        "includedByUtcDay": true,
+        "tomorrowFixture": "2026-10-27"
+      }
+    },
+    {
+      "id": "F5",
+      "width": 1920,
+      "passed": true
+    },
+    {
+      "id": "U1",
+      "width": 1920,
+      "passed": true,
+      "detail": [
+        {
+          "path": "index.html",
+          "glyphs": [
+            {
+              "family": "Inter",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "Inter Tight",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "JetBrains Mono",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            }
+          ]
+        },
+        {
+          "path": "settings.html",
+          "glyphs": [
+            {
+              "family": "Inter",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "Inter Tight",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "JetBrains Mono",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            }
+          ]
+        },
+        {
+          "path": "email.html?mail=1ac0b76b-f058-45c1-b0f4-3e88df490071",
+          "glyphs": [
+            {
+              "family": "Inter",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "Inter Tight",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "JetBrains Mono",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            }
+          ]
+        },
+        {
+          "path": "calendar.html",
+          "glyphs": [
+            {
+              "family": "Inter",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "Inter Tight",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "JetBrains Mono",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            }
+          ]
+        },
+        {
+          "path": "chat.html?room=4e2ff475-ad23-428b-b02b-293efb808f0d",
+          "glyphs": [
+            {
+              "family": "Inter",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "Inter Tight",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "JetBrains Mono",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "controls",
+      "width": 1920,
+      "passed": true,
+      "detail": {
+        "privateDocs": "404",
+        "calendarBelowDesktop": "560px"
+      }
+    },
+    {
+      "id": "N2",
+      "width": 1366,
+      "passed": true,
+      "detail": {
+        "destination": "chat.html",
+        "reload": "chat",
+        "back": "index",
+        "directCalendar": "checked by U3/V1/N3"
+      }
+    },
+    {
+      "id": "N4",
+      "width": 1366,
+      "passed": true
+    },
+    {
+      "id": "U3",
+      "width": 1366,
+      "passed": true,
+      "detail": {
+        "x": 13.65625,
+        "y": 7.6875,
+        "width": 1338.671875,
+        "height": 752.625
+      }
+    },
+    {
+      "id": "V1",
+      "width": 1366,
+      "passed": true,
+      "detail": {
+        "interval": -2,
+        "starts": [
+          "2026-10-26T09:00:00+09:00",
+          "2026-10-24T09:00:00+09:00",
+          "2026-10-22T09:00:00+09:00"
+        ]
+      }
+    },
+    {
+      "id": "N3",
+      "width": 1366,
+      "passed": true,
+      "detail": {
+        "requested": "Second event ABC",
+        "opened": "First event ABC"
+      }
+    },
+    {
+      "id": "U2",
+      "width": 1366,
+      "passed": true
+    },
+    {
+      "id": "N5",
+      "width": 1366,
+      "passed": true
+    },
+    {
+      "id": "V2",
+      "width": 1366,
+      "passed": true
+    },
+    {
+      "id": "V3",
+      "width": 1366,
+      "passed": true
+    },
+    {
+      "id": "F2",
+      "width": 1366,
+      "passed": true
+    },
+    {
+      "id": "F3",
+      "width": 1366,
+      "passed": true
+    },
+    {
+      "id": "F4",
+      "width": 1366,
+      "passed": true,
+      "detail": {
+        "currentLocalDay": "2026-10-26",
+        "eventLocalDay": "2026-10-25",
+        "requestedTimezone": "Asia/Seoul",
+        "includedByUtcDay": true,
+        "tomorrowFixture": "2026-10-27"
+      }
+    },
+    {
+      "id": "F5",
+      "width": 1366,
+      "passed": true
+    },
+    {
+      "id": "U1",
+      "width": 1366,
+      "passed": true,
+      "detail": [
+        {
+          "path": "index.html",
+          "glyphs": [
+            {
+              "family": "Inter",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "Inter Tight",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "JetBrains Mono",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            }
+          ]
+        },
+        {
+          "path": "settings.html",
+          "glyphs": [
+            {
+              "family": "Inter",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "Inter Tight",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "JetBrains Mono",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            }
+          ]
+        },
+        {
+          "path": "email.html?mail=13edc22f-08d2-42a5-a2fa-813f8509d05d",
+          "glyphs": [
+            {
+              "family": "Inter",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "Inter Tight",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "JetBrains Mono",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            }
+          ]
+        },
+        {
+          "path": "calendar.html",
+          "glyphs": [
+            {
+              "family": "Inter",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "Inter Tight",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "JetBrains Mono",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            }
+          ]
+        },
+        {
+          "path": "chat.html?room=4709e80f-5472-4f51-a42e-25ab4bcd5e91",
+          "glyphs": [
+            {
+              "family": "Inter",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "Inter Tight",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "JetBrains Mono",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "controls",
+      "width": 1366,
+      "passed": true,
+      "detail": {
+        "privateDocs": "404",
+        "calendarBelowDesktop": "560px"
+      }
+    }
+  ],
+  "errors": []
+}

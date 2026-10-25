@@ -190,7 +190,7 @@ export async function initEmailPage({ service: injectedService, config: accountC
     await refresh(); await renderReader();
   }
   function renderLabels(labels) {
-    $('[data-labels]').innerHTML = `<div class="mail-rail-label">Labels · all folders</div>${labels.map(label => `<button class="mail-folder${state.label === label.id ? ' is-active' : ''}" data-label="${escape(label.id)}" data-testid="label-${escape(label.id)}" aria-pressed="${state.label === label.id}"><span class="mail-label-dot"></span><span class="mail-folder-name">${escape(label.name)}</span><span class="mail-folder-count" title="${Number.isSafeInteger(label.total) && label.total >= 0 ? 'All folders, including Trash and Spam' : 'Count unavailable; refresh to retry'}">${Number.isSafeInteger(label.total) && label.total >= 0 ? label.total : '—'}</span></button>`).join('')}`;
+    $('[data-labels]').innerHTML = `<div class="mail-rail-label">Labels · all folders</div>${labels.map(label => `<button class="mail-folder" data-label="${escape(label.id)}" data-testid="label-${escape(label.id)}" aria-pressed="${state.label === label.id}"><span class="mail-label-dot"></span><span class="mail-folder-name">${escape(label.name)}</span><span class="mail-folder-count" title="${Number.isSafeInteger(label.total) && label.total >= 0 ? 'All folders, including Trash and Spam' : 'Count unavailable; refresh to retry'}">${Number.isSafeInteger(label.total) && label.total >= 0 ? label.total : '—'}</span></button>`).join('')}`;
   }
   function changeLabel(label) {
     return run(async () => { state.label = label; state.offset = 0; state.selected = null; await refresh(); await renderReader(); });
@@ -296,7 +296,7 @@ export async function initEmailPage({ service: injectedService, config: accountC
   if (standalone) openCompose();
   await run(refresh);
   const params = new URLSearchParams(location.search);
-  if (mode === 'internal' && params.get('mail') && !standalone) await run(async () => { const m = await service.getEmailById(params.get('mail')); state.folderId=m.folderId; await select(m.id); }, 'Message opened');
+  if (mode === 'internal' && params.get('mail') && !standalone) await run(async () => { const m = await service.getEmailById(params.get('mail')); state.folderId='inbox'; await select(m.id); }, 'Message opened');
   if (standalone && params.get('to')) { form.elements.to.value = params.get('to'); }
   if (mode === 'internal' && hub?.preferences && !standalone) {
     let timer; let unsubscribe;

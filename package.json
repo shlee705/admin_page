@@ -75,7 +75,11 @@
     "test:mail:integrity:e2e": "node tests/mail-integrity.e2e.mjs",
     "test:calendar:integrity:e2e": "node tests/calendar-integrity.e2e.mjs",
     "test:stability:e2e": "node tests/stability.e2e.mjs",
-    "test:queries:e2e": "node tests/query-efficiency.e2e.mjs"
+    "test:queries:e2e": "node tests/query-efficiency.e2e.mjs",
+    "test:bugs:e2e": "node tests/bug-integration.e2e.mjs",
+    "test:bugs:regression": "node tests/run-bug-regression.mjs",
+    "test:u1:font": "node tests/u1-font.e2e.mjs",
+    "test:f5:search": "node tests/f5-search.e2e.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

@@ -1,0 +1,39 @@
+
+> adminator-admin-dashboard@4.3.0 build
+> npm run clean && cross-env NODE_ENV=production MINIFY=true webpack
+
+
+> adminator-admin-dashboard@4.3.0 clean
+> shx rm -rf ./dist
+
+assets by path *.html 92.3 KiB
+  asset datatable.html 20.8 KiB [emitted]
+  asset ui.html 12.3 KiB [emitted]
+  asset buttons.html 7.05 KiB [emitted]
+  + 21 assets
+assets by info 970 KiB [immutable]
+  assets by path *.js 817 KiB 11 assets
+  assets by path *.css 126 KiB 3 assets
+  asset 3f11e36b48afe1265185.woff 26.6 KiB [emitted] [immutable] [from: assets/fonts/workspace-sans.woff]
+assets by path assets/static/images/ 196 KiB
+  assets by path assets/static/images/*.svg 2.42 KiB 5 assets
+  assets by path assets/static/images/datatables/*.png 813 bytes 5 assets
+  assets by path assets/static/images/*.png 192 KiB
+    asset assets/static/images/500.png 171 KiB [emitted] [from: assets/static/images/500.png] [copied]
+    + 2 assets
+Entrypoint 2026 223 KiB = runtime.d7f88fb7.js 4.57 KiB style.9544cb71.css 108 KiB 2026.55645ed8.js 110 KiB
+orphan modules 709 KiB (javascript) 26.6 KiB (asset) 3.59 KiB (runtime) [orphan] 70 modules
+runtime modules 11 KiB 12 modules
+cacheable modules 2 MiB (javascript) 137 KiB (css/mini-extract)
+  modules by path ../node_modules/ 1.62 MiB (javascript) 25 KiB (css/mini-extract)
+    javascript modules 1.62 MiB 38 modules
+    css modules 25 KiB
+      css ../node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].use[1]!../node_modules/jsvectormap/dist/jsvectormap.css 3.65 KiB [built] [code generated]
+      css ../node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].use[1]!../node_modules/fullcalendar/skeleton.css 8.66 KiB [built] [code generated]
+      css ../node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].use[1]!../node_modules/fullcalendar/themes/classic/theme.css 12.7 KiB [built] [code generated]
+  modules by path ./assets/ 390 KiB (javascript) 112 KiB (css/mini-extract)
+    modules by path ./assets/scripts/2026/*.js 325 KiB 6 modules
+    ./assets/scripts/2026/email/ui.js + 6 modules 63.2 KiB [built] [code generated]
+    ./assets/scripts/2026/workspace/store.js 1.88 KiB [built] [code generated]
+    css ../node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[2].use[1]!../node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[2].use[2]!../node_modules/sass-loader/dist/cjs/index.js??ruleSet[1].rules[2].use[3]!./assets/styles/2026/index.scss 112 KiB [built] [code generated]
+webpack 5.112.2 compiled successfully in 10115 ms

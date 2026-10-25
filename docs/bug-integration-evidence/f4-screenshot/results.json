@@ -1,0 +1,13 @@
+{
+  "passed": 1,
+  "kstNow": "2026-10-26T02:26:38+09:00",
+  "utcNow": "2026-10-25T17:26:38+00:00",
+  "incorrectTodayWindowKST": [
+    "2026-10-25T09:00:00+09:00",
+    "2026-10-26T09:00:00+09:00 (exclusive)"
+  ],
+  "todayEvents": 0,
+  "upcomingEvents": 3,
+  "runtimeChanged": false,
+  "test": "test_f4_kst_early_morning_zero_today_with_today_in_upcoming"
+}

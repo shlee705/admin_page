@@ -1,0 +1,14 @@
+
+> adminator-admin-dashboard@4.3.0 test:run
+> vitest run
+
+
+ RUN  v4.1.12 C:/Users/custa/OneDrive/Desktop/admin_page-main
+
+Not implemented: navigation to another Document
+
+ Test Files  14 passed (14)
+      Tests  171 passed (171)
+   Start at  01:09:24
+   Duration  9.21s (transform 1.74s, setup 1.15s, import 2.66s, tests 10.97s, environment 69.81s)
+

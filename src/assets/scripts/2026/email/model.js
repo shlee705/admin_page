@@ -75,13 +75,14 @@ export function validateMessage(data, sending = false) {
   for (const field of ['to', 'cc', 'bcc']) {
     if (!Array.isArray(data[field])) throw new EmailError('VALIDATION', `${field} must be an address list.`);
     for (const person of data[field]) {
-      if (!/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(person.address)) {
+      if (!/^[^\s@<>]+@[^\s@<>]*$/.test(person.address)) {
         throw new EmailError('VALIDATION', `Invalid ${field} address: ${person.address}`);
       }
     }
   }
   if (sending && !data.to.length) throw new EmailError('VALIDATION', 'Enter at least one To recipient.');
   if (sending && !data.subject.trim()) throw new EmailError('VALIDATION', 'Enter a subject.');
+  if (sending && data.subject.length >= 200) throw new EmailError('VALIDATION', 'Subject must be at most 200 characters.');
   if (sending && !data.bodyText.trim()) throw new EmailError('VALIDATION', 'Enter a message.');
 }
 

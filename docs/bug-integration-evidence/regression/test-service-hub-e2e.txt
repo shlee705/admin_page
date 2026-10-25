@@ -1,0 +1,20 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
++ actual - expected
+
++ ''
+- 'member_desktop@adminator.test'
+
+    at file:///C:/Users/custa/OneDrive/Desktop/admin_page-main/tests/service-hub.e2e.mjs:67:12 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: '',
+  expected: 'member_desktop@adminator.test',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.20.0

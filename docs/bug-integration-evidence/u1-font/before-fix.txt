@@ -1,0 +1,17 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: {"mode":"external-static-weights","phase":"initial","sample":{"readings":[{"family":"Inter","weight":400,"hangulSame":false,"asciiDifferent":true,"nonempty":true},{"family":"Inter","weight":500,"hangulSame":false,"asciiDifferent":true,"nonempty":true},{"family":"Inter","weight":600,"hangulSame":false,"asciiDifferent":true,"nonempty":true},{"family":"Inter","weight":700,"hangulSame":false,"asciiDifferent":true,"nonempty":true},{"family":"Inter Tight","weight":400,"hangulSame":false,"asciiDifferent":true,"nonempty":true},{"family":"Inter Tight","weight":500,"hangulSame":false,"asciiDifferent":true,"nonempty":true},{"family":"Inter Tight","weight":600,"hangulSame":false,"asciiDifferent":true,"nonempty":true},{"family":"Inter Tight","weight":700,"hangulSame":false,"asciiDifferent":true,"nonempty":true},{"family":"JetBrains Mono","weight":400,"hangulSame":false,"asciiDifferent":true,"nonempty":true},{"family":"JetBrains Mono","weight":500,"hangulSame":false,"asciiDifferent":true,"nonempty":true},{"family":"JetBrains Mono","weight":600,"hangulSame":false,"asciiDifferent":true,"nonempty":true},{"family":"JetBrains Mono","weight":700,"hangulSame":false,"asciiDifferent":true,"nonempty":true}],"inputValue":"한국어 테스트 ABC 123","inputFont":"Inter, system-ui, \"Segoe UI\", Ubuntu, Cantarell, \"Noto Sans\", -apple-system, Roboto, sans-serif"}}
+    at file:///C:/Users/custa/OneDrive/Desktop/admin_page-main/tests/u1-font.e2e.mjs:39:14
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at process.processImmediate (node:internal/timers:541:9) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.20.0

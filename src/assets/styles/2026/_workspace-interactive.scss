@@ -1,6 +1,7 @@
 .workspace-status { color: var(--t-muted); font-size: 13px; margin: 10px 0; min-height: 20px; }
 .workspace-dialog { background: var(--bg-card); color: var(--t-base); border: 1px solid var(--border); border-radius: 14px; padding: 24px; width: min(560px, calc(100vw - 24px)); max-height: calc(100dvh - 32px); overflow: auto; }
 .workspace-dialog::backdrop { background: rgb(0 0 0 / 45%); }
+.calendar-event-dialog { max-height: min(720px, calc(100dvh - 96px)); }
 .workspace-dialog form { display: flex; flex-direction: column; gap: 14px; }
 .workspace-dialog label, .cal-rail-card label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
 .workspace-dialog input, .workspace-dialog textarea, .workspace-dialog select, .cal-rail-card select { background: var(--bg-muted); color: var(--t-base); border: 1px solid var(--border); padding: 10px; border-radius: 8px; min-width: 0; width: 100%; }
@@ -30,3 +31,15 @@
 
 [data-testid="chat-user-search"], [data-testid="calendar-search"] { background: var(--bg-muted); color: var(--t-base); border: 1px solid var(--border); border-radius: 8px; padding: 10px; width: 100%; }
 [data-testid="chat-user-results"] { display: flex; flex-direction: column; gap: 6px; }
+
+@media (width >= 1024px) {
+  .calendar-event-dialog { width: 220px; height: 160px; max-width: 220px; max-height: 160px; padding: 6px; font-size: 10px; }
+  .calendar-event-dialog form { gap: 4px; }
+  .calendar-event-dialog h2 { font-size: 12px; line-height: 1.1; margin: 0; }
+  .calendar-event-dialog label { font-size: 9px; gap: 2px; }
+  .calendar-event-dialog input:not([type="checkbox"]), .calendar-event-dialog select, .calendar-event-dialog textarea { font-size: 10px; height: 20px; min-height: 20px; padding: 2px 4px; }
+  .calendar-event-dialog textarea { height: 32px; min-height: 32px; }
+  .calendar-event-dialog button { font-size: 10px; min-height: 20px; padding: 2px 4px; }
+  .calendar-event-dialog input[type="checkbox"] { width: 12px; height: 12px; flex-shrink: 0; }
+  .calendar-event-dialog p { font-size: 9px; line-height: 1.2; margin: 2px 0; }
+}

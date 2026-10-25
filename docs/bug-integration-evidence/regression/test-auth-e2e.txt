@@ -1,0 +1,2 @@
+desktop: Alice/Bob register and concurrent login, duplicate/case rules, invalid credentials, protected Dashboard, profile, reload, cookie/CSRF, mailbox isolation, logout/revocation, expiry and validation passed
+mobile: Alice/Bob register and concurrent login, duplicate/case rules, invalid credentials, protected Dashboard, profile, reload, cookie/CSRF, mailbox isolation, logout/revocation, expiry and validation passed

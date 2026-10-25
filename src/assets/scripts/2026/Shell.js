@@ -26,7 +26,7 @@ export const NAV = [
   { label: 'Work', items: [
     { key: 'dashboard', text: 'Home', href: 'index.html', icon: navIcon },
     { key: 'tasks', text: 'My tasks', href: 'tasks.html', icon: navIcon },
-    { key: 'calendar', text: 'Calendar', href: 'calendar.html', icon: navIcon },
+    { key: 'calendar', text: 'Calendar', href: 'chat.html', icon: navIcon },
     { key: 'reports', text: 'Work report', href: 'reports.html', icon: navIcon },
   ] },
   { label: 'Collaboration', items: [

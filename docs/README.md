@@ -1,5 +1,7 @@
 # 프로젝트 문서 진입점
 
+**2026-10-26 결함 통합 구현 결과:** [상세 기술 보고서](BUG_INTEGRATION_TECHNICAL_REPORT.md), [사람용 요약](BUG_INTEGRATION_SUMMARY.md). UI/Validation 현행 6건과 Route/Functional 8건, 총 14건의 실제 구현·재현 결과는 이 보고서를 우선한다. 아래 2026-10-13의 Baseline 설명과 원본 대장의 미구현 표기는 당시 기록이다.
+
 기준일: 2026-10-13 (Asia/Seoul). 현재 소스코드를 기준으로 문서를 재구성했다.
 
 - **Codex 개발 시작:** [CODEX_DEVELOPMENT_CONTEXT.md](CODEX_DEVELOPMENT_CONTEXT.md)를 먼저 읽고 관련 소스를 확인한다.

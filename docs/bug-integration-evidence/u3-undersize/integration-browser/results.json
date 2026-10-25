@@ -1,0 +1,475 @@
+{
+  "checkedAt": "2026-10-25T17:02:34.439Z",
+  "browser": "155.0.8059.86",
+  "results": [
+    {
+      "id": "N2",
+      "width": 1920,
+      "passed": true,
+      "detail": {
+        "destination": "chat.html",
+        "reload": "chat",
+        "back": "index",
+        "directCalendar": "checked by U3/V1/N3"
+      }
+    },
+    {
+      "id": "N4",
+      "width": 1920,
+      "passed": true
+    },
+    {
+      "id": "U3",
+      "width": 1920,
+      "passed": true,
+      "detail": {
+        "x": 850,
+        "y": 460,
+        "width": 220,
+        "height": 160,
+        "sizes": {
+          "title": 12,
+          "label": 9,
+          "input": 20,
+          "description": 32,
+          "scrolls": true
+        }
+      }
+    },
+    {
+      "id": "V1",
+      "width": 1920,
+      "passed": true,
+      "detail": {
+        "interval": -2,
+        "starts": [
+          "2026-10-26T09:00:00+09:00",
+          "2026-10-24T09:00:00+09:00",
+          "2026-10-22T09:00:00+09:00"
+        ]
+      }
+    },
+    {
+      "id": "N3",
+      "width": 1920,
+      "passed": true,
+      "detail": {
+        "requested": "Second event ABC",
+        "opened": "First event ABC"
+      }
+    },
+    {
+      "id": "U2",
+      "width": 1920,
+      "passed": true
+    },
+    {
+      "id": "N5",
+      "width": 1920,
+      "passed": true
+    },
+    {
+      "id": "V2",
+      "width": 1920,
+      "passed": true
+    },
+    {
+      "id": "V3",
+      "width": 1920,
+      "passed": true
+    },
+    {
+      "id": "F2",
+      "width": 1920,
+      "passed": true
+    },
+    {
+      "id": "F3",
+      "width": 1920,
+      "passed": true
+    },
+    {
+      "id": "F4",
+      "width": 1920,
+      "passed": true,
+      "detail": {
+        "currentLocalDay": "2026-10-26",
+        "eventLocalDay": "2026-10-25",
+        "requestedTimezone": "Asia/Seoul",
+        "includedByUtcDay": true,
+        "tomorrowFixture": "2026-10-27"
+      }
+    },
+    {
+      "id": "F5",
+      "width": 1920,
+      "passed": true
+    },
+    {
+      "id": "U1",
+      "width": 1920,
+      "passed": true,
+      "detail": [
+        {
+          "path": "index.html",
+          "glyphs": [
+            {
+              "family": "Inter",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "Inter Tight",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "JetBrains Mono",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            }
+          ]
+        },
+        {
+          "path": "settings.html",
+          "glyphs": [
+            {
+              "family": "Inter",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "Inter Tight",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "JetBrains Mono",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            }
+          ]
+        },
+        {
+          "path": "email.html?mail=b1b73f73-2299-4cbe-b233-5cc975a167d1",
+          "glyphs": [
+            {
+              "family": "Inter",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "Inter Tight",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "JetBrains Mono",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            }
+          ]
+        },
+        {
+          "path": "calendar.html",
+          "glyphs": [
+            {
+              "family": "Inter",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "Inter Tight",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "JetBrains Mono",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            }
+          ]
+        },
+        {
+          "path": "chat.html?room=45a7c6be-20ff-47f7-b495-645d4b134646",
+          "glyphs": [
+            {
+              "family": "Inter",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "Inter Tight",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "JetBrains Mono",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "controls",
+      "width": 1920,
+      "passed": true,
+      "detail": {
+        "privateDocs": "404",
+        "calendarBelowDesktop": "560px"
+      }
+    },
+    {
+      "id": "N2",
+      "width": 1366,
+      "passed": true,
+      "detail": {
+        "destination": "chat.html",
+        "reload": "chat",
+        "back": "index",
+        "directCalendar": "checked by U3/V1/N3"
+      }
+    },
+    {
+      "id": "N4",
+      "width": 1366,
+      "passed": true
+    },
+    {
+      "id": "U3",
+      "width": 1366,
+      "passed": true,
+      "detail": {
+        "x": 573,
+        "y": 304,
+        "width": 220,
+        "height": 160,
+        "sizes": {
+          "title": 12,
+          "label": 9,
+          "input": 20,
+          "description": 32,
+          "scrolls": true
+        }
+      }
+    },
+    {
+      "id": "V1",
+      "width": 1366,
+      "passed": true,
+      "detail": {
+        "interval": -2,
+        "starts": [
+          "2026-10-26T09:00:00+09:00",
+          "2026-10-24T09:00:00+09:00",
+          "2026-10-22T09:00:00+09:00"
+        ]
+      }
+    },
+    {
+      "id": "N3",
+      "width": 1366,
+      "passed": true,
+      "detail": {
+        "requested": "Second event ABC",
+        "opened": "First event ABC"
+      }
+    },
+    {
+      "id": "U2",
+      "width": 1366,
+      "passed": true
+    },
+    {
+      "id": "N5",
+      "width": 1366,
+      "passed": true
+    },
+    {
+      "id": "V2",
+      "width": 1366,
+      "passed": true
+    },
+    {
+      "id": "V3",
+      "width": 1366,
+      "passed": true
+    },
+    {
+      "id": "F2",
+      "width": 1366,
+      "passed": true
+    },
+    {
+      "id": "F3",
+      "width": 1366,
+      "passed": true
+    },
+    {
+      "id": "F4",
+      "width": 1366,
+      "passed": true,
+      "detail": {
+        "currentLocalDay": "2026-10-26",
+        "eventLocalDay": "2026-10-25",
+        "requestedTimezone": "Asia/Seoul",
+        "includedByUtcDay": true,
+        "tomorrowFixture": "2026-10-27"
+      }
+    },
+    {
+      "id": "F5",
+      "width": 1366,
+      "passed": true
+    },
+    {
+      "id": "U1",
+      "width": 1366,
+      "passed": true,
+      "detail": [
+        {
+          "path": "index.html",
+          "glyphs": [
+            {
+              "family": "Inter",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "Inter Tight",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "JetBrains Mono",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            }
+          ]
+        },
+        {
+          "path": "settings.html",
+          "glyphs": [
+            {
+              "family": "Inter",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "Inter Tight",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "JetBrains Mono",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            }
+          ]
+        },
+        {
+          "path": "email.html?mail=de83c068-e4e5-40b6-a778-d2f29f457eb3",
+          "glyphs": [
+            {
+              "family": "Inter",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "Inter Tight",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "JetBrains Mono",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            }
+          ]
+        },
+        {
+          "path": "calendar.html",
+          "glyphs": [
+            {
+              "family": "Inter",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "Inter Tight",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "JetBrains Mono",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            }
+          ]
+        },
+        {
+          "path": "chat.html?room=868e8497-baae-44c9-8c54-9a4fc9343eed",
+          "glyphs": [
+            {
+              "family": "Inter",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "Inter Tight",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            },
+            {
+              "family": "JetBrains Mono",
+              "hangulSame": true,
+              "asciiDifferent": true,
+              "nonempty": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "controls",
+      "width": 1366,
+      "passed": true,
+      "detail": {
+        "privateDocs": "404",
+        "calendarBelowDesktop": "560px"
+      }
+    }
+  ],
+  "errors": []
+}

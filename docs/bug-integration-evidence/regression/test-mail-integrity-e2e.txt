@@ -1,0 +1,1 @@
+{"results":[{"viewport":"desktop","conflict":"PASS","inputRetention":"PASS","keepAsNew":"PASS","reloadLatest":"PASS","draftSendRetry":"PASS","selfReceiptClassification":"PASS"},{"viewport":"mobile","conflict":"PASS","inputRetention":"PASS","keepAsNew":"PASS","reloadLatest":"PASS","draftSendRetry":"PASS","selfReceiptClassification":"PASS"}],"pageErrors":[]}

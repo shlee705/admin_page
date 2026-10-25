@@ -1,0 +1,23 @@
+{
+  "results": [
+    {
+      "width": 1600,
+      "status": "PASS",
+      "recent": 100,
+      "allHistory": 121,
+      "deepLink": true,
+      "preferencesRecovery": true,
+      "failedSnapshotRollback": true
+    },
+    {
+      "width": 390,
+      "status": "PASS",
+      "recent": 100,
+      "allHistory": 121,
+      "deepLink": true,
+      "preferencesRecovery": true,
+      "failedSnapshotRollback": true
+    }
+  ],
+  "errors": []
+}

@@ -86,3 +86,6 @@ scripts/social-preview.mjs
 
 # Release artifacts produced by build scripts
 static_minified.zip
+
+# Local reproduction builds, disposable databases and source snapshots.
+.integration-artifacts/

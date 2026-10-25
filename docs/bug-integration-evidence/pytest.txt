@@ -1,0 +1,147 @@
+........................................................................ [ 54%]
+..............F....F..........................F.F..F........             [100%]
+================================== FAILURES ===================================
+____________ test_concurrent_private_room_creation_and_mail_retry _____________
+
+client = <starlette.testclient.TestClient object at 0x0000022F40630F80>
+application = <fastapi.applications.FastAPI object at 0x0000022F40737A10>
+
+    def test_concurrent_private_room_creation_and_mail_retry(client, application):
+        register(client); login(client)
+        bob_id = register(client, 'Bob').json()['user']['id']
+        headers = csrf(client)
+        peers = [TestClient(application), TestClient(application)]
+        for peer in peers:
+            peer.cookies.update(client.cookies)
+        barrier = Barrier(2); thread = local()
+        def align_reads(_conn, _cursor, statement, _parameters, _context, _many):
+            if 'WHERE chat_rooms.pair_key =' in statement and not getattr(thread, 'waited', False):
+                thread.waited = True
+                barrier.wait(timeout=10)
+        sql_event.listen(application.state.engine, 'after_cursor_execute', align_reads)
+        try:
+            with ThreadPoolExecutor(max_workers=2) as pool:
+                results = list(pool.map(lambda peer: peer.post('/api/chat/rooms', json={'userId': bob_id}, headers=headers), peers))
+        finally:
+            sql_event.remove(application.state.engine, 'after_cursor_execute', align_reads)
+        assert [response.status_code for response in results] == [201, 201]
+        assert results[0].json()['id'] == results[1].json()['id']
+        with application.state.session_factory() as db:
+            assert db.scalar(select(func.count()).select_from(ChatRoom)) == 1
+            assert db.scalar(select(func.count()).select_from(ChatMember)) == 2
+        data = {'clientId': 'concurrent-send', 'to': [{'address': 'bob@adminator.test'}], 'subject': 'Once', 'bodyText': 'Concurrent retry'}
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            deliveries = list(pool.map(lambda peer: peer.post('/api/mail/send', json=data, headers=headers), peers))
+        assert [response.status_code for response in deliveries] == [201, 201]
+        assert deliveries[0].json() == deliveries[1].json()
+        with TestClient(application) as bob:
+            login(bob, 'bob')
+>           assert len(bob.get('/api/mail/emails').json()['items']) == 1
+E           assert 0 == 1
+E            +  where 0 = len([])
+
+backend\tests\test_improvements.py:168: AssertionError
+___ test_receipts_have_personal_default_labels_and_category_to_cc_bcc_self ____
+
+client = <starlette.testclient.TestClient object at 0x0000022F40BBF290>
+application = <fastapi.applications.FastAPI object at 0x0000022F40D1BB00>
+
+    def test_receipts_have_personal_default_labels_and_category_to_cc_bcc_self(client, application):
+        register(client); login(client)
+        peers = []
+        try:
+            for username in ['Bob', 'Eve']:
+                peer = TestClient(application); peer.__enter__(); peers.append(peer)
+                register(peer, username); login(peer, username.lower())
+            body = message(to=[{'address':'bob@adminator.test'}, {'address':'alice@adminator.test'}], cc=[{'address':'eve@adminator.test'}], bcc=[{'address':'eve@adminator.test'}], labels=['Work','Finance'], category='promotions', clientId='personal-labels')
+            result = client.post('/api/mail/send', json=body, headers=csrf(client))
+            assert result.status_code == 201
+            assert result.json()['email']['labels'] == ['Work','Finance']
+            assert result.json()['email']['category'] == 'promotions'
+            for peer in [client, *peers]:
+                receipts = [m for m in peer.get('/api/mail/emails').json()['items'] if m['folderId']=='inbox']
+>               assert len(receipts)==1
+E               assert 0 == 1
+E                +  where 0 = len([])
+
+backend\tests\test_mail_integrity.py:94: AssertionError
+_____ test_chat_persistence_idempotency_authorization_read_and_websocket ______
+
+client = <starlette.testclient.TestClient object at 0x0000022F41E07800>
+application = <fastapi.applications.FastAPI object at 0x0000022F41E6C0E0>
+
+    def test_chat_persistence_idempotency_authorization_read_and_websocket(client, application):
+        alice, bob, eve = accounts(client, application)
+        try:
+            bid = bob.get('/api/auth/me').json()['user']['id']
+            assert client.get('/api/users/search?q=bo').json()['users'][0]['id'] == bid
+            assert client.post('/api/chat/rooms', json={'userId': bid}, headers={'Origin':'http://testserver'}).status_code == 403
+            room = client.post('/api/chat/rooms', json={'userId': bid}, headers=csrf(client)).json()['id']
+            assert bob.post('/api/chat/rooms', json={'userId':alice['id']}, headers=csrf(bob)).json()['id'] == room
+            with bob.websocket_connect('/api/chat/ws', headers={'Origin':'http://testserver'}) as ws:
+                data = {'body':'Hello Bob', 'clientId':'retry-1'}
+                message = client.post(f'/api/chat/rooms/{room}/messages', json=data, headers=csrf(client)).json()
+                assert ws.receive_json()['message']['id'] == message['id']
+                assert client.post(f'/api/chat/rooms/{room}/messages', json=data, headers=csrf(client)).json()['id'] == message['id']
+                assert client.post(f'/api/chat/rooms/{room}/messages', json={**data,'body':'Different'}, headers=csrf(client)).status_code == 409
+            assert bob.get('/api/chat/rooms').json()['rooms'][0]['unread'] == 1
+            assert bob.post(f'/api/chat/rooms/{room}/read', json={'sequence':message['sequence']}, headers=csrf(bob)).status_code == 200
+            assert bob.get('/api/chat/rooms').json()['rooms'][0]['unread'] == 0
+            assert eve.get(f'/api/chat/rooms/{room}/messages').status_code == 404
+            assert eve.post(f'/api/chat/rooms/{room}/messages', json=data, headers=csrf(eve)).status_code == 404
+            assert eve.post(f'/api/chat/rooms/{room}/read', json={'sequence':0}, headers=csrf(eve)).status_code == 404
+>           assert bob.get(f'/api/chat/rooms/{room}/messages').json()['messages'][0]['body'] == 'Hello Bob'
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           IndexError: list index out of range
+
+backend\tests\test_resources.py:38: IndexError
+________ test_mail_delivery_bcc_isolation_drafts_search_and_dashboard _________
+
+client = <starlette.testclient.TestClient object at 0x0000022F3BB5DAF0>
+application = <fastapi.applications.FastAPI object at 0x0000022F3AFF8380>
+
+    def test_mail_delivery_bcc_isolation_drafts_search_and_dashboard(client, application):
+        alice, bob, eve = accounts(client, application)
+        try:
+            data = {'to':[{'address':'bob@adminator.test'}], 'bcc':[{'address':'eve@adminator.test'}], 'subject':'Internal test','bodyText':'Hello from Alice'}
+            draft = client.post('/api/mail/drafts',json=data,headers=csrf(client)).json()
+            sent = client.post('/api/mail/send',json={**data,'id':draft['id'],'expectedRevision':draft['revision']},headers=csrf(client))
+            assert sent.status_code == 201, sent.text
+            assert sent.json()['status'] == 'delivered-internal'
+>           mail = bob.get('/api/mail/emails').json()['items'][0]
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           IndexError: list index out of range
+
+backend\tests\test_resources.py:90: IndexError
+________________ test_shared_rooms_all_accounts_and_mail_retry ________________
+
+client = <starlette.testclient.TestClient object at 0x0000022F3A84BE60>
+application = <fastapi.applications.FastAPI object at 0x0000022F3A78BC80>
+
+    def test_shared_rooms_all_accounts_and_mail_retry(client, application):
+        alice, bob, eve = accounts(client, application)
+        try:
+            room = client.post('/api/chat/rooms', json={'name':'Shared team'}, headers=csrf(client)).json()['id']
+            assert any(r['id'] == room for r in eve.get('/api/chat/rooms').json()['rooms'])
+            with bob.websocket_connect('/api/chat/ws', headers={'Origin':'http://testserver'}) as socket:
+                message = client.post(f'/api/chat/rooms/{room}/messages', json={'body':'Shared hello','clientId':'shared-1'}, headers=csrf(client))
+                assert message.status_code == 201
+                assert socket.receive_json()['message']['body'] == 'Shared hello'
+>           assert eve.get(f'/api/chat/rooms/{room}/messages').json()['messages'][0]['senderId'] == alice['id']
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           IndexError: list index out of range
+
+backend\tests\test_resources.py:142: IndexError
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  C:\Users\custa\OneDrive\Desktop\admin_page-main\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED backend/tests/test_improvements.py::test_concurrent_private_room_creation_and_mail_retry
+FAILED backend/tests/test_mail_integrity.py::test_receipts_have_personal_default_labels_and_category_to_cc_bcc_self
+FAILED backend/tests/test_resources.py::test_chat_persistence_idempotency_authorization_read_and_websocket
+FAILED backend/tests/test_resources.py::test_mail_delivery_bcc_isolation_drafts_search_and_dashboard
+FAILED backend/tests/test_resources.py::test_shared_rooms_all_accounts_and_mail_retry
+5 failed, 127 passed, 1 warning in 106.24s (0:01:46)
